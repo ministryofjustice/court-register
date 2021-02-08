@@ -10,7 +10,7 @@ import org.mockito.ArgumentMatchers.anyString
 import uk.gov.justice.digital.hmpps.courtregister.jpa.Court
 import uk.gov.justice.digital.hmpps.courtregister.jpa.CourtRepository
 import uk.gov.justice.digital.hmpps.courtregister.resource.CourtDto
-import java.util.*
+import java.util.Optional
 
 class CourtServiceTest {
   private val courtRepository: CourtRepository = mock()

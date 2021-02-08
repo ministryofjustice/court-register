@@ -7,7 +7,7 @@ import org.mockito.ArgumentMatchers.anyString
 import org.springframework.boot.test.mock.mockito.MockBean
 import uk.gov.justice.digital.hmpps.courtregister.jpa.Court
 import uk.gov.justice.digital.hmpps.courtregister.jpa.CourtRepository
-import java.util.*
+import java.util.Optional
 
 class CourtResourceTest : IntegrationTest() {
   @MockBean
