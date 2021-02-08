@@ -23,25 +23,35 @@ import javax.validation.constraints.Size
 class CourtResource(private val courtService: CourtService) {
   @GetMapping("/id/{courtId}")
   @Operation(summary = "Get specified court", description = "Information on a specific court")
-  @ApiResponses(value = [
-    ApiResponse(responseCode="200", description = "Successful Operation",
-      content = [Content(mediaType = "application/json", schema = Schema(implementation = CourtDto::class))])
-  ])
+  @ApiResponses(
+    value = [
+      ApiResponse(
+        responseCode = "200",
+        description = "Successful Operation",
+        content = [Content(mediaType = "application/json", schema = Schema(implementation = CourtDto::class))]
+      )
+    ]
+  )
   fun getCourtFromId(
     @Schema(description = "Court ID", example = "ACCRYC", required = true)
-    @PathVariable @Size(max = 12, min = 2) courtId: String): CourtDto =
-      courtService.findById(courtId)
+    @PathVariable @Size(max = 12, min = 2) courtId: String
+  ): CourtDto =
+    courtService.findById(courtId)
 
   @GetMapping("")
   @Operation(summary = "Get all courts", description = "All courts")
-  @ApiResponses(value = [
-    ApiResponse(responseCode="200", description = "Successful Operation",
-      content = [Content(mediaType = "application/json")])
-  ])
+  @ApiResponses(
+    value = [
+      ApiResponse(
+        responseCode = "200",
+        description = "Successful Operation",
+        content = [Content(mediaType = "application/json")]
+      )
+    ]
+  )
   fun getCourts(): List<CourtDto> =
     courtService.findAll()
 }
-
 
 @JsonInclude(NON_NULL)
 @Schema(description = "Court Information", example = "Details about a court")

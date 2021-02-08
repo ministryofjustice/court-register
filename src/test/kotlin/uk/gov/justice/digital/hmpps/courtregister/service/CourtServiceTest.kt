@@ -22,11 +22,11 @@ class CourtServiceTest {
     @Test
     fun `find court`() {
       whenever(courtRepository.findById(anyString())).thenReturn(
-          Optional.of(Court("ACCRYC", "A Court", null, true)))
+        Optional.of(Court("ACCRYC", "A Court", null, true))
+      )
       val courtDto = courtService.findById("ACCRYC")
       assertThat(courtDto).isEqualTo(CourtDto("ACCRYC", "A Court", null, true))
       verify(courtRepository).findById("ACCRYC")
     }
   }
-
 }

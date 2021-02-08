@@ -14,5 +14,4 @@ class WebClientConfiguration(
   fun oauthApiHealthWebClient(): WebClient {
     return WebClient.builder().baseUrl(oauthRootUri).build()
   }
-
 }
