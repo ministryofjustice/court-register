@@ -10,9 +10,6 @@ env:
   - name: JAVA_OPTS
     value: "{{ .Values.env.JAVA_OPTS }}"
 
-  - name: JWT_PUBLIC_KEY
-    value: "{{ .Values.env.JWT_PUBLIC_KEY }}"
-
   - name: OAUTH_ENDPOINT_URL
     value: "{{ .Values.env.OAUTH_ENDPOINT_URL }}"
 
