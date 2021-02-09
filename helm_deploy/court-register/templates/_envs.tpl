@@ -10,14 +10,20 @@ env:
   - name: JAVA_OPTS
     value: "{{ .Values.env.JAVA_OPTS }}"
 
-  - name: SPRING_PROFILES_ACTIVE
-    value: "logstash"
+  - name: JWT_PUBLIC_KEY
+    value: "{{ .Values.env.JWT_PUBLIC_KEY }}"
 
-  - name: APPLICATION_INSIGHTS_IKEY
+  - name: OAUTH_ENDPOINT_URL
+    value: "{{ .Values.env.OAUTH_ENDPOINT_URL }}"
+
+  - name: APPINSIGHTS_INSTRUMENTATIONKEY
     valueFrom:
       secretKeyRef:
         name: {{ template "app.name" . }}
         key: APPINSIGHTS_INSTRUMENTATIONKEY
+
+  - name: APPLICATIONINSIGHTS_CONNECTION_STRING
+    value: "InstrumentationKey=$(APPINSIGHTS_INSTRUMENTATIONKEY)"
 
   - name: SPRING_DATASOURCE_USERNAME
     valueFrom:
