@@ -1,8 +1,10 @@
 package uk.gov.justice.digital.hmpps.courtregister.service
 
 import org.springframework.stereotype.Service
+import uk.gov.justice.digital.hmpps.courtregister.jpa.Court
 import uk.gov.justice.digital.hmpps.courtregister.jpa.CourtRepository
 import uk.gov.justice.digital.hmpps.courtregister.resource.CourtDto
+import uk.gov.justice.digital.hmpps.courtregister.resource.UpdateCourtDto
 import javax.persistence.EntityNotFoundException
 
 @Service
@@ -13,7 +15,32 @@ class CourtService(private val courtRepository: CourtRepository) {
     return CourtDto(court)
   }
 
-  fun findAll(): List<CourtDto> {
+  fun findAll(activeOnly: Boolean = false): List<CourtDto> {
+    if (activeOnly) {
+      return courtRepository.findByActiveOrderById(true).map { CourtDto(it) }
+    }
     return courtRepository.findAll().map { CourtDto(it) }
+  }
+
+  fun updateCourt(courtId: String, courtUpdateRecord: UpdateCourtDto): CourtDto {
+    val court = courtRepository.findById(courtId)
+      .orElseThrow { EntityNotFoundException("Court $courtId not found") }
+
+    with(courtUpdateRecord) {
+      court.courtName = courtName
+      court.courtDescription = courtDescription
+      court.courtType = courtType
+      court.active = active
+    }
+    return CourtDto(court)
+  }
+
+  fun insertCourt(courtInsertRecord: CourtDto): CourtDto {
+    courtRepository.findById(courtInsertRecord.courtId)
+      .map { EntityNotFoundException("Court $courtInsertRecord.courtId already exists") }
+
+    with(courtInsertRecord) {
+      return CourtDto(Court(courtId, courtName, courtDescription, courtType, active))
+    }
   }
 }

@@ -10,5 +10,11 @@
     "courtName": "Kidderminster Youth Court",
     "courtType": "Youth Court",
     "active": true
+  },
+  {
+    "courtId": "KIDDYE",
+    "courtName": "Kidderminster Crown Court",
+    "courtType": "Crown Court",
+    "active": false
   }
 ]

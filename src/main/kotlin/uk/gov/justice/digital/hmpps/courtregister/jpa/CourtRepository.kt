@@ -14,7 +14,8 @@ interface CourtRepository : CrudRepository<Court, String> {
 data class Court(
   @Id
   val id: String,
-  val courtName: String,
-  val courtDescription: String?,
-  val active: Boolean
+  var courtName: String,
+  var courtDescription: String?,
+  var courtType: String = "Other",
+  var active: Boolean
 )
