@@ -19,7 +19,7 @@ class CourtRepositoryTest {
 
   @Test
   fun `should insert court`() {
-    val court = Court("SHFCRT", "Sheffield Court", "A Court in Sheffield", true)
+    val court = Court("SHFCRT", "Sheffield Court", "A Court in Sheffield", "Crown", true)
 
     val id = courtRepository.save(court).id
 
@@ -31,6 +31,7 @@ class CourtRepositoryTest {
     with(savedCourt) {
       assertThat(id).isEqualTo("SHFCRT")
       assertThat(courtName).isEqualTo("Sheffield Court")
+      assertThat(courtType).isEqualTo("Crown")
       assertThat(active).isEqualTo(true)
     }
   }
@@ -38,7 +39,7 @@ class CourtRepositoryTest {
   @Test
   fun `should find court by name`() {
     val court = courtRepository.findById("SHEFCC")
-    assertThat(court).get().isEqualTo(Court("SHEFCC", "Sheffield Crown Court", null, true))
+    assertThat(court).get().isEqualTo(Court("SHEFCC", "Sheffield Crown Court", null, "Other", true))
   }
 
   @Test

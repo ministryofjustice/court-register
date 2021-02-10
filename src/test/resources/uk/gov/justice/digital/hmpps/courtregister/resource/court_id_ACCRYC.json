@@ -1,5 +1,6 @@
 {
   "courtId": "ACCRYC",
   "courtName": "Accrington Youth Court",
+  "courtType": "Youth Court",
   "active": true
 }

@@ -14,9 +14,9 @@ class OpenApiConfiguration(buildProperties: BuildProperties) {
   @Bean
   fun customOpenAPI(): OpenAPI = OpenAPI()
     .info(
-      Info().title("Court Register service")
+      Info().title("Court Register")
         .version(version)
-        .description("A service that provides HMPPS Court Information")
+        .description("Register providing UK Court Information")
         .contact(Contact().name("HMPPS Digital Studio").email("feedback@digital.justice.gov.uk"))
     )
 }

@@ -17,13 +17,13 @@ class CourtResourceTest : IntegrationTest() {
   @Nested
   inner class findAll {
     @Test
-    fun `find courts`() {
+    fun `find active courts`() {
       val courts = listOf(
-        Court("ACCRYC", "Accrington Youth Court", null, true),
-        Court("KIDDYC", "Kidderminster Youth Court", null, true)
+        Court("ACCRYC", "Accrington Youth Court", null, "Youth Court", true),
+        Court("KIDDYC", "Kidderminster Youth Court", null, "Youth Court", true)
       )
 
-      whenever(courtRepository.findAll()).thenReturn(
+      whenever(courtRepository.findByActiveOrderById(true)).thenReturn(
         courts
       )
       webTestClient.get().uri("/courts")
@@ -31,6 +31,24 @@ class CourtResourceTest : IntegrationTest() {
         .expectStatus().isOk
         .expectBody().json("courts".loadJson())
     }
+
+    @Test
+    fun `find alll courts`() {
+      val courts = listOf(
+        Court("ACCRYC", "Accrington Youth Court", null, "Youth Court", true),
+        Court("KIDDYC", "Kidderminster Youth Court", null, "Youth Court", true),
+        Court("KIDDYE", "Kidderminster Crown Court", null, "Crown Court", false)
+      )
+
+      whenever(courtRepository.findAll()).thenReturn(
+        courts
+      )
+      webTestClient.get().uri("/courts/all")
+        .exchange()
+        .expectStatus().isOk
+        .expectBody().json("courts_all".loadJson())
+    }
+
   }
 
   @Suppress("ClassName")
@@ -38,7 +56,7 @@ class CourtResourceTest : IntegrationTest() {
   inner class findById {
     @Test
     fun `find court`() {
-      val court = Court("ACCRYC", "Accrington Youth Court", null, true)
+      val court = Court("ACCRYC", "Accrington Youth Court", null, "Youth Court", true)
 
       whenever(courtRepository.findById(anyString())).thenReturn(
         Optional.of(court)
