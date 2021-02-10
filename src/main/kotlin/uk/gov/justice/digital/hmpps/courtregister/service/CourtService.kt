@@ -15,7 +15,7 @@ class CourtService(private val courtRepository: CourtRepository) {
     return CourtDto(court)
   }
 
-  fun findAll(activeOnly : Boolean = false): List<CourtDto> {
+  fun findAll(activeOnly: Boolean = false): List<CourtDto> {
     if (activeOnly) {
       return courtRepository.findByActiveOrderById(true).map { CourtDto(it) }
     }
@@ -42,6 +42,5 @@ class CourtService(private val courtRepository: CourtRepository) {
     with(courtInsertRecord) {
       return CourtDto(Court(courtId, courtName, courtDescription, courtType, active))
     }
-
   }
 }

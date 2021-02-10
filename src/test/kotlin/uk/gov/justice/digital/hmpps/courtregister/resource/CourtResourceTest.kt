@@ -48,7 +48,6 @@ class CourtResourceTest : IntegrationTest() {
         .expectStatus().isOk
         .expectBody().json("courts_all".loadJson())
     }
-
   }
 
   @Suppress("ClassName")

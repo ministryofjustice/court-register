@@ -61,40 +61,44 @@ class CourtMaintenanceResource(private val courtService: CourtService) {
   ): CourtDto =
     courtService.updateCourt(courtId, courtUpdateRecord)
 
-
   @PreAuthorize("hasRole('ROLE_MAINTAIN_REF_DATA')")
   @PostMapping("")
   @Operation(
-    summary = "Add a new court", description = "Adds a new court information, role required is MAINTAIN_REF_DATA",
+    summary = "Add a new court",
+    description = "Adds a new court information, role required is MAINTAIN_REF_DATA",
     security = [ SecurityRequirement(name = "MAINTAIN_REF_DATA", scopes = ["write"])],
     requestBody = io.swagger.v3.oas.annotations.parameters.RequestBody(content = [Content(mediaType = "application/json", schema = Schema(implementation = CourtDto::class))]),
     responses = [
       ApiResponse(
         responseCode = "201",
         description = "Court Information Inserted",
-        content = [Content(
-          mediaType = "application/json",
-          schema = Schema(implementation = CourtDto::class)
-        )]
+        content = [
+          Content(
+            mediaType = "application/json",
+            schema = Schema(implementation = CourtDto::class)
+          )
+        ]
       ),
       ApiResponse(
         responseCode = "400",
         description = "Information request to add a court",
-        content = [Content(
-          mediaType = "application/json",
-          schema = Schema(implementation = ErrorResponse::class)
-        )]
+        content = [
+          Content(
+            mediaType = "application/json",
+            schema = Schema(implementation = ErrorResponse::class)
+          )
+        ]
       ),
       ApiResponse(
         responseCode = "403",
         description = "Incorrect permissions to make court insert"
-      )]
-    )
+      )
+    ]
+  )
   fun insertCourt(
     @RequestBody courtInsertRecord: CourtDto
   ): CourtDto =
     courtService.insertCourt(courtInsertRecord)
-
 }
 
 @JsonInclude(NON_NULL)
@@ -102,6 +106,6 @@ class CourtMaintenanceResource(private val courtService: CourtService) {
 data class UpdateCourtDto(
   @Schema(description = "Name of the court", example = "Accrington Youth Court", required = true) @Size(max = 80, min = 2, message = "Court name must be between 2 and 80") @NotBlank val courtName: String,
   @Schema(description = "Description of the court", example = "Accrington Youth Court", required = false) @Size(max = 200, min = 2, message = "Court name must be between 2 and 200") val courtDescription: String?,
-  @Schema(description = "Type of court", example = "Crown Court", required = true, allowableValues = ["Magistrates Court","Youth Court","Crown Court","Other"]) @Size(max = 40, min = 2, message = "Court Type must be between 2 and 40") val courtType: String,
+  @Schema(description = "Type of court", example = "Crown Court", required = true, allowableValues = ["Magistrates Court", "Youth Court", "Crown Court", "Other"]) @Size(max = 40, min = 2, message = "Court Type must be between 2 and 40") val courtType: String,
   @Schema(description = "Whether the court is still active", required = true) val active: Boolean
 )

@@ -44,11 +44,13 @@ class CourtServiceTest {
         listOfCourts
       )
       val courts = courtService.findAll(true)
-      assertThat(courts).isEqualTo(listOf(
-        CourtDto("ACCRYC", "A Court 1", null, "Crown", true),
-        CourtDto("ACCRYV", "A Court 2", null, "County", true),
-        CourtDto("ACCRYT", "A Court 3", null, "Other", true)
-      ))
+      assertThat(courts).isEqualTo(
+        listOf(
+          CourtDto("ACCRYC", "A Court 1", null, "Crown", true),
+          CourtDto("ACCRYV", "A Court 2", null, "County", true),
+          CourtDto("ACCRYT", "A Court 3", null, "Other", true)
+        )
+      )
       verify(courtRepository).findByActiveOrderById(true)
     }
   }
