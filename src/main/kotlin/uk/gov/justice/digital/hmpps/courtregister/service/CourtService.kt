@@ -5,6 +5,7 @@ import uk.gov.justice.digital.hmpps.courtregister.jpa.Court
 import uk.gov.justice.digital.hmpps.courtregister.jpa.CourtRepository
 import uk.gov.justice.digital.hmpps.courtregister.resource.CourtDto
 import uk.gov.justice.digital.hmpps.courtregister.resource.UpdateCourtDto
+import javax.persistence.EntityExistsException
 import javax.persistence.EntityNotFoundException
 
 @Service
@@ -36,11 +37,14 @@ class CourtService(private val courtRepository: CourtRepository) {
   }
 
   fun insertCourt(courtInsertRecord: CourtDto): CourtDto {
-    courtRepository.findById(courtInsertRecord.courtId)
-      .map { EntityNotFoundException("Court $courtInsertRecord.courtId already exists") }
+    if (courtRepository.findById(courtInsertRecord.courtId).isPresent) {
+      throw EntityExistsException("Court $courtInsertRecord.courtId already exists")
+    }
 
     with(courtInsertRecord) {
-      return CourtDto(Court(courtId, courtName, courtDescription, courtType, active))
+      val court = Court(courtId, courtName, courtDescription, courtType, active)
+      courtRepository.save(court)
+      return CourtDto(court)
     }
   }
 }

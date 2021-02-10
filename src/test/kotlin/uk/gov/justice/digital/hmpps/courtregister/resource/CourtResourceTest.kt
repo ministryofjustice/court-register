@@ -33,7 +33,7 @@ class CourtResourceTest : IntegrationTest() {
     }
 
     @Test
-    fun `find alll courts`() {
+    fun `find all courts`() {
       val courts = listOf(
         Court("ACCRYC", "Accrington Youth Court", null, "Youth Court", true),
         Court("KIDDYC", "Kidderminster Youth Court", null, "Youth Court", true),

@@ -10,6 +10,7 @@ import org.mockito.ArgumentMatchers.anyString
 import uk.gov.justice.digital.hmpps.courtregister.jpa.Court
 import uk.gov.justice.digital.hmpps.courtregister.jpa.CourtRepository
 import uk.gov.justice.digital.hmpps.courtregister.resource.CourtDto
+import uk.gov.justice.digital.hmpps.courtregister.resource.UpdateCourtDto
 import java.util.Optional
 
 class CourtServiceTest {
@@ -32,7 +33,7 @@ class CourtServiceTest {
 
   @Suppress("ClassName")
   @Nested
-  inner class findActive {
+  inner class findCourts {
     @Test
     fun `find all active courts`() {
       val listOfCourts = listOf(
@@ -54,4 +55,40 @@ class CourtServiceTest {
       verify(courtRepository).findByActiveOrderById(true)
     }
   }
+
+  @Suppress("ClassName")
+  @Nested
+  inner class maintainCourts {
+    @Test
+    fun `update a court`() {
+      whenever(courtRepository.findById("ACCRYC")).thenReturn(
+        Optional.of(Court("ACCRYC", "A Court 1", null, "Crown", true))
+      )
+      val updatedCourt =
+        courtService.updateCourt("ACCRYC", UpdateCourtDto("A Court 1", "add description", "Crown", true))
+      assertThat(updatedCourt).isEqualTo(
+        CourtDto("ACCRYC", "A Court 1", "add description", "Crown", true)
+      )
+      verify(courtRepository).findById("ACCRYC")
+    }
+
+    @Test
+    fun `create a court`() {
+      whenever(courtRepository.findById("ACCRYZ")).thenReturn(
+        Optional.empty()
+      )
+      val courtToSave = Court("ACCRYZ", "A Court 4", "new court", "Crown", true)
+      whenever(courtRepository.save(courtToSave)).thenReturn(
+        courtToSave
+      )
+      val courtInsertRecord = CourtDto("ACCRYZ", "A Court 4", "new court", "Crown", true)
+      val updatedCourt = courtService.insertCourt(courtInsertRecord)
+      assertThat(updatedCourt).isEqualTo(
+        courtInsertRecord
+      )
+      verify(courtRepository).findById("ACCRYZ")
+      verify(courtRepository).save(courtToSave)
+    }
+  }
 }
+

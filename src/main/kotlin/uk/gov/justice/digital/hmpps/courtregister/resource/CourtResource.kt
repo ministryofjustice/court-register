@@ -58,7 +58,7 @@ class CourtResource(private val courtService: CourtService) {
     responses = [
       ApiResponse(
         responseCode = "200",
-        description = "All Court Information Returned",
+        description = "All Active Court Information Returned",
         content = arrayOf(
           Content(
             mediaType = "application/json",
@@ -68,7 +68,7 @@ class CourtResource(private val courtService: CourtService) {
       )
     ]
   )
-  fun getCourts(): List<CourtDto> =
+  fun getActiveCourts(): List<CourtDto> =
     courtService.findAll(true)
 
   @GetMapping("/all")
