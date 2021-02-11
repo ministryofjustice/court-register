@@ -100,6 +100,17 @@ class CourtResourceTest : IntegrationTest() {
     }
 
     @Test
+    fun `update a court with bad data`() {
+      webTestClient.put()
+        .uri("/court-maintenance/id/ACCRYC")
+        .accept(MediaType.APPLICATION_JSON)
+        .headers(setAuthorisation(roles = listOf("ROLE_MAINTAIN_REF_DATA"), scopes = listOf("write")))
+        .body(BodyInserters.fromValue(UpdateCourtDto("A", "B", "C", false)))
+        .exchange()
+        .expectStatus().isBadRequest
+    }
+
+    @Test
     fun `insert a court`() {
       whenever(courtRepository.findById("ACCRYD")).thenReturn(
         Optional.empty()
@@ -113,6 +124,17 @@ class CourtResourceTest : IntegrationTest() {
         .exchange()
         .expectStatus().isCreated
         .expectBody().json("inserted_court".loadJson())
+    }
+
+    @Test
+    fun `insert a court with bad data`() {
+      webTestClient.post()
+        .uri("/court-maintenance")
+        .accept(MediaType.APPLICATION_JSON)
+        .headers(setAuthorisation(roles = listOf("ROLE_MAINTAIN_REF_DATA"), scopes = listOf("write")))
+        .body(BodyInserters.fromValue(CourtDto("R", "A New Court", "a description", "Youth Court", true)))
+        .exchange()
+        .expectStatus().isBadRequest
     }
   }
 

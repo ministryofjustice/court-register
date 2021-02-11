@@ -51,7 +51,7 @@ class ClientTrackingConfigurationTest {
     val insightTelemetry = ThreadContext.getRequestTelemetryContext().httpRequestTelemetry.properties
     assertThat(insightTelemetry).hasSize(2)
     assertThat(insightTelemetry["username"]).isEqualTo("bob")
-    assertThat(insightTelemetry["clientId"]).isEqualTo("ptpu-client")
+    assertThat(insightTelemetry["clientId"]).isEqualTo("court-reg-client")
   }
 
   @Test
@@ -63,6 +63,6 @@ class ClientTrackingConfigurationTest {
     clientTrackingInterceptor.preHandle(req, res, "null")
     val insightTelemetry = ThreadContext.getRequestTelemetryContext().httpRequestTelemetry.properties
     assertThat(insightTelemetry).hasSize(1)
-    assertThat(insightTelemetry["clientId"]).isEqualTo("ptpu-client")
+    assertThat(insightTelemetry["clientId"]).isEqualTo("court-reg-client")
   }
 }
