@@ -4,6 +4,7 @@ import com.nhaarman.mockito_kotlin.mock
 import com.nhaarman.mockito_kotlin.verify
 import com.nhaarman.mockito_kotlin.whenever
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.mockito.ArgumentMatchers.anyString
@@ -12,6 +13,8 @@ import uk.gov.justice.digital.hmpps.courtregister.jpa.CourtRepository
 import uk.gov.justice.digital.hmpps.courtregister.resource.CourtDto
 import uk.gov.justice.digital.hmpps.courtregister.resource.UpdateCourtDto
 import java.util.Optional
+import javax.persistence.EntityExistsException
+import javax.persistence.EntityNotFoundException
 
 class CourtServiceTest {
   private val courtRepository: CourtRepository = mock()
@@ -73,6 +76,18 @@ class CourtServiceTest {
     }
 
     @Test
+    fun `try to update a court that doesn't exist`() {
+      whenever(courtRepository.findById("ACCRYC")).thenReturn(
+        Optional.empty()
+      )
+      Assertions.assertThrows(EntityNotFoundException::class.java) {
+        courtService.updateCourt("ACCRYC", UpdateCourtDto("A Court 1", "add description", "Crown", true))
+      }
+
+      verify(courtRepository).findById("ACCRYC")
+    }
+
+    @Test
     fun `create a court`() {
       whenever(courtRepository.findById("ACCRYZ")).thenReturn(
         Optional.empty()
@@ -89,6 +104,16 @@ class CourtServiceTest {
       verify(courtRepository).findById("ACCRYZ")
       verify(courtRepository).save(courtToSave)
     }
+
+    @Test
+    fun `try to create a court that already exists`() {
+      whenever(courtRepository.findById("ACCRYZ")).thenReturn(
+        Optional.of(Court("ACCRYZ", "A Court 5", "new court 5", "Crown", false))
+      )
+      val courtInsertRecord = CourtDto("ACCRYZ", "A Court 4", "new court", "Crown", true)
+      Assertions.assertThrows(EntityExistsException::class.java) { courtService.insertCourt(courtInsertRecord) }
+
+      verify(courtRepository).findById("ACCRYZ")
+    }
   }
 }
-

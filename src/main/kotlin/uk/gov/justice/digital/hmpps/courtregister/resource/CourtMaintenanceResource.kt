@@ -63,6 +63,7 @@ class CourtMaintenanceResource(private val courtService: CourtService) {
 
   @PreAuthorize("hasRole('ROLE_MAINTAIN_REF_DATA')")
   @PostMapping("")
+  @ResponseStatus(HttpStatus.CREATED)
   @Operation(
     summary = "Add a new court",
     description = "Adds a new court information, role required is MAINTAIN_REF_DATA",
