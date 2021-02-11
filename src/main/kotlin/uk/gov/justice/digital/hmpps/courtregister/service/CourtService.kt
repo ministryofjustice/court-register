@@ -7,8 +7,10 @@ import uk.gov.justice.digital.hmpps.courtregister.resource.CourtDto
 import uk.gov.justice.digital.hmpps.courtregister.resource.UpdateCourtDto
 import javax.persistence.EntityExistsException
 import javax.persistence.EntityNotFoundException
+import javax.transaction.Transactional
 
 @Service
+@Transactional
 class CourtService(private val courtRepository: CourtRepository) {
   fun findById(courtId: String): CourtDto {
     val court = courtRepository.findById(courtId)

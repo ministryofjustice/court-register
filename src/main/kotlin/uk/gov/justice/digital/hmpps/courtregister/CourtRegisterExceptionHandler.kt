@@ -5,6 +5,7 @@ import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.RestControllerAdvice
+import javax.persistence.EntityExistsException
 import javax.persistence.EntityNotFoundException
 import javax.validation.ValidationException
 
@@ -16,6 +17,14 @@ class CourtRegisterExceptionHandler {
     return ResponseEntity
       .status(HttpStatus.NOT_FOUND)
       .body(ErrorResponse(status = HttpStatus.NOT_FOUND, developerMessage = e.message))
+  }
+
+  @ExceptionHandler(EntityExistsException::class)
+  fun handleExistsException(e: Exception): ResponseEntity<ErrorResponse> {
+    log.debug("Court already exists exception: {}", e.message)
+    return ResponseEntity
+      .status(HttpStatus.CONFLICT)
+      .body(ErrorResponse(status = HttpStatus.CONFLICT, developerMessage = e.message))
   }
 
   @ExceptionHandler(ValidationException::class)

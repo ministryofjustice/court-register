@@ -57,6 +57,27 @@ class CourtServiceTest {
       )
       verify(courtRepository).findByActiveOrderById(true)
     }
+
+    @Test
+    fun `find all courts`() {
+      val listOfCourts = listOf(
+        Court("ACCRYC", "A Court 1", null, "Crown", true),
+        Court("ACCRYV", "A Court 2", null, "County", true),
+        Court("ACCRYT", "A Court 3", null, "Other", false)
+      )
+      whenever(courtRepository.findAll()).thenReturn(
+        listOfCourts
+      )
+      val courts = courtService.findAll()
+      assertThat(courts).isEqualTo(
+        listOf(
+          CourtDto("ACCRYC", "A Court 1", null, "Crown", true),
+          CourtDto("ACCRYV", "A Court 2", null, "County", true),
+          CourtDto("ACCRYT", "A Court 3", null, "Other", false)
+        )
+      )
+      verify(courtRepository).findAll()
+    }
   }
 
   @Suppress("ClassName")

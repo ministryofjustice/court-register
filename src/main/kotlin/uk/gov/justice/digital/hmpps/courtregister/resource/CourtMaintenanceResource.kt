@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.media.Content
 import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.security.SecurityRequirement
+import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.validation.annotation.Validated
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.bind.annotation.RestController
 import uk.gov.justice.digital.hmpps.courtregister.ErrorResponse
 import uk.gov.justice.digital.hmpps.courtregister.service.CourtService
@@ -25,7 +27,7 @@ import javax.validation.constraints.Size
 @Validated
 @RequestMapping("/court-maintenance", produces = [MediaType.APPLICATION_JSON_VALUE])
 class CourtMaintenanceResource(private val courtService: CourtService) {
-  @PreAuthorize("hasRole('ROLE_MAINTAIN_REF_DATA')")
+  @PreAuthorize("hasRole('ROLE_MAINTAIN_REF_DATA') and hasAuthority('SCOPE_write')")
   @Operation(
     summary = "Update specified court details",
     description = "Updates court information, role required is MAINTAIN_REF_DATA",
@@ -41,6 +43,10 @@ class CourtMaintenanceResource(private val courtService: CourtService) {
         responseCode = "400",
         description = "Information request to update court",
         content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))]
+      ),
+      ApiResponse(
+        responseCode = "401",
+        description = "Unauthorized to access this endpoint"
       ),
       ApiResponse(
         responseCode = "403",
@@ -61,7 +67,7 @@ class CourtMaintenanceResource(private val courtService: CourtService) {
   ): CourtDto =
     courtService.updateCourt(courtId, courtUpdateRecord)
 
-  @PreAuthorize("hasRole('ROLE_MAINTAIN_REF_DATA')")
+  @PreAuthorize("hasRole('ROLE_MAINTAIN_REF_DATA') and hasAuthority('SCOPE_write')")
   @PostMapping("")
   @ResponseStatus(HttpStatus.CREATED)
   @Operation(
@@ -89,6 +95,10 @@ class CourtMaintenanceResource(private val courtService: CourtService) {
             schema = Schema(implementation = ErrorResponse::class)
           )
         ]
+      ),
+      ApiResponse(
+        responseCode = "401",
+        description = "Unauthorized to access this endpoint"
       ),
       ApiResponse(
         responseCode = "403",
