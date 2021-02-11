@@ -58,7 +58,7 @@ class CourtResource(private val courtService: CourtService) {
     responses = [
       ApiResponse(
         responseCode = "200",
-        description = "All Court Information Returned",
+        description = "All Active Court Information Returned",
         content = arrayOf(
           Content(
             mediaType = "application/json",
@@ -68,7 +68,7 @@ class CourtResource(private val courtService: CourtService) {
       )
     ]
   )
-  fun getCourts(): List<CourtDto> =
+  fun getActiveCourts(): List<CourtDto> =
     courtService.findAll(true)
 
   @GetMapping("/all")
@@ -95,10 +95,10 @@ class CourtResource(private val courtService: CourtService) {
 @JsonInclude(NON_NULL)
 @Schema(description = "Court Information")
 data class CourtDto(
-  @Schema(description = "Court ID", example = "ACCRYC", required = true) @Size(max = 12, min = 2, message = "Court ID must be between 2 and 12") @NotBlank val courtId: String,
-  @Schema(description = "Name of the court", example = "Accrington Youth Court", required = true) @Size(max = 80, min = 2, message = "Court name must be between 2 and 80") @NotBlank val courtName: String,
-  @Schema(description = "Description of the court", example = "Accrington Youth Court", required = false) @Size(max = 200, min = 2, message = "Court name must be between 2 and 200") val courtDescription: String?,
-  @Schema(description = "Type of court", example = "Crown Court", required = true, allowableValues = ["Magistrates Court", "Youth Court", "Crown Court", "Other"]) @Size(max = 40, min = 2, message = "Court Type must be between 2 and 40") val courtType: String,
+  @Schema(description = "Court ID", example = "ACCRYC", required = true) @field:Size(max = 12, min = 2, message = "Court ID must be between 2 and 12") @NotBlank val courtId: String,
+  @Schema(description = "Name of the court", example = "Accrington Youth Court", required = true) @field:Size(max = 80, min = 2, message = "Court name must be between 2 and 80") @NotBlank val courtName: String,
+  @Schema(description = "Description of the court", example = "Accrington Youth Court", required = false) @field:Size(max = 200, min = 2, message = "Court name must be between 2 and 200") val courtDescription: String?,
+  @Schema(description = "Type of court", example = "Crown Court", required = true, allowableValues = ["Magistrates Court", "Youth Court", "Crown Court", "Other"]) @field:Size(max = 40, min = 2, message = "Court Type must be between 2 and 40") val courtType: String,
   @Schema(description = "Whether the court is still active", required = true) val active: Boolean
 ) {
   constructor(court: Court) : this(court.id, court.courtName, court.courtDescription, court.courtType, court.active)
