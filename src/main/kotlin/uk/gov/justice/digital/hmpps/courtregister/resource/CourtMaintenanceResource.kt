@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.bind.annotation.RestController
 import uk.gov.justice.digital.hmpps.courtregister.ErrorResponse
+import uk.gov.justice.digital.hmpps.courtregister.jpa.Court.CourtType
 import uk.gov.justice.digital.hmpps.courtregister.service.CourtService
 import javax.validation.Valid
 import javax.validation.constraints.NotBlank
@@ -47,11 +48,13 @@ class CourtMaintenanceResource(private val courtService: CourtService) {
       ),
       ApiResponse(
         responseCode = "401",
-        description = "Unauthorized to access this endpoint"
+        description = "Unauthorized to access this endpoint",
+        content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))]
       ),
       ApiResponse(
         responseCode = "403",
-        description = "Incorrect permissions to make court update"
+        description = "Incorrect permissions to make court update",
+        content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))]
       ),
       ApiResponse(
         responseCode = "404",
@@ -99,11 +102,13 @@ class CourtMaintenanceResource(private val courtService: CourtService) {
       ),
       ApiResponse(
         responseCode = "401",
-        description = "Unauthorized to access this endpoint"
+        description = "Unauthorized to access this endpoint",
+        content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))]
       ),
       ApiResponse(
         responseCode = "403",
-        description = "Incorrect permissions to make court insert"
+        description = "Incorrect permissions to make court insert",
+        content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))]
       )
     ]
   )
@@ -116,8 +121,8 @@ class CourtMaintenanceResource(private val courtService: CourtService) {
 @JsonInclude(NON_NULL)
 @Schema(description = "Court Update Record")
 data class UpdateCourtDto(
-  @Schema(description = "Name of the court", example = "Accrington Youth Court", required = true) @field:Size(max = 80, min = 2, message = "Court name must be between 2 and 80") @NotBlank val courtName: String,
+  @Schema(description = "Name of the court", example = "Accrington Youth Court", required = true) @field:Size(max = 80, min = 2, message = "Court name must be between 2 and 80") @field:NotBlank(message = "Court ID is required") val courtName: String,
   @Schema(description = "Description of the court", example = "Accrington Youth Court", required = false) @field:Size(max = 200, min = 2, message = "Court name must be between 2 and 200") val courtDescription: String?,
-  @Schema(description = "Type of court", example = "Crown Court", required = true, allowableValues = ["Magistrates Court", "Youth Court", "Crown Court", "Other"]) @field:Size(max = 40, min = 2, message = "Court Type must be between 2 and 40") val courtType: String,
+  @Schema(description = "Type of court", example = "CROWN", required = true) val courtType: CourtType,
   @Schema(description = "Whether the court is still active", required = true) val active: Boolean
 )

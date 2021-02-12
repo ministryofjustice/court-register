@@ -9,6 +9,9 @@ import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.mockito.ArgumentMatchers.anyString
 import uk.gov.justice.digital.hmpps.courtregister.jpa.Court
+import uk.gov.justice.digital.hmpps.courtregister.jpa.Court.CourtType.COUNTY
+import uk.gov.justice.digital.hmpps.courtregister.jpa.Court.CourtType.CROWN
+import uk.gov.justice.digital.hmpps.courtregister.jpa.Court.CourtType.OTHER
 import uk.gov.justice.digital.hmpps.courtregister.jpa.CourtRepository
 import uk.gov.justice.digital.hmpps.courtregister.resource.CourtDto
 import uk.gov.justice.digital.hmpps.courtregister.resource.UpdateCourtDto
@@ -26,10 +29,10 @@ class CourtServiceTest {
     @Test
     fun `find court`() {
       whenever(courtRepository.findById(anyString())).thenReturn(
-        Optional.of(Court("ACCRYC", "A Court", null, "Crown", true))
+        Optional.of(Court("ACCRYC", "A Court", null, CROWN, true))
       )
       val courtDto = courtService.findById("ACCRYC")
-      assertThat(courtDto).isEqualTo(CourtDto("ACCRYC", "A Court", null, "Crown", true))
+      assertThat(courtDto).isEqualTo(CourtDto("ACCRYC", "A Court", null, CROWN, true))
       verify(courtRepository).findById("ACCRYC")
     }
   }
@@ -40,9 +43,9 @@ class CourtServiceTest {
     @Test
     fun `find all active courts`() {
       val listOfCourts = listOf(
-        Court("ACCRYC", "A Court 1", null, "Crown", true),
-        Court("ACCRYV", "A Court 2", null, "County", true),
-        Court("ACCRYT", "A Court 3", null, "Other", true)
+        Court("ACCRYC", "A Court 1", null, CROWN, true),
+        Court("ACCRYV", "A Court 2", null, COUNTY, true),
+        Court("ACCRYT", "A Court 3", null, OTHER, true)
       )
       whenever(courtRepository.findByActiveOrderById(true)).thenReturn(
         listOfCourts
@@ -50,9 +53,9 @@ class CourtServiceTest {
       val courts = courtService.findAll(true)
       assertThat(courts).isEqualTo(
         listOf(
-          CourtDto("ACCRYC", "A Court 1", null, "Crown", true),
-          CourtDto("ACCRYV", "A Court 2", null, "County", true),
-          CourtDto("ACCRYT", "A Court 3", null, "Other", true)
+          CourtDto("ACCRYC", "A Court 1", null, CROWN, true),
+          CourtDto("ACCRYV", "A Court 2", null, COUNTY, true),
+          CourtDto("ACCRYT", "A Court 3", null, OTHER, true)
         )
       )
       verify(courtRepository).findByActiveOrderById(true)

@@ -2,13 +2,13 @@
   {
     "courtId": "ACCRYC",
     "courtName": "Accrington Youth Court",
-    "courtType": "Youth Court",
+    "courtType": "YOUTH",
     "active": true
   },
   {
     "courtId": "KIDDYC",
     "courtName": "Kidderminster Youth Court",
-    "courtType": "Youth Court",
+    "courtType": "YOUTH",
     "active": true
   }
 ]

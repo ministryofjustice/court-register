@@ -11,6 +11,8 @@ import org.springframework.http.MediaType
 import org.springframework.web.reactive.function.BodyInserters
 import uk.gov.justice.digital.hmpps.courtregister.helper.JwtAuthHelper
 import uk.gov.justice.digital.hmpps.courtregister.jpa.Court
+import uk.gov.justice.digital.hmpps.courtregister.jpa.Court.CourtType.CROWN
+import uk.gov.justice.digital.hmpps.courtregister.jpa.Court.CourtType.YOUTH
 import uk.gov.justice.digital.hmpps.courtregister.jpa.CourtRepository
 import java.util.Optional
 
@@ -27,8 +29,8 @@ class CourtResourceTest : IntegrationTest() {
     @Test
     fun `find active courts`() {
       val courts = listOf(
-        Court("ACCRYC", "Accrington Youth Court", null, "Youth Court", true),
-        Court("KIDDYC", "Kidderminster Youth Court", null, "Youth Court", true)
+        Court("ACCRYC", "Accrington Youth Court", null, YOUTH, true),
+        Court("KIDDYC", "Kidderminster Youth Court", null, YOUTH, true)
       )
 
       whenever(courtRepository.findByActiveOrderById(true)).thenReturn(
@@ -43,9 +45,9 @@ class CourtResourceTest : IntegrationTest() {
     @Test
     fun `find all courts`() {
       val courts = listOf(
-        Court("ACCRYC", "Accrington Youth Court", null, "Youth Court", true),
-        Court("KIDDYC", "Kidderminster Youth Court", null, "Youth Court", true),
-        Court("KIDDYE", "Kidderminster Crown Court", null, "Crown Court", false)
+        Court("ACCRYC", "Accrington Youth Court", null, YOUTH, true),
+        Court("KIDDYC", "Kidderminster Youth Court", null, YOUTH, true),
+        Court("KIDDYE", "Kidderminster Crown Court", null, CROWN, false)
       )
 
       whenever(courtRepository.findAll()).thenReturn(
@@ -143,7 +145,7 @@ class CourtResourceTest : IntegrationTest() {
   inner class findById {
     @Test
     fun `find court`() {
-      val court = Court("ACCRYC", "Accrington Youth Court", null, "Youth Court", true)
+      val court = Court("ACCRYC", "Accrington Youth Court", null, YOUTH, true)
 
       whenever(courtRepository.findById(anyString())).thenReturn(
         Optional.of(court)

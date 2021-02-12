@@ -8,6 +8,8 @@ import org.springframework.boot.test.context.SpringBootTest.WebEnvironment
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.transaction.TestTransaction
 import org.springframework.transaction.annotation.Transactional
+import uk.gov.justice.digital.hmpps.courtregister.jpa.Court.CourtType.CROWN
+import uk.gov.justice.digital.hmpps.courtregister.jpa.Court.CourtType.OTHER
 
 @ActiveProfiles("test")
 @SpringBootTest(webEnvironment = WebEnvironment.MOCK)
@@ -19,7 +21,7 @@ class CourtRepositoryTest {
 
   @Test
   fun `should insert court`() {
-    val court = Court("SHFCRT", "Sheffield Court", "A Court in Sheffield", "Crown", true)
+    val court = Court("SHFCRT", "Sheffield Court", "A Court in Sheffield", CROWN, true)
 
     val id = courtRepository.save(court).id
 
@@ -31,7 +33,7 @@ class CourtRepositoryTest {
     with(savedCourt) {
       assertThat(id).isEqualTo("SHFCRT")
       assertThat(courtName).isEqualTo("Sheffield Court")
-      assertThat(courtType).isEqualTo("Crown")
+      assertThat(courtType).isEqualTo(CROWN)
       assertThat(active).isEqualTo(true)
     }
   }
@@ -39,7 +41,7 @@ class CourtRepositoryTest {
   @Test
   fun `should find court by name`() {
     val court = courtRepository.findById("SHEFCC")
-    assertThat(court).get().isEqualTo(Court("SHEFCC", "Sheffield Crown Court", null, "Other", true))
+    assertThat(court).get().isEqualTo(Court("SHEFCC", "Sheffield Crown Court", null, OTHER, true))
   }
 
   @Test
