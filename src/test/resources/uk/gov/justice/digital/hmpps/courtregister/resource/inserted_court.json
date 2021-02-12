@@ -2,6 +2,6 @@
   "courtId": "ACCRYD",
   "courtName": "A New Court",
   "courtDescription": "a description",
-  "courtType": "Youth Court",
+  "courtType": "YOUTH",
   "active": true
 }
