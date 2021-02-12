@@ -68,7 +68,7 @@ class CourtResourceTest : IntegrationTest() {
         .uri("/court-maintenance/id/ACCRYC")
         .accept(MediaType.APPLICATION_JSON)
         .headers(setAuthorisation(roles = listOf("ROLE_DUMMY"), scopes = listOf("write")))
-        .body(BodyInserters.fromValue(UpdateCourtDto("Updated Court", "a description", "Youth Court", false)))
+        .body(BodyInserters.fromValue(UpdateCourtDto("Updated Court", "a description", YOUTH, false)))
         .exchange()
         .expectStatus().isForbidden
     }
@@ -79,21 +79,21 @@ class CourtResourceTest : IntegrationTest() {
         .uri("/court-maintenance/id/ACCRYC")
         .accept(MediaType.APPLICATION_JSON)
         .headers(setAuthorisation(roles = listOf("ROLE_MAINTAIN_REF_DATA"), scopes = listOf("read")))
-        .body(BodyInserters.fromValue(UpdateCourtDto("Updated Court", "a description", "Youth Court", false)))
+        .body(BodyInserters.fromValue(UpdateCourtDto("Updated Court", "a description", YOUTH, false)))
         .exchange().expectStatus().isForbidden
     }
 
     @Test
     fun `update a court`() {
       whenever(courtRepository.findById("ACCRYC")).thenReturn(
-        Optional.of(Court("ACCRYC", "A Court 1", null, "Crown", true))
+        Optional.of(Court("ACCRYC", "A Court 1", null, CROWN, true))
       )
 
       webTestClient.put()
         .uri("/court-maintenance/id/ACCRYC")
         .accept(MediaType.APPLICATION_JSON)
         .headers(setAuthorisation(roles = listOf("ROLE_MAINTAIN_REF_DATA"), scopes = listOf("write")))
-        .body(BodyInserters.fromValue(UpdateCourtDto("Updated Court", "a description", "Youth Court", false)))
+        .body(BodyInserters.fromValue(UpdateCourtDto("Updated Court", "a description", YOUTH, false)))
         .exchange()
         .expectStatus().isOk
         .expectBody().json("updated_court".loadJson())
@@ -105,7 +105,7 @@ class CourtResourceTest : IntegrationTest() {
         .uri("/court-maintenance/id/ACCRYC")
         .accept(MediaType.APPLICATION_JSON)
         .headers(setAuthorisation(roles = listOf("ROLE_MAINTAIN_REF_DATA"), scopes = listOf("write")))
-        .body(BodyInserters.fromValue(UpdateCourtDto("A", "B", "C", false)))
+        .body(BodyInserters.fromValue(mapOf("courtName" to "A", "courtDescription" to "B", "courtType" to "DUMMY", "active" to "true")))
         .exchange()
         .expectStatus().isBadRequest
     }
@@ -120,7 +120,7 @@ class CourtResourceTest : IntegrationTest() {
         .uri("/court-maintenance")
         .accept(MediaType.APPLICATION_JSON)
         .headers(setAuthorisation(roles = listOf("ROLE_MAINTAIN_REF_DATA"), scopes = listOf("write")))
-        .body(BodyInserters.fromValue(CourtDto("ACCRYD", "A New Court", "a description", "Youth Court", true)))
+        .body(BodyInserters.fromValue(CourtDto("ACCRYD", "A New Court", "a description", YOUTH, true)))
         .exchange()
         .expectStatus().isCreated
         .expectBody().json("inserted_court".loadJson())
@@ -132,7 +132,7 @@ class CourtResourceTest : IntegrationTest() {
         .uri("/court-maintenance")
         .accept(MediaType.APPLICATION_JSON)
         .headers(setAuthorisation(roles = listOf("ROLE_MAINTAIN_REF_DATA"), scopes = listOf("write")))
-        .body(BodyInserters.fromValue(CourtDto("R", "A New Court", "a description", "Youth Court", true)))
+        .body(BodyInserters.fromValue(CourtDto("R", "A New Court", "a description", YOUTH, true)))
         .exchange()
         .expectStatus().isBadRequest
     }

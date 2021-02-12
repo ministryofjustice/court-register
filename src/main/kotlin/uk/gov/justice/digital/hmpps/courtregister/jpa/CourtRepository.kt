@@ -18,4 +18,8 @@ data class Court(
   var courtDescription: String?,
   var courtType: String = "Other",
   var active: Boolean
-)
+) {
+  enum class CourtType {
+    MAGISTRATES, CROWN, COUNTY, YOUTH, OTHER, SHERRIFS_SCOTTISH, DISTRICT_SCOTTISH, HIGH_COURT_SCOTTISH, ASYLUM_IMMIGRATION, IMMIGRATION, COURTS_MARTIAL, OUTSIDE_ENG_WALES, APPEAL
+  }
+}

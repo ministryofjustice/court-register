@@ -61,9 +61,9 @@ class CourtServiceTest {
     @Test
     fun `find all courts`() {
       val listOfCourts = listOf(
-        Court("ACCRYC", "A Court 1", null, "Crown", true),
-        Court("ACCRYV", "A Court 2", null, "County", true),
-        Court("ACCRYT", "A Court 3", null, "Other", false)
+        Court("ACCRYC", "A Court 1", null, CROWN, true),
+        Court("ACCRYV", "A Court 2", null, COUNTY, true),
+        Court("ACCRYT", "A Court 3", null, OTHER, false)
       )
       whenever(courtRepository.findAll()).thenReturn(
         listOfCourts
@@ -71,9 +71,9 @@ class CourtServiceTest {
       val courts = courtService.findAll()
       assertThat(courts).isEqualTo(
         listOf(
-          CourtDto("ACCRYC", "A Court 1", null, "Crown", true),
-          CourtDto("ACCRYV", "A Court 2", null, "County", true),
-          CourtDto("ACCRYT", "A Court 3", null, "Other", false)
+          CourtDto("ACCRYC", "A Court 1", null, CROWN, true),
+          CourtDto("ACCRYV", "A Court 2", null, COUNTY, true),
+          CourtDto("ACCRYT", "A Court 3", null, OTHER, false)
         )
       )
       verify(courtRepository).findAll()
@@ -86,12 +86,12 @@ class CourtServiceTest {
     @Test
     fun `update a court`() {
       whenever(courtRepository.findById("ACCRYC")).thenReturn(
-        Optional.of(Court("ACCRYC", "A Court 1", null, "Crown", true))
+        Optional.of(Court("ACCRYC", "A Court 1", null, CROWN, true))
       )
       val updatedCourt =
-        courtService.updateCourt("ACCRYC", UpdateCourtDto("A Court 1", "add description", "Crown", true))
+        courtService.updateCourt("ACCRYC", UpdateCourtDto("A Court 1", "add description", CROWN, true))
       assertThat(updatedCourt).isEqualTo(
-        CourtDto("ACCRYC", "A Court 1", "add description", "Crown", true)
+        CourtDto("ACCRYC", "A Court 1", "add description", CROWN, true)
       )
       verify(courtRepository).findById("ACCRYC")
     }
@@ -102,7 +102,7 @@ class CourtServiceTest {
         Optional.empty()
       )
       Assertions.assertThrows(EntityNotFoundException::class.java) {
-        courtService.updateCourt("ACCRYC", UpdateCourtDto("A Court 1", "add description", "Crown", true))
+        courtService.updateCourt("ACCRYC", UpdateCourtDto("A Court 1", "add description", CROWN, true))
       }
 
       verify(courtRepository).findById("ACCRYC")
@@ -113,11 +113,11 @@ class CourtServiceTest {
       whenever(courtRepository.findById("ACCRYZ")).thenReturn(
         Optional.empty()
       )
-      val courtToSave = Court("ACCRYZ", "A Court 4", "new court", "Crown", true)
+      val courtToSave = Court("ACCRYZ", "A Court 4", "new court", CROWN, true)
       whenever(courtRepository.save(courtToSave)).thenReturn(
         courtToSave
       )
-      val courtInsertRecord = CourtDto("ACCRYZ", "A Court 4", "new court", "Crown", true)
+      val courtInsertRecord = CourtDto("ACCRYZ", "A Court 4", "new court", CROWN, true)
       val updatedCourt = courtService.insertCourt(courtInsertRecord)
       assertThat(updatedCourt).isEqualTo(
         courtInsertRecord
@@ -129,9 +129,9 @@ class CourtServiceTest {
     @Test
     fun `try to create a court that already exists`() {
       whenever(courtRepository.findById("ACCRYZ")).thenReturn(
-        Optional.of(Court("ACCRYZ", "A Court 5", "new court 5", "Crown", false))
+        Optional.of(Court("ACCRYZ", "A Court 5", "new court 5", CROWN, false))
       )
-      val courtInsertRecord = CourtDto("ACCRYZ", "A Court 4", "new court", "Crown", true)
+      val courtInsertRecord = CourtDto("ACCRYZ", "A Court 4", "new court", CROWN, true)
       Assertions.assertThrows(EntityExistsException::class.java) { courtService.insertCourt(courtInsertRecord) }
 
       verify(courtRepository).findById("ACCRYZ")
