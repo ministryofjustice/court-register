@@ -44,7 +44,7 @@ services:
     environment:
       - SPRING_DATASOURCE_USERNAME=admin
       - SPRING_DATASOURCE_PASSWORD=admin_password
-      - DATABASE_NAME=admin
+      - DATABASE_NAME=court-register-db
       - DATABASE_ENDPOINT=court-register-db
 
   localstack:
