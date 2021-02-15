@@ -1,5 +1,7 @@
 package uk.gov.justice.digital.hmpps.courtregister
 
+import com.fasterxml.jackson.annotation.JsonInclude
+import com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -40,6 +42,7 @@ class CourtRegisterExceptionHandler {
   }
 }
 
+@JsonInclude(NON_NULL)
 data class ErrorResponse(
   val status: Int,
   val errorCode: Int? = null,

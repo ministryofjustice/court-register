@@ -10,7 +10,7 @@ executors:
       - image: circleci/openjdk:11-jdk
       - image: localstack/localstack:0.11.2
         environment:
-          - SERVICES=sqs,sns,dynamodb
+          - SERVICES=sns
           - DEBUG=${DEBUG- }
           - DATA_DIR=/tmp/localstack/data
           - DOCKER_HOST=unix:///var/run/docker.sock
@@ -37,7 +37,10 @@ jobs:
           keys:
             - gradle-{{ checksum "build.gradle.kts" }}
             - gradle-
-      - run: ./gradlew check
+      - run:
+          environment:
+            AWS_PROVIDER: localstack
+          command: ./gradlew check
       - save_cache:
           paths:
             - ~/.gradle

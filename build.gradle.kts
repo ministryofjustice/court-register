@@ -18,6 +18,7 @@ dependencies {
   implementation("org.springframework.boot:spring-boot-starter-security")
   implementation("org.springframework.boot:spring-boot-starter-oauth2-resource-server")
   implementation("org.springframework.boot:spring-boot-starter-oauth2-client")
+  implementation("org.springframework.cloud:spring-cloud-starter-aws-messaging:2.2.5.RELEASE")
 
   runtimeOnly("com.h2database:h2:1.4.200")
   runtimeOnly("org.flywaydb:flyway-core:6.2.4")
@@ -33,9 +34,8 @@ dependencies {
   implementation("org.springdoc:springdoc-openapi-ui:1.5.2")
   implementation("org.springdoc:springdoc-openapi-kotlin:1.5.2")
 
-  implementation("org.springframework:spring-jms")
-  implementation(platform("com.amazonaws:aws-java-sdk-bom:1.11.942"))
-  implementation("com.amazonaws:amazon-sqs-java-messaging-lib:1.0.8")
+  implementation(platform("com.amazonaws:aws-java-sdk-bom:1.11.954"))
+  implementation("com.amazonaws:aws-java-sdk-sns:1.11.954")
 
   testImplementation("org.springframework.security:spring-security-test")
   testImplementation("com.github.tomakehurst:wiremock-standalone:2.27.2")

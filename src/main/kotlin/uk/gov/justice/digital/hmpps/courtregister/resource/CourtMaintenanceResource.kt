@@ -21,6 +21,8 @@ import org.springframework.web.bind.annotation.RestController
 import uk.gov.justice.digital.hmpps.courtregister.ErrorResponse
 import uk.gov.justice.digital.hmpps.courtregister.jpa.Court.CourtType
 import uk.gov.justice.digital.hmpps.courtregister.service.CourtService
+import uk.gov.justice.digital.hmpps.courtregister.service.EventType.COURT_REGISTER_UPSERT
+import uk.gov.justice.digital.hmpps.courtregister.service.SnsService
 import javax.validation.Valid
 import javax.validation.constraints.NotBlank
 import javax.validation.constraints.Size
@@ -28,7 +30,10 @@ import javax.validation.constraints.Size
 @RestController
 @Validated
 @RequestMapping("/court-maintenance", produces = [MediaType.APPLICATION_JSON_VALUE])
-class CourtMaintenanceResource(private val courtService: CourtService) {
+class CourtMaintenanceResource(
+  private val courtService: CourtService,
+  private val snsService: SnsService
+) {
   @PreAuthorize("hasRole('ROLE_MAINTAIN_REF_DATA') and hasAuthority('SCOPE_write')")
   @Operation(
     summary = "Update specified court details",
@@ -68,8 +73,11 @@ class CourtMaintenanceResource(private val courtService: CourtService) {
     @Schema(description = "Court ID", example = "ACCRYC", required = true)
     @PathVariable @Size(max = 12, min = 2, message = "Court ID must be between 2 and 12") courtId: String,
     @RequestBody @Valid courtUpdateRecord: UpdateCourtDto
-  ): CourtDto =
-    courtService.updateCourt(courtId, courtUpdateRecord)
+  ): CourtDto {
+    val updateCourt = courtService.updateCourt(courtId, courtUpdateRecord)
+    snsService.sendEvent(COURT_REGISTER_UPSERT, courtId)
+    return updateCourt
+  }
 
   @PreAuthorize("hasRole('ROLE_MAINTAIN_REF_DATA') and hasAuthority('SCOPE_write')")
   @PostMapping("")
@@ -114,8 +122,11 @@ class CourtMaintenanceResource(private val courtService: CourtService) {
   )
   fun insertCourt(
     @RequestBody @Valid courtInsertRecord: CourtDto
-  ): CourtDto =
-    courtService.insertCourt(courtInsertRecord)
+  ): CourtDto {
+    val insertCourt = courtService.insertCourt(courtInsertRecord)
+    snsService.sendEvent(COURT_REGISTER_UPSERT, insertCourt.courtId)
+    return insertCourt
+  }
 }
 
 @JsonInclude(NON_NULL)
