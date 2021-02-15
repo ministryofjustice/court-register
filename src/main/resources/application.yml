@@ -9,7 +9,7 @@ spring:
   profiles:
     group:
       test:
-        - "dev"
+        - "stdout"
 
   security:
     oauth2:
@@ -74,6 +74,22 @@ management:
       cache:
         time-to-live: 2000ms
 
+aws:
+  provider: aws
+  region: eu-west-2
+
+cloud:
+  aws:
+    stack:
+      auto: false
+    region:
+      auto: false
+      static: ${aws.region}
+
+sns:
+  provider: ${aws.provider}
+  endpoint.region: ${aws.region}
+
 oauth:
   token.url: ${oauth.endpoint.url}/oauth/token
 
@@ -83,7 +99,4 @@ graceful:
 azure:
   application-insights.web.enable-W3C: true
 
-aws:
-  provider: aws
-  region: eu-west-2
 
