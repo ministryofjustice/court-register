@@ -55,6 +55,6 @@ class CourtService(private val courtRepository: CourtRepository) {
   }
 
   fun getCourtTypes(): List<CourtTypeDto> {
-    return Arrays.stream(CourtType.values()).map{ CourtTypeDto(it) }.toList()
+    return Arrays.stream(CourtType.values()).map { CourtTypeDto(it) }.toList()
   }
 }

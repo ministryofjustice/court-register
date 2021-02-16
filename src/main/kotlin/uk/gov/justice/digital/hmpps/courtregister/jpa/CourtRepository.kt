@@ -23,7 +23,7 @@ data class Court(
   var courtType: CourtType = OTHER,
   var active: Boolean
 ) {
-  enum class CourtType(val label : String) {
+  enum class CourtType(val label: String) {
     MAGISTRATES("Magistrates Court"),
     CROWN("Crown Court"),
     COUNTY("County Court"),
