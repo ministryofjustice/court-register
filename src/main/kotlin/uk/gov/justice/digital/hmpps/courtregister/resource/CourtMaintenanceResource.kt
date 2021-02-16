@@ -21,7 +21,8 @@ import org.springframework.web.bind.annotation.RestController
 import uk.gov.justice.digital.hmpps.courtregister.ErrorResponse
 import uk.gov.justice.digital.hmpps.courtregister.jpa.Court.CourtType
 import uk.gov.justice.digital.hmpps.courtregister.service.CourtService
-import uk.gov.justice.digital.hmpps.courtregister.service.EventType.COURT_REGISTER_UPSERT
+import uk.gov.justice.digital.hmpps.courtregister.service.EventType.COURT_REGISTER_INSERT
+import uk.gov.justice.digital.hmpps.courtregister.service.EventType.COURT_REGISTER_UPDATE
 import uk.gov.justice.digital.hmpps.courtregister.service.SnsService
 import javax.validation.Valid
 import javax.validation.constraints.NotBlank
@@ -74,9 +75,9 @@ class CourtMaintenanceResource(
     @PathVariable @Size(max = 12, min = 2, message = "Court ID must be between 2 and 12") courtId: String,
     @RequestBody @Valid courtUpdateRecord: UpdateCourtDto
   ): CourtDto {
-    val updateCourt = courtService.updateCourt(courtId, courtUpdateRecord)
-    snsService.sendEvent(COURT_REGISTER_UPSERT, courtId)
-    return updateCourt
+    val updatedCourt = courtService.updateCourt(courtId, courtUpdateRecord)
+    snsService.sendEvent(COURT_REGISTER_UPDATE, courtId)
+    return updatedCourt
   }
 
   @PreAuthorize("hasRole('ROLE_MAINTAIN_REF_DATA') and hasAuthority('SCOPE_write')")
@@ -123,9 +124,9 @@ class CourtMaintenanceResource(
   fun insertCourt(
     @RequestBody @Valid courtInsertRecord: CourtDto
   ): CourtDto {
-    val insertCourt = courtService.insertCourt(courtInsertRecord)
-    snsService.sendEvent(COURT_REGISTER_UPSERT, insertCourt.courtId)
-    return insertCourt
+    val newCourt = courtService.insertCourt(courtInsertRecord)
+    snsService.sendEvent(COURT_REGISTER_INSERT, newCourt.courtId)
+    return newCourt
   }
 }
 

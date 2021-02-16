@@ -1,0 +1,54 @@
+[
+  {
+    "courtType": "MAGISTRATES",
+    "courtName": "Magistrates Court"
+  },
+  {
+    "courtType": "CROWN",
+    "courtName": "Crown Court"
+  },
+  {
+    "courtType": "COUNTY",
+    "courtName": "County Court"
+  },
+  {
+    "courtType": "YOUTH",
+    "courtName": "Youth Court"
+  },
+  {
+    "courtType": "OTHER",
+    "courtName": "Other"
+  },
+  {
+    "courtType": "SHERRIFS_SCOTTISH",
+    "courtName": "Sherrifs Court (Scottish)"
+  },
+  {
+    "courtType": "DISTRICT_SCOTTISH",
+    "courtName": "District Court (Scottish)"
+  },
+  {
+    "courtType": "HIGH_COURT_SCOTTISH",
+    "courtName": "High Court (Scottish)"
+  },
+  {
+    "courtType": "ASYLUM_IMMIGRATION",
+    "courtName": "Asylum and Immigration Tribunal"
+  },
+  {
+    "courtType": "IMMIGRATION",
+    "courtName": "Immigration"
+  },
+  {
+    "courtType": "COURTS_MARTIAL",
+    "courtName": "Courts Martial"
+  },
+  {
+    "courtType": "OUTSIDE_ENG_WALES",
+    "courtName": "Outside England and Wales"
+  },
+  {
+    "courtType": "APPEAL",
+    "courtName": "Court of Appeal"
+  }
+]

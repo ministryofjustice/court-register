@@ -23,7 +23,19 @@ data class Court(
   var courtType: CourtType = OTHER,
   var active: Boolean
 ) {
-  enum class CourtType {
-    MAGISTRATES, CROWN, COUNTY, YOUTH, OTHER, SHERRIFS_SCOTTISH, DISTRICT_SCOTTISH, HIGH_COURT_SCOTTISH, ASYLUM_IMMIGRATION, IMMIGRATION, COURTS_MARTIAL, OUTSIDE_ENG_WALES, APPEAL
+  enum class CourtType(val label : String) {
+    MAGISTRATES("Magistrates Court"),
+    CROWN("Crown Court"),
+    COUNTY("County Court"),
+    YOUTH("Youth Court"),
+    OTHER("Other"),
+    SHERRIFS_SCOTTISH("Sherrifs Court (Scottish)"),
+    DISTRICT_SCOTTISH("District Court (Scottish)"),
+    HIGH_COURT_SCOTTISH("High Court (Scottish)"),
+    ASYLUM_IMMIGRATION("Asylum and Immigration Tribunal"),
+    IMMIGRATION("Immigration"),
+    COURTS_MARTIAL("Courts Martial"),
+    OUTSIDE_ENG_WALES("Outside England and Wales"),
+    APPEAL("Court of Appeal")
   }
 }

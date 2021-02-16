@@ -58,6 +58,14 @@ class CourtResourceTest : IntegrationTest() {
         .expectStatus().isOk
         .expectBody().json("courts_all".loadJson())
     }
+
+    @Test
+    fun `find courts types`() {
+      webTestClient.get().uri("/courts/types")
+        .exchange()
+        .expectStatus().isOk
+        .expectBody().json("court_types".loadJson())
+    }
   }
 
   @Suppress("ClassName")
