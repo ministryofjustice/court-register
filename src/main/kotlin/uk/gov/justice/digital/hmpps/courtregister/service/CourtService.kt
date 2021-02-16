@@ -7,7 +7,7 @@ import uk.gov.justice.digital.hmpps.courtregister.jpa.CourtRepository
 import uk.gov.justice.digital.hmpps.courtregister.resource.CourtDto
 import uk.gov.justice.digital.hmpps.courtregister.resource.CourtTypeDto
 import uk.gov.justice.digital.hmpps.courtregister.resource.UpdateCourtDto
-import java.util.*
+import java.util.Arrays
 import javax.persistence.EntityExistsException
 import javax.persistence.EntityNotFoundException
 import javax.transaction.Transactional
