@@ -38,5 +38,5 @@ data class RegisterChangeEvent(
 )
 
 enum class EventType {
-  COURT_REGISTER_UPSERT
+  COURT_REGISTER_INSERT, COURT_REGISTER_UPDATE
 }

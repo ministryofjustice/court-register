@@ -72,6 +72,26 @@ class CourtResource(private val courtService: CourtService) {
   fun getActiveCourts(): List<CourtDto> =
     courtService.findAll(true)
 
+  @GetMapping("/types")
+  @Operation(
+    summary = "Get all types of court",
+    description = "All court types",
+    responses = [
+      ApiResponse(
+        responseCode = "200",
+        description = "All Types of courts returned",
+        content = arrayOf(
+          Content(
+            mediaType = "application/json",
+            array = ArraySchema(schema = Schema(implementation = CourtTypeDto::class))
+          )
+        )
+      )
+    ]
+  )
+  fun getCourtTypes(): List<CourtTypeDto> =
+    courtService.getCourtTypes()
+
   @GetMapping("/all")
   @Operation(
     summary = "Get all active and inactive courts",
@@ -103,4 +123,13 @@ data class CourtDto(
   @Schema(description = "Whether the court is still active", required = true) val active: Boolean
 ) {
   constructor(court: Court) : this(court.id, court.courtName, court.courtDescription, court.courtType, court.active)
+}
+
+@JsonInclude(NON_NULL)
+@Schema(description = "Court Type")
+data class CourtTypeDto(
+  @Schema(description = "Type of court", example = "CROWN", required = true) val courtType: String,
+  @Schema(description = "Description of the type of court", example = "Crown Court", required = true) @NotBlank val courtName: String
+) {
+  constructor(courtType: CourtType) : this(courtType.name, courtType.label)
 }

@@ -2,8 +2,10 @@ package uk.gov.justice.digital.hmpps.courtregister.service
 
 import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.courtregister.jpa.Court
+import uk.gov.justice.digital.hmpps.courtregister.jpa.Court.CourtType
 import uk.gov.justice.digital.hmpps.courtregister.jpa.CourtRepository
 import uk.gov.justice.digital.hmpps.courtregister.resource.CourtDto
+import uk.gov.justice.digital.hmpps.courtregister.resource.CourtTypeDto
 import uk.gov.justice.digital.hmpps.courtregister.resource.UpdateCourtDto
 import javax.persistence.EntityExistsException
 import javax.persistence.EntityNotFoundException
@@ -48,5 +50,9 @@ class CourtService(private val courtRepository: CourtRepository) {
       courtRepository.save(court)
       return CourtDto(court)
     }
+  }
+
+  fun getCourtTypes(): List<CourtTypeDto> {
+    return CourtType.values().map { CourtTypeDto(it) }.toList()
   }
 }
