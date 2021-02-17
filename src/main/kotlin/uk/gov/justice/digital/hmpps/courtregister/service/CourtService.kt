@@ -53,6 +53,6 @@ class CourtService(private val courtRepository: CourtRepository) {
   }
 
   fun getCourtTypes(): List<CourtTypeDto> {
-    return CourtType.values().map { CourtTypeDto(it) }.toList()
+    return CourtType.values().map { CourtTypeDto(it) }
   }
 }
