@@ -11,8 +11,6 @@ image:
 
 ingress:
   enabled: true
-  annotations:
-    kubernetes.io/ingress.class: "nginx"
   hosts:
     - host: court-register.hmpps.service.justice.gov.uk
       cert_secret: court-register-cert
