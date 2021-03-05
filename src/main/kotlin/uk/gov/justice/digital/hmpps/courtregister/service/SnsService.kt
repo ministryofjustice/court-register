@@ -28,7 +28,7 @@ class SnsService(
     topicTemplate.convertAndSend(
       TopicMessageChannel(awsSnsClient, topicArn),
       gson.toJson(RegisterChangeEvent(eventType, id)),
-      mapOf("eventType" to eventType)
+      mapOf("eventType" to eventType.name)
     )
   }
 }
