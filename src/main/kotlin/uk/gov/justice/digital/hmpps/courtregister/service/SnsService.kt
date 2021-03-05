@@ -24,10 +24,11 @@ class SnsService(
   }
 
   fun sendEvent(eventType: EventType, id: String) {
-    log.debug("Event {} for id {}", eventType, eventType, id)
+    log.debug("Event {} for id {}", eventType, id)
     topicTemplate.convertAndSend(
       TopicMessageChannel(awsSnsClient, topicArn),
-      gson.toJson(RegisterChangeEvent(eventType, id))
+      gson.toJson(RegisterChangeEvent(eventType, id)),
+      mapOf("eventType" to eventType)
     )
   }
 }
