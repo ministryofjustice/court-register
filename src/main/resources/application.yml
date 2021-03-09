@@ -93,6 +93,10 @@ sns:
   provider: ${aws.provider}
   endpoint.region: ${aws.region}
 
+sqs:
+  provider: ${aws.provider}
+  endpoint.region: ${aws.region}
+
 oauth:
   token.url: ${oauth.endpoint.url}/oauth/token
 

@@ -63,4 +63,23 @@ env:
       secretKeyRef:
         name: hmpps-domain-events-topic
         key: topic_arn
+
+  - name: SQS_AWS_ACCESS_KEY_ID
+    valueFrom:
+      secretKeyRef:
+        name: sqs-hmpps-audit-secret
+        key: access_key_id
+
+  - name: SQS_AWS_SECRET_ACCESS_KEY
+    valueFrom:
+      secretKeyRef:
+        name: sqs-hmpps-audit-secret
+        key: secret_access_key
+
+  - name: SQS_QUEUE_NAME
+    valueFrom:
+      secretKeyRef:
+        name: sqs-hmpps-audit-secret
+        key: sqs_queue_name
+
 {{- end -}}

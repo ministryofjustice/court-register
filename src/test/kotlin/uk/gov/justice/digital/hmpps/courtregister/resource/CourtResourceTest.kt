@@ -1,10 +1,15 @@
 package uk.gov.justice.digital.hmpps.courtregister.resource
 
+import com.amazonaws.services.sqs.AmazonSQSAsync
+import com.amazonaws.services.sqs.model.PurgeQueueRequest
 import com.nhaarman.mockito_kotlin.whenever
+import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.mockito.ArgumentMatchers.anyString
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.http.HttpHeaders
 import org.springframework.http.MediaType
@@ -22,6 +27,13 @@ class CourtResourceTest : IntegrationTest() {
 
   @Autowired
   protected lateinit var jwtAuthHelper: JwtAuthHelper
+
+  @Autowired
+  protected lateinit var awsSqsClient: AmazonSQSAsync
+
+  @Value("\${sqs.queue.name}")
+  protected lateinit var queueName: String
+
 
   @Suppress("ClassName")
   @Nested
@@ -72,8 +84,13 @@ class CourtResourceTest : IntegrationTest() {
   @Nested
   inner class updateAndInsertCourts {
 
+    @BeforeEach
+    internal fun drainAuditQueue() {
+      awsSqsClient.purgeQueue(PurgeQueueRequest(queueName.queueUrl()))
+    }
+
     @Test
-    fun `correct permission are neeed to update court data`() {
+    fun `correct permission are needed to update court data`() {
       webTestClient.put()
         .uri("/court-maintenance/id/ACCRYC")
         .accept(MediaType.APPLICATION_JSON)
@@ -84,7 +101,7 @@ class CourtResourceTest : IntegrationTest() {
     }
 
     @Test
-    fun `correct scopes are neeed to update court data`() {
+    fun `correct scopes are needed to update court data`() {
       webTestClient.put()
         .uri("/court-maintenance/id/ACCRYC")
         .accept(MediaType.APPLICATION_JSON)
@@ -107,6 +124,8 @@ class CourtResourceTest : IntegrationTest() {
         .exchange()
         .expectStatus().isOk
         .expectBody().json("updated_court".loadJson())
+
+      assertThat(auditEventMessageCount()).isEqualTo(1)
     }
 
     @Test
@@ -134,6 +153,8 @@ class CourtResourceTest : IntegrationTest() {
         .exchange()
         .expectStatus().isCreated
         .expectBody().json("inserted_court".loadJson())
+
+      assertThat(auditEventMessageCount()).isEqualTo(1)
     }
 
     @Test
@@ -181,4 +202,13 @@ class CourtResourceTest : IntegrationTest() {
     roles: List<String> = listOf(),
     scopes: List<String> = listOf()
   ): (HttpHeaders) -> Unit = jwtAuthHelper.setAuthorisation(user, roles, scopes)
+
+
+  fun auditEventMessageCount(): Int? {
+    val queueAttributes = awsSqsClient.getQueueAttributes(queueName.queueUrl(), listOf("ApproximateNumberOfMessages"))
+    return queueAttributes.attributes["ApproximateNumberOfMessages"]?.toInt()
+  }
+
+  fun String.queueUrl(): String = awsSqsClient.getQueueUrl(this).queueUrl
+
 }
