@@ -2,7 +2,7 @@ server:
   shutdown: immediate
 
 aws:
-  provider: embedded-localstack
+  provider: localstack
 
 oauth:
   endpoint.url: http://localhost:8090/auth

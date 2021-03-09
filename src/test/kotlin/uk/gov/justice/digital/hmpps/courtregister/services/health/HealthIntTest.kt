@@ -35,4 +35,15 @@ class HealthIntTest : IntegrationTest() {
         }
       )
   }
+
+  @Test
+  fun `Queue health reports queue details`() {
+    webTestClient.get().uri("/health")
+      .exchange()
+      .expectStatus().isOk
+      .expectBody()
+      .jsonPath("components.hmppsAuditQueueHealth.details.MessagesOnQueue").isEqualTo(0)
+      .jsonPath("components.hmppsAuditQueueHealth.details.MessagesInFlight").isEqualTo(0)
+  }
+
 }
