@@ -47,7 +47,6 @@ abstract class QueueHealth(
     return Builder().up().withDetails(details).build()
   }
 
-
   private fun getQueueAttributesRequest(url: GetQueueUrlResult) =
     GetQueueAttributesRequest(url.queueUrl).withAttributeNames(All)
 }

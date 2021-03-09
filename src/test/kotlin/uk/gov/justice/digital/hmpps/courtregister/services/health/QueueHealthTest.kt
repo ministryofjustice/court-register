@@ -62,7 +62,6 @@ class QueueHealthTest {
     assertThat(health.status).isEqualTo(Status.DOWN)
   }
 
-
   private fun mockHealthyQueue() {
     whenever(amazonSqs.getQueueUrl(someQueueName)).thenReturn(someGetQueueUrlResult())
     whenever(amazonSqs.getQueueAttributes(someGetQueueAttributesRequest())).thenReturn(
@@ -82,5 +81,4 @@ class QueueHealthTest {
       QueueAttributeName.RedrivePolicy.toString() to "any redrive policy"
     )
   )
-
 }

@@ -30,7 +30,6 @@ class CourtResourceTest : IntegrationTest() {
   @Autowired
   protected lateinit var jwtAuthHelper: JwtAuthHelper
 
-
   @Suppress("ClassName")
   @Nested
   inner class findAll {
@@ -137,7 +136,6 @@ class CourtResourceTest : IntegrationTest() {
         val whenDateTime = LocalDateTime.parse(it)
         assertThat(whenDateTime).isCloseToUtcNow(within(5, ChronoUnit.SECONDS))
       }
-
     }
 
     @Test
@@ -239,7 +237,6 @@ class CourtResourceTest : IntegrationTest() {
     scopes: List<String> = listOf()
   ): (HttpHeaders) -> Unit = jwtAuthHelper.setAuthorisation(user, roles, scopes)
 
-
   fun auditEventMessageCount(): Int? {
     val queueAttributes = awsSqsClient.getQueueAttributes(queueName.queueUrl(), listOf("ApproximateNumberOfMessages"))
     return queueAttributes.attributes["ApproximateNumberOfMessages"]?.toInt()
@@ -248,5 +245,4 @@ class CourtResourceTest : IntegrationTest() {
   fun auditMessage(): String? {
     return awsSqsClient.receiveMessage(queueName.queueUrl()).messages.firstOrNull()?.body
   }
-
 }

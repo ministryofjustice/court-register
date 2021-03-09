@@ -52,5 +52,4 @@ class HealthIntTest : IntegrationTest() {
       .jsonPath("components.hmppsAuditQueueHealth.details.MessagesOnQueue").isEqualTo(0)
       .jsonPath("components.hmppsAuditQueueHealth.details.MessagesInFlight").isEqualTo(0)
   }
-
 }

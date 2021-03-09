@@ -23,5 +23,4 @@ class SqsConfig {
       .withCredentials(AWSStaticCredentialsProvider(BasicAWSCredentials(accessKey, secretKey)))
       .withRegion(region)
       .build()
-
 }

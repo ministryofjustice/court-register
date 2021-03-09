@@ -43,10 +43,12 @@ class CourtMaintenanceResource(
     description = "Updates court information, role required is MAINTAIN_REF_DATA",
     security = [SecurityRequirement(name = "MAINTAIN_REF_DATA", scopes = ["write"])],
     requestBody = io.swagger.v3.oas.annotations.parameters.RequestBody(
-      content = [Content(
-        mediaType = "application/json",
-        schema = Schema(implementation = UpdateCourtDto::class)
-      )]
+      content = [
+        Content(
+          mediaType = "application/json",
+          schema = Schema(implementation = UpdateCourtDto::class)
+        )
+      ]
     ),
     responses = [
       ApiResponse(
@@ -99,10 +101,12 @@ class CourtMaintenanceResource(
     description = "Adds a new court information, role required is MAINTAIN_REF_DATA",
     security = [SecurityRequirement(name = "MAINTAIN_REF_DATA", scopes = ["write"])],
     requestBody = io.swagger.v3.oas.annotations.parameters.RequestBody(
-      content = [Content(
-        mediaType = "application/json",
-        schema = Schema(implementation = CourtDto::class)
-      )]
+      content = [
+        Content(
+          mediaType = "application/json",
+          schema = Schema(implementation = CourtDto::class)
+        )
+      ]
     ),
     responses = [
       ApiResponse(
