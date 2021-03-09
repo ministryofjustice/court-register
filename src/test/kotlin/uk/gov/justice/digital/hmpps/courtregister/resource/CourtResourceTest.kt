@@ -21,7 +21,7 @@ import uk.gov.justice.digital.hmpps.courtregister.jpa.Court.CourtType.YOUTH
 import uk.gov.justice.digital.hmpps.courtregister.jpa.CourtRepository
 import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
-import java.util.*
+import java.util.Optional
 
 class CourtResourceTest : IntegrationTest() {
   @MockBean
