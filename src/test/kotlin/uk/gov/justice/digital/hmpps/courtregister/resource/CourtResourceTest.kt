@@ -1,6 +1,5 @@
 package uk.gov.justice.digital.hmpps.courtregister.resource
 
-import com.amazonaws.services.sqs.AmazonSQSAsync
 import com.amazonaws.services.sqs.model.PurgeQueueRequest
 import com.nhaarman.mockito_kotlin.whenever
 import net.javacrumbs.jsonunit.assertj.JsonAssertions
@@ -11,7 +10,6 @@ import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.mockito.ArgumentMatchers.anyString
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.http.HttpHeaders
 import org.springframework.http.MediaType
@@ -23,7 +21,7 @@ import uk.gov.justice.digital.hmpps.courtregister.jpa.Court.CourtType.YOUTH
 import uk.gov.justice.digital.hmpps.courtregister.jpa.CourtRepository
 import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
-import java.util.Optional
+import java.util.*
 
 class CourtResourceTest : IntegrationTest() {
   @MockBean
@@ -31,12 +29,6 @@ class CourtResourceTest : IntegrationTest() {
 
   @Autowired
   protected lateinit var jwtAuthHelper: JwtAuthHelper
-
-  @Autowired
-  protected lateinit var awsSqsClient: AmazonSQSAsync
-
-  @Value("\${sqs.queue.name}")
-  protected lateinit var queueName: String
 
 
   @Suppress("ClassName")
@@ -256,7 +248,5 @@ class CourtResourceTest : IntegrationTest() {
   fun auditMessage(): String? {
     return awsSqsClient.receiveMessage(queueName.queueUrl()).messages.firstOrNull()?.body
   }
-
-  fun String.queueUrl(): String = awsSqsClient.getQueueUrl(this).queueUrl
 
 }
