@@ -43,8 +43,8 @@ services:
     ports:
       - "5432:5432"
     environment:
-      - SPRING_DATASOURCE_USERNAME=admin
-      - SPRING_DATASOURCE_PASSWORD=admin_password
+      - POSTGRES_USER=admin
+      - POSTGRES_PASSWORD=admin_password
       - DATABASE_NAME=court-register-db
       - DATABASE_ENDPOINT=court-register-db
 
@@ -57,7 +57,7 @@ services:
       - "4567-4597:4567-4597"
       - 8999:8080
     environment:
-      - SERVICES=sns
+      - SERVICES=sns,sqs
       - DEBUG=${DEBUG- }
       - DATA_DIR=${DATA_DIR- }
       - PORT_WEB_UI=${PORT_WEB_UI- }
