@@ -2,7 +2,7 @@ server:
   shutdown: immediate
 
 aws:
-  provider: embedded-localstack
+  provider: localstack
 
 oauth:
   endpoint.url: http://localhost:8090/auth
@@ -32,6 +32,10 @@ spring:
 sns:
   topic:
     arn: arn:aws:sns:eu-west-2:000000000000:hmpps_domain_events
-
   endpoint:
     url: http://localhost:4575
+sqs:
+  endpoint:
+    url: http://localhost:4576
+  queue:
+    name: hmpps_audit_queue
