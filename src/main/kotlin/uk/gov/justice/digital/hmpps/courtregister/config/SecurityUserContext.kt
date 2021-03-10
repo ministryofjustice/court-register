@@ -14,5 +14,5 @@ class SecurityUserContext {
     }
 
   val principal: String
-    get() = authentication?.principal ?: "unknown"
+    get() = authentication?.principal!!
 }

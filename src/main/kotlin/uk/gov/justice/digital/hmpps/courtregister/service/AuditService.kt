@@ -9,6 +9,7 @@ import org.springframework.cloud.aws.messaging.core.QueueMessagingTemplate
 import org.springframework.messaging.support.MessageBuilder
 import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.courtregister.config.SecurityUserContext
+import java.time.Instant
 import java.time.LocalDateTime
 
 @Service
@@ -44,7 +45,7 @@ class AuditService(
 
 data class AuditEvent(
   val what: String,
-  val `when`: LocalDateTime = LocalDateTime.now(),
+  val `when`: Instant = Instant.now(),
   val who: String,
   val service: String,
   val details: String? = null,

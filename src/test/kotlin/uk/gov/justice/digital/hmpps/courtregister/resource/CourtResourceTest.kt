@@ -19,7 +19,10 @@ import uk.gov.justice.digital.hmpps.courtregister.jpa.Court
 import uk.gov.justice.digital.hmpps.courtregister.jpa.Court.CourtType.CROWN
 import uk.gov.justice.digital.hmpps.courtregister.jpa.Court.CourtType.YOUTH
 import uk.gov.justice.digital.hmpps.courtregister.jpa.CourtRepository
+import java.time.Instant
 import java.time.LocalDateTime
+import java.time.ZoneId
+import java.time.ZoneOffset
 import java.time.temporal.ChronoUnit
 import java.util.Optional
 
@@ -133,7 +136,7 @@ class CourtResourceTest : IntegrationTest() {
       JsonAssertions.assertThatJson(auditMessage).node("service").isEqualTo("court-register")
       JsonAssertions.assertThatJson(auditMessage).node("details").isNotNull
       JsonAssertions.assertThatJson(auditMessage).node("when").asString().satisfies {
-        val whenDateTime = LocalDateTime.parse(it)
+        val whenDateTime = LocalDateTime.ofInstant(Instant.parse(it), ZoneOffset.UTC)
         assertThat(whenDateTime).isCloseToUtcNow(within(5, ChronoUnit.SECONDS))
       }
     }
@@ -186,7 +189,7 @@ class CourtResourceTest : IntegrationTest() {
       JsonAssertions.assertThatJson(auditMessage).node("service").isEqualTo("court-register")
       JsonAssertions.assertThatJson(auditMessage).node("details").isNotNull
       JsonAssertions.assertThatJson(auditMessage).node("when").asString().satisfies {
-        val whenDateTime = LocalDateTime.parse(it)
+        val whenDateTime = LocalDateTime.ofInstant(Instant.parse(it), ZoneOffset.UTC)
         assertThat(whenDateTime).isCloseToUtcNow(within(5, ChronoUnit.SECONDS))
       }
     }
