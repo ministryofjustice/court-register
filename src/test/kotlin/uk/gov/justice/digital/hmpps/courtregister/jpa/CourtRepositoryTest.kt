@@ -15,14 +15,14 @@ import org.springframework.transaction.annotation.Transactional
 class CourtRepositoryTest {
 
   @Autowired
-  lateinit var courtDetailRepository: CourtDetailRepository
+  lateinit var courtRepository: CourtRepository
 
   @Autowired
   lateinit var courtTypeRepository: CourtTypeRepository
 
   @Test
   fun `should load court data`() {
-    val court = courtDetailRepository.findById("ABRYMC").orElseThrow()
+    val court = courtRepository.findById("ABRYMC").orElseThrow()
 
     with(court) {
       assertThat(id).isEqualTo("ABRYMC")
@@ -40,12 +40,12 @@ class CourtRepositoryTest {
 
     court.buildings += Building(court = court, subCode = null, street = null, buildingName = "Annex", locality = null, town = null, postcode = null, county = null, country = "UK")
 
-    val id = courtDetailRepository.save(court).id
+    val id = courtRepository.save(court).id
 
     TestTransaction.flagForCommit()
     TestTransaction.end()
 
-    val savedCourt = courtDetailRepository.findById(id).get()
+    val savedCourt = courtRepository.findById(id).get()
 
     with(savedCourt) {
       assertThat(id).isEqualTo("SHFCRT")

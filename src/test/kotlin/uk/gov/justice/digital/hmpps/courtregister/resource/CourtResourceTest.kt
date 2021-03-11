@@ -16,7 +16,7 @@ import org.springframework.http.MediaType
 import org.springframework.web.reactive.function.BodyInserters
 import uk.gov.justice.digital.hmpps.courtregister.helper.JwtAuthHelper
 import uk.gov.justice.digital.hmpps.courtregister.jpa.Court
-import uk.gov.justice.digital.hmpps.courtregister.jpa.CourtDetailRepository
+import uk.gov.justice.digital.hmpps.courtregister.jpa.CourtRepository
 import uk.gov.justice.digital.hmpps.courtregister.jpa.CourtType
 import uk.gov.justice.digital.hmpps.courtregister.jpa.CourtTypeRepository
 import java.time.Instant
@@ -27,7 +27,7 @@ import java.util.Optional
 
 class CourtResourceTest : IntegrationTest() {
   @MockBean
-  private lateinit var courtRepository: CourtDetailRepository
+  private lateinit var courtRepository: CourtRepository
 
   @MockBean
   private lateinit var courtTypeRepository: CourtTypeRepository

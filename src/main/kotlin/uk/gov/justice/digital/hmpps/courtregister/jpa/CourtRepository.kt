@@ -14,7 +14,7 @@ import javax.persistence.ManyToOne
 import javax.persistence.OneToMany
 
 @Repository
-interface CourtDetailRepository : CrudRepository<Court, String> {
+interface CourtRepository : CrudRepository<Court, String> {
   fun findByActiveOrderById(active: Boolean): List<Court>
 }
 

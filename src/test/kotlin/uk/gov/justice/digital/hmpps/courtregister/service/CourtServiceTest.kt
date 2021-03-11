@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.mockito.ArgumentMatchers.anyString
 import uk.gov.justice.digital.hmpps.courtregister.jpa.Court
-import uk.gov.justice.digital.hmpps.courtregister.jpa.CourtDetailRepository
+import uk.gov.justice.digital.hmpps.courtregister.jpa.CourtRepository
 import uk.gov.justice.digital.hmpps.courtregister.jpa.CourtType
 import uk.gov.justice.digital.hmpps.courtregister.jpa.CourtTypeRepository
 import uk.gov.justice.digital.hmpps.courtregister.resource.CourtDto
@@ -20,7 +20,7 @@ import javax.persistence.EntityExistsException
 import javax.persistence.EntityNotFoundException
 
 class CourtServiceTest {
-  private val courtRepository: CourtDetailRepository = mock()
+  private val courtRepository: CourtRepository = mock()
   private val courtTypeRepository: CourtTypeRepository = mock()
   private val courtService = CourtService(courtRepository, courtTypeRepository)
 

@@ -2,7 +2,7 @@ package uk.gov.justice.digital.hmpps.courtregister.service
 
 import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.courtregister.jpa.Court
-import uk.gov.justice.digital.hmpps.courtregister.jpa.CourtDetailRepository
+import uk.gov.justice.digital.hmpps.courtregister.jpa.CourtRepository
 import uk.gov.justice.digital.hmpps.courtregister.jpa.CourtTypeRepository
 import uk.gov.justice.digital.hmpps.courtregister.resource.CourtDto
 import uk.gov.justice.digital.hmpps.courtregister.resource.CourtTypeDto
@@ -14,7 +14,7 @@ import javax.transaction.Transactional
 @Service
 @Transactional
 class CourtService(
-  private val courtRepository: CourtDetailRepository,
+  private val courtRepository: CourtRepository,
   private val courtTypeRepository: CourtTypeRepository
 ) {
   fun findById(courtId: String): CourtDto {
