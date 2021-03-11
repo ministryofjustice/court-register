@@ -25,7 +25,7 @@ data class Building(
   val id: Long? = null,
   @ManyToOne(optional = false, fetch = FetchType.LAZY)
   @JoinColumn(name = "COURT_CODE")
-  val court: CourtDetail,
+  val court: Court,
   val subCode: String?,
   val buildingName: String?,
   val street: String?,

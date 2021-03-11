@@ -8,8 +8,6 @@ import org.springframework.boot.test.context.SpringBootTest.WebEnvironment
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.transaction.TestTransaction
 import org.springframework.transaction.annotation.Transactional
-import uk.gov.justice.digital.hmpps.courtregister.jpa.Court.CourtType.CROWN
-import uk.gov.justice.digital.hmpps.courtregister.jpa.Court.CourtType.OTHER
 
 @ActiveProfiles("test")
 @SpringBootTest(webEnvironment = WebEnvironment.MOCK)
@@ -17,42 +15,43 @@ import uk.gov.justice.digital.hmpps.courtregister.jpa.Court.CourtType.OTHER
 class CourtRepositoryTest {
 
   @Autowired
-  lateinit var courtRepository: CourtRepository
+  lateinit var courtDetailRepository: CourtDetailRepository
+
+  @Autowired
+  lateinit var courtTypeRepository: CourtTypeRepository
 
   @Test
-  fun `should insert court`() {
-    val court = Court("SHFCRT", "Sheffield Court", "A Court in Sheffield", CROWN, true)
+  fun `should load court data`() {
+    val court = courtDetailRepository.findById("ABRYMC").orElseThrow()
 
-    val id = courtRepository.save(court).id
-
-    TestTransaction.flagForCommit()
-    TestTransaction.end()
-
-    val savedCourt = courtRepository.findById(id).get()
-
-    with(savedCourt) {
-      assertThat(id).isEqualTo("SHFCRT")
-      assertThat(courtName).isEqualTo("Sheffield Court")
-      assertThat(courtType).isEqualTo(CROWN)
-      assertThat(active).isEqualTo(true)
+    with(court) {
+      assertThat(id).isEqualTo("ABRYMC")
+      assertThat(courtTypeType.description).isEqualTo("Magistrates Court")
+      assertThat(buildings[0].buildingName).isEqualTo("Swyddfa'r Sir")
+      assertThat(buildings[0].contacts[0].detail).isEqualTo("01633 645000")
     }
   }
 
   @Test
-  fun `should find court by name`() {
-    val court = courtRepository.findById("SHEFCC")
-    assertThat(court).get().isEqualTo(Court("SHEFCC", "Sheffield Crown Court", null, OTHER, true))
-  }
+  fun `should insert court`() {
+    val crownCourtType = courtTypeRepository.findById("CRN").orElseThrow()
 
-  @Test
-  fun `should get active courts`() {
-    val activeCourts = courtRepository.findByActiveOrderById(true)
-    assertThat(activeCourts).hasSizeGreaterThan(100).allMatch { it.active }
+    val court = Court("SHFCRT", "Sheffield Court", "A Court in Sheffield", crownCourtType, true)
 
-    val inActiveCourts = courtRepository.findByActiveOrderById(false)
-    assertThat(inActiveCourts).hasSizeGreaterThan(40).allMatch { !it.active }
+    court.buildings += Building(court = court, subCode = null, street = null, buildingName = "Annex", locality = null, town = null, postcode = null, county = null, country = "UK")
 
-    val allCourts = courtRepository.findAll()
-    assertThat(allCourts).hasSize(activeCourts.size + inActiveCourts.size)
+    val id = courtDetailRepository.save(court).id
+
+    TestTransaction.flagForCommit()
+    TestTransaction.end()
+
+    val savedCourt = courtDetailRepository.findById(id).get()
+
+    with(savedCourt) {
+      assertThat(id).isEqualTo("SHFCRT")
+      assertThat(courtName).isEqualTo("Sheffield Court")
+      assertThat(courtTypeType).isEqualTo(crownCourtType)
+      assertThat(active).isEqualTo(true)
+    }
   }
 }
