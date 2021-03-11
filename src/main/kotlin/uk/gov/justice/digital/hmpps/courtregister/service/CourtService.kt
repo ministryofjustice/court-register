@@ -2,8 +2,8 @@ package uk.gov.justice.digital.hmpps.courtregister.service
 
 import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.courtregister.jpa.Court
-import uk.gov.justice.digital.hmpps.courtregister.jpa.Court.CourtType
 import uk.gov.justice.digital.hmpps.courtregister.jpa.CourtRepository
+import uk.gov.justice.digital.hmpps.courtregister.jpa.CourtTypeRepository
 import uk.gov.justice.digital.hmpps.courtregister.resource.CourtDto
 import uk.gov.justice.digital.hmpps.courtregister.resource.CourtTypeDto
 import uk.gov.justice.digital.hmpps.courtregister.resource.UpdateCourtDto
@@ -13,7 +13,10 @@ import javax.transaction.Transactional
 
 @Service
 @Transactional
-class CourtService(private val courtRepository: CourtRepository) {
+class CourtService(
+  private val courtRepository: CourtRepository,
+  private val courtTypeRepository: CourtTypeRepository
+) {
   fun findById(courtId: String): CourtDto {
     val court = courtRepository.findById(courtId)
       .orElseThrow { EntityNotFoundException("Court $courtId not found") }
@@ -34,7 +37,7 @@ class CourtService(private val courtRepository: CourtRepository) {
     with(courtUpdateRecord) {
       court.courtName = courtName
       court.courtDescription = courtDescription
-      court.courtType = courtType
+      court.courtType = courtTypeRepository.findById(courtType).orElseThrow()
       court.active = active
     }
     return CourtDto(court)
@@ -46,13 +49,13 @@ class CourtService(private val courtRepository: CourtRepository) {
     }
 
     with(courtInsertRecord) {
-      val court = Court(courtId, courtName, courtDescription, courtType, active)
+      val court = Court(courtId, courtName, courtDescription, courtTypeRepository.findById(courtType).orElseThrow(), active)
       courtRepository.save(court)
       return CourtDto(court)
     }
   }
 
   fun getCourtTypes(): List<CourtTypeDto> {
-    return CourtType.values().map { CourtTypeDto(it) }
+    return courtTypeRepository.findAll().map { CourtTypeDto(it) }
   }
 }

@@ -19,7 +19,6 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.bind.annotation.RestController
 import uk.gov.justice.digital.hmpps.courtregister.ErrorResponse
-import uk.gov.justice.digital.hmpps.courtregister.jpa.Court.CourtType
 import uk.gov.justice.digital.hmpps.courtregister.service.AuditService
 import uk.gov.justice.digital.hmpps.courtregister.service.CourtService
 import uk.gov.justice.digital.hmpps.courtregister.service.EventType.COURT_REGISTER_INSERT
@@ -168,6 +167,6 @@ data class UpdateCourtDto(
     min = 2,
     message = "Court name must be between 2 and 200"
   ) val courtDescription: String?,
-  @Schema(description = "Type of court", example = "CROWN", required = true) val courtType: CourtType,
+  @Schema(description = "Type of court", example = "CROWN", required = true) val courtType: String,
   @Schema(description = "Whether the court is still active", required = true) val active: Boolean
 )

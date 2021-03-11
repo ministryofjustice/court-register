@@ -1,12 +1,17 @@
 package uk.gov.justice.digital.hmpps.courtregister.jpa
 
+import org.springframework.data.annotation.CreatedDate
+import org.springframework.data.annotation.LastModifiedDate
 import org.springframework.data.repository.CrudRepository
 import org.springframework.stereotype.Repository
-import uk.gov.justice.digital.hmpps.courtregister.jpa.Court.CourtType.OTHER
+import java.time.LocalDateTime
+import javax.persistence.CascadeType
 import javax.persistence.Entity
-import javax.persistence.EnumType.STRING
-import javax.persistence.Enumerated
+import javax.persistence.FetchType
 import javax.persistence.Id
+import javax.persistence.JoinColumn
+import javax.persistence.ManyToOne
+import javax.persistence.OneToMany
 
 @Repository
 interface CourtRepository : CrudRepository<Court, String> {
@@ -19,23 +24,15 @@ data class Court(
   val id: String,
   var courtName: String,
   var courtDescription: String?,
-  @Enumerated(STRING)
-  var courtType: CourtType = OTHER,
-  var active: Boolean
-) {
-  enum class CourtType(val label: String) {
-    MAGISTRATES("Magistrates Court"),
-    CROWN("Crown Court"),
-    COUNTY("County Court"),
-    YOUTH("Youth Court"),
-    OTHER("Other"),
-    SHERRIFS_SCOTTISH("Sherrifs Court (Scottish)"),
-    DISTRICT_SCOTTISH("District Court (Scottish)"),
-    HIGH_COURT_SCOTTISH("High Court (Scottish)"),
-    ASYLUM_IMMIGRATION("Asylum and Immigration Tribunal"),
-    IMMIGRATION("Immigration"),
-    COURTS_MARTIAL("Courts Martial"),
-    OUTSIDE_ENG_WALES("Outside England and Wales"),
-    APPEAL("Court of Appeal")
-  }
-}
+  @ManyToOne(optional = false, fetch = FetchType.LAZY)
+  @JoinColumn(name = "TYPE", nullable = false)
+  var courtType: CourtType,
+  var active: Boolean,
+  @CreatedDate
+  var createdDatetime: LocalDateTime = LocalDateTime.now(),
+  @LastModifiedDate
+  var lastUpdatedDatetime: LocalDateTime = LocalDateTime.now(),
+
+  @OneToMany(cascade = [CascadeType.ALL], mappedBy = "court")
+  var buildings: List<Building> = listOf()
+)
