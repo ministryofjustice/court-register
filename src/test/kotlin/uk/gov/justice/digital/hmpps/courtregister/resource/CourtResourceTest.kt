@@ -73,6 +73,13 @@ class CourtResourceTest : IntegrationTest() {
 
     @Test
     fun `find courts types`() {
+      whenever(courtTypeRepository.findAll()).thenReturn(
+        listOf(
+          CourtType("CROWN", "Crown Court"),
+          CourtType("YOUTH", "Youth Court"),
+        )
+      )
+
       webTestClient.get().uri("/courts/types")
         .exchange()
         .expectStatus().isOk

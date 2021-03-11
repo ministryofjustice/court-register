@@ -1,54 +1,10 @@
 [
   {
-    "courtType": "CMT",
-    "courtName": "Court Martial"
-  },
-  {
-    "courtType": "COA",
-    "courtName": "Court of Appeal"
-  },
-  {
-    "courtType": "COU",
-    "courtName": "County Court/County Divorce Ct"
-  },
-  {
-    "courtType": "CRN",
+    "courtType": "CROWN",
     "courtName": "Crown Court"
   },
   {
-    "courtType": "DIS",
-    "courtName": "District Court (Scottish)"
-  },
-  {
-    "courtType": "HGH",
-    "courtName": "High Court (Scottish)"
-  },
-  {
-    "courtType": "MAG",
-    "courtName": "Magistrates Court"
-  },
-  {
-    "courtType": "OEW",
-    "courtName": "Court Outside England/Wales"
-  },
-  {
-    "courtType": "SHF",
-    "courtName": "Sherriff's Court (Scottish)"
-  },
-  {
-    "courtType": "YTH",
+    "courtType": "YOUTH",
     "courtName": "Youth Court"
-  },
-  {
-    "courtType": "COM",
-    "courtName": "Community"
-  },
-  {
-    "courtType": "IMM",
-    "courtName": "Immigration Court"
-  },
-  {
-    "courtType": "OTH",
-    "courtName": "Other Court"
   }
 ]
