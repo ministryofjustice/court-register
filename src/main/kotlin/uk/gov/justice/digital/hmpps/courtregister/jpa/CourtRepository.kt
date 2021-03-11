@@ -26,7 +26,7 @@ data class Court(
   var courtDescription: String?,
   @ManyToOne(optional = false, fetch = FetchType.LAZY)
   @JoinColumn(name = "TYPE", nullable = false)
-  var courtTypeType: CourtType,
+  var courtType: CourtType,
   var active: Boolean,
   @CreatedDate
   var createdDatetime: LocalDateTime = LocalDateTime.now(),

@@ -37,7 +37,7 @@ class CourtService(
     with(courtUpdateRecord) {
       court.courtName = courtName
       court.courtDescription = courtDescription
-      court.courtTypeType = courtTypeRepository.findById(courtType).orElseThrow()
+      court.courtType = courtTypeRepository.findById(courtType).orElseThrow()
       court.active = active
     }
     return CourtDto(court)

@@ -14,14 +14,15 @@ import uk.gov.justice.digital.hmpps.courtregister.jpa.CourtType
 import uk.gov.justice.digital.hmpps.courtregister.jpa.CourtTypeRepository
 import uk.gov.justice.digital.hmpps.courtregister.resource.CourtDto
 import uk.gov.justice.digital.hmpps.courtregister.resource.UpdateCourtDto
+import java.time.LocalDateTime.now
 import java.util.Optional
 import javax.persistence.EntityExistsException
 import javax.persistence.EntityNotFoundException
 
 class CourtServiceTest {
   private val courtRepository: CourtDetailRepository = mock()
-  private val courtTypeTypeRepository: CourtTypeRepository = mock()
-  private val courtService = CourtService(courtRepository, courtTypeTypeRepository)
+  private val courtTypeRepository: CourtTypeRepository = mock()
+  private val courtService = CourtService(courtRepository, courtTypeRepository)
 
   @Suppress("ClassName")
   @Nested
@@ -91,6 +92,7 @@ class CourtServiceTest {
       whenever(courtRepository.findById("ACCRYC")).thenReturn(
         Optional.of(Court("ACCRYC", "A Court 1", null, CourtType("CROWN", "Crown Court"), true))
       )
+      whenever(courtTypeRepository.findById("CROWN")).thenReturn(Optional.of(CourtType("CROWN", "Crown Court")))
       val updatedCourt =
         courtService.updateCourt("ACCRYC", UpdateCourtDto("A Court 1", "add description", "CROWN", true))
       assertThat(updatedCourt).isEqualTo(
@@ -116,17 +118,19 @@ class CourtServiceTest {
       whenever(courtRepository.findById("ACCRYZ")).thenReturn(
         Optional.empty()
       )
+      val createdDatetime = now()
       val courtToSave = Court("ACCRYZ", "A Court 4", "new court", CourtType("CROWN", "Crown Court"), true)
       whenever(courtRepository.save(courtToSave)).thenReturn(
         courtToSave
       )
+      whenever(courtTypeRepository.findById("CROWN")).thenReturn(Optional.of(CourtType("CROWN", "Crown Court")))
       val courtInsertRecord = CourtDto("ACCRYZ", "A Court 4", "new court", "CROWN", true)
       val updatedCourt = courtService.insertCourt(courtInsertRecord)
       assertThat(updatedCourt).isEqualTo(
         courtInsertRecord
       )
       verify(courtRepository).findById("ACCRYZ")
-      verify(courtRepository).save(courtToSave)
+      verify(courtTypeRepository).findById("CROWN")
     }
 
     @Test

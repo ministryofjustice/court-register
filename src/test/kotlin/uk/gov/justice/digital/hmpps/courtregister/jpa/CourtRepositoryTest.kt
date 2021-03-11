@@ -26,7 +26,7 @@ class CourtRepositoryTest {
 
     with(court) {
       assertThat(id).isEqualTo("ABRYMC")
-      assertThat(courtTypeType.description).isEqualTo("Magistrates Court")
+      assertThat(courtType.description).isEqualTo("Magistrates Court")
       assertThat(buildings[0].buildingName).isEqualTo("Swyddfa'r Sir")
       assertThat(buildings[0].contacts[0].detail).isEqualTo("01633 645000")
     }
@@ -50,7 +50,7 @@ class CourtRepositoryTest {
     with(savedCourt) {
       assertThat(id).isEqualTo("SHFCRT")
       assertThat(courtName).isEqualTo("Sheffield Court")
-      assertThat(courtTypeType).isEqualTo(crownCourtType)
+      assertThat(courtType).isEqualTo(crownCourtType)
       assertThat(active).isEqualTo(true)
     }
   }
