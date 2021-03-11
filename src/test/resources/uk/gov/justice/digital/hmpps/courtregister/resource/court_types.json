@@ -1,54 +1,54 @@
 [
   {
+    "courtType": "CMT",
+    "courtName": "Court Martial"
+  },
+  {
+    "courtType": "COA",
+    "courtName": "Court of Appeal"
+  },
+  {
+    "courtType": "COU",
+    "courtName": "County Court/County Divorce Ct"
+  },
+  {
+    "courtType": "CRN",
+    "courtName": "Crown Court"
+  },
+  {
+    "courtType": "DIS",
+    "courtName": "District Court (Scottish)"
+  },
+  {
+    "courtType": "HGH",
+    "courtName": "High Court (Scottish)"
+  },
+  {
     "courtType": "MAG",
     "courtName": "Magistrates Court"
   },
   {
-    "courtType": "CROWN",
-    "courtName": "Crown Court"
+    "courtType": "OEW",
+    "courtName": "Court Outside England/Wales"
   },
   {
-    "courtType": "COUNTY",
-    "courtName": "County Court"
+    "courtType": "SHF",
+    "courtName": "Sherriff's Court (Scottish)"
   },
   {
-    "courtType": "YOUTH",
+    "courtType": "YTH",
     "courtName": "Youth Court"
   },
   {
-    "courtType": "OTHER",
-    "courtName": "Other"
+    "courtType": "COM",
+    "courtName": "Community"
   },
   {
-    "courtType": "SHERRIFS_SCOTTISH",
-    "courtName": "Sherrifs Court (Scottish)"
+    "courtType": "IMM",
+    "courtName": "Immigration Court"
   },
   {
-    "courtType": "DISTRICT_SCOTTISH",
-    "courtName": "District Court (Scottish)"
-  },
-  {
-    "courtType": "HIGH_COURT_SCOTTISH",
-    "courtName": "High Court (Scottish)"
-  },
-  {
-    "courtType": "ASYLUM_IMMIGRATION",
-    "courtName": "Asylum and Immigration Tribunal"
-  },
-  {
-    "courtType": "IMMIGRATION",
-    "courtName": "Immigration"
-  },
-  {
-    "courtType": "COURTS_MARTIAL",
-    "courtName": "Courts Martial"
-  },
-  {
-    "courtType": "OUTSIDE_ENG_WALES",
-    "courtName": "Outside England and Wales"
-  },
-  {
-    "courtType": "APPEAL",
-    "courtName": "Court of Appeal"
+    "courtType": "OTH",
+    "courtName": "Other Court"
   }
 ]

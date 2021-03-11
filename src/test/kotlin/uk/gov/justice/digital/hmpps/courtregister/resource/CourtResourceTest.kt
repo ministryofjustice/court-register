@@ -18,6 +18,7 @@ import uk.gov.justice.digital.hmpps.courtregister.helper.JwtAuthHelper
 import uk.gov.justice.digital.hmpps.courtregister.jpa.Court
 import uk.gov.justice.digital.hmpps.courtregister.jpa.CourtDetailRepository
 import uk.gov.justice.digital.hmpps.courtregister.jpa.CourtType
+import uk.gov.justice.digital.hmpps.courtregister.jpa.CourtTypeRepository
 import java.time.Instant
 import java.time.LocalDateTime
 import java.time.ZoneOffset
@@ -27,6 +28,9 @@ import java.util.Optional
 class CourtResourceTest : IntegrationTest() {
   @MockBean
   private lateinit var courtRepository: CourtDetailRepository
+
+  @MockBean
+  private lateinit var courtTypeRepository: CourtTypeRepository
 
   @Autowired
   protected lateinit var jwtAuthHelper: JwtAuthHelper
@@ -111,7 +115,7 @@ class CourtResourceTest : IntegrationTest() {
       whenever(courtRepository.findById("ACCRYC")).thenReturn(
         Optional.of(Court("ACCRYC", "A Court 1", null, CourtType("YOUTH", "Youth Court"), true))
       )
-
+      whenever(courtTypeRepository.findById("YOUTH")).thenReturn(Optional.of(CourtType("YOUTH", "Youth Court")))
       webTestClient.put()
         .uri("/court-maintenance/id/ACCRYC")
         .accept(MediaType.APPLICATION_JSON)
@@ -164,7 +168,7 @@ class CourtResourceTest : IntegrationTest() {
       whenever(courtRepository.findById("ACCRYD")).thenReturn(
         Optional.empty()
       )
-
+      whenever(courtTypeRepository.findById("YOUTH")).thenReturn(Optional.of(CourtType("YOUTH", "Youth Court")))
       webTestClient.post()
         .uri("/court-maintenance")
         .accept(MediaType.APPLICATION_JSON)
