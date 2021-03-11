@@ -45,7 +45,7 @@ class CourtServiceTest {
       val listOfCourts = listOf(
         Court("ACCRYC", "A Court 1", null, CourtType("CROWN", "Crown Court"), true),
         Court("ACCRYV", "A Court 2", null, CourtType("COUNTY", "County Court"), true),
-        Court("ACCRYT", "A Court 3", null, CourtType("Other", "Other Type Court"), true)
+        Court("ACCRYT", "A Court 3", null, CourtType("OTHER", "Other Type Court"), true)
       )
       whenever(courtRepository.findByActiveOrderById(true)).thenReturn(
         listOfCourts
@@ -66,7 +66,7 @@ class CourtServiceTest {
       val listOfCourts = listOf(
         Court("ACCRYC", "A Court 1", null, CourtType("CROWN", "Crown Court"), true),
         Court("ACCRYV", "A Court 2", null, CourtType("COUNTY", "County Court"), true),
-        Court("ACCRYT", "A Court 3", null, CourtType("Other", "Other Type Court"), false)
+        Court("ACCRYT", "A Court 3", null, CourtType("OTHER", "Other Type Court"), false)
       )
       whenever(courtRepository.findAll()).thenReturn(
         listOfCourts
