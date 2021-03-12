@@ -49,7 +49,7 @@ class CourtService(
     }
 
     with(courtInsertRecord) {
-      val court = Court(courtId, courtName, courtDescription, courtTypeRepository.findById(courtType).orElseThrow(), active)
+      val court = Court(courtId, courtName, courtDescription, courtTypeRepository.findById(courtType).orElseThrow(), active, null, null)
       courtRepository.save(court)
       return CourtDto(court)
     }

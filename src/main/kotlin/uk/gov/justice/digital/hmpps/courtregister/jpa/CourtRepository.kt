@@ -29,9 +29,9 @@ data class Court(
   var courtType: CourtType,
   var active: Boolean,
   @CreatedDate
-  var createdDatetime: LocalDateTime = LocalDateTime.now(),
+  var createdDatetime: LocalDateTime?,
   @LastModifiedDate
-  var lastUpdatedDatetime: LocalDateTime = LocalDateTime.now(),
+  var lastUpdatedDatetime: LocalDateTime?,
 
   @OneToMany(cascade = [CascadeType.ALL], mappedBy = "court")
   var buildings: List<Building> = listOf()

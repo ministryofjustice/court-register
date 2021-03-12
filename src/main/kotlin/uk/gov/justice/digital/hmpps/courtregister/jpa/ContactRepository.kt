@@ -25,7 +25,7 @@ data class Contact(
   val type: String,
   val detail: String?,
   @CreatedDate
-  var createdDatetime: LocalDateTime = LocalDateTime.now(),
+  var createdDatetime: LocalDateTime?,
   @LastModifiedDate
-  var lastUpdatedDatetime: LocalDateTime = LocalDateTime.now()
+  var lastUpdatedDatetime: LocalDateTime?
 )

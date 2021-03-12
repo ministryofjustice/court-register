@@ -35,9 +35,9 @@ data class Building(
   val postcode: String?,
   val country: String?,
   @CreatedDate
-  var createdDatetime: LocalDateTime = LocalDateTime.now(),
+  var createdDatetime: LocalDateTime?,
   @LastModifiedDate
-  var lastUpdatedDatetime: LocalDateTime = LocalDateTime.now(),
+  var lastUpdatedDatetime: LocalDateTime?,
 
   @OneToMany(cascade = [CascadeType.ALL], mappedBy = "building")
   var contacts: List<Contact> = listOf()
