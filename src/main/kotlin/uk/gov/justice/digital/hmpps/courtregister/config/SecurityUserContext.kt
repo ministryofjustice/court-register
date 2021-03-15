@@ -14,5 +14,11 @@ class SecurityUserContext {
     }
 
   val principal: String
-    get() = authentication?.principal!!
+    get() {
+      return if (authentication?.principal != null) {
+        authentication?.principal!!
+      } else {
+        "anonymous"
+      }
+    }
 }

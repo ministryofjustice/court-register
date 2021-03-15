@@ -121,15 +121,16 @@ data class CourtDto(
   @Schema(description = "Court ID", example = "ACCRYC", required = true) @field:Size(max = 12, min = 2, message = "Court ID must be between 2 and 12") @NotBlank val courtId: String,
   @Schema(description = "Name of the court", example = "Accrington Youth Court", required = true) @field:Size(max = 80, min = 2, message = "Court name must be between 2 and 80") @NotBlank val courtName: String,
   @Schema(description = "Description of the court", example = "Accrington Youth Court", required = false) @field:Size(max = 200, min = 2, message = "Court name must be between 2 and 200") val courtDescription: String?,
-  @Schema(description = "Type of court", example = "CROWN", required = true) val courtType: String,
   @Schema(description = "Type of court with description", required = true) val type: CourtTypeDto,
   @Schema(description = "Whether the court is still active", required = true) val active: Boolean,
-  @Schema(description = "List of buildings for this court entity") val buildings: List<BuildingDto>
+  @Schema(description = "List of buildings for this court entity") val buildings: List<BuildingDto>? = listOf()
 ) {
   constructor(court: Court) : this(
-    court.id, court.courtName, court.courtDescription, court.courtType.id, CourtTypeDto(court.courtType), court.active,
-    court.buildings.map { BuildingDto(it) }
+    court.id, court.courtName, court.courtDescription, CourtTypeDto(court.courtType), court.active,
+    court.buildings?.map { BuildingDto(it) }
   )
+
+  fun courtType(): String = type.courtType
 }
 
 @JsonInclude(NON_NULL)
@@ -153,11 +154,11 @@ data class BuildingDto(
   @Schema(description = "County", example = "South Glamorgan") val county: String?,
   @Schema(description = "Postcode", example = "SA3 4HT") val postcode: String?,
   @Schema(description = "Country", example = "UK") val country: String?,
-  @Schema(description = "List of contacts for this building by type") val contacts: List<ContactDto>
+  @Schema(description = "List of contacts for this building by type") val contacts: List<ContactDto>? = listOf()
 ) {
   constructor(building: Building) : this(
     building.id!!, building.subCode, building.buildingName, building.street, building.locality,
-    building.town, building.county, building.postcode, building.country, building.contacts.map { ContactDto(it) }
+    building.town, building.county, building.postcode, building.country, building.contacts?.map { ContactDto(it) }
   )
 }
 
@@ -168,5 +169,5 @@ data class ContactDto(
   @Schema(description = "Type of contact", example = "TEL", required = true, allowableValues = [ "TEL", "FAX"]) val type: String,
   @Schema(description = "Details of the contact", example = "555 55555", required = true) val detail: String?,
 ) {
-  constructor(contact: Contact) : this(contact.id, contact.type, contact.detail)
+  constructor(contact: Contact) : this(contact.id!!, contact.type, contact.detail)
 }

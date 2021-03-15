@@ -2,11 +2,13 @@ package uk.gov.justice.digital.hmpps.courtregister.jpa
 
 import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.annotation.LastModifiedDate
+import org.springframework.data.jpa.domain.support.AuditingEntityListener
 import org.springframework.data.repository.CrudRepository
 import org.springframework.stereotype.Repository
 import java.time.LocalDateTime
 import javax.persistence.CascadeType
 import javax.persistence.Entity
+import javax.persistence.EntityListeners
 import javax.persistence.FetchType
 import javax.persistence.GeneratedValue
 import javax.persistence.GenerationType
@@ -19,27 +21,31 @@ import javax.persistence.OneToMany
 interface BuildingRepository : CrudRepository<Building, Long>
 
 @Entity
+@EntityListeners(AuditingEntityListener::class)
 data class Building(
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   val id: Long? = null,
+
   @ManyToOne(optional = false, fetch = FetchType.LAZY)
   @JoinColumn(name = "COURT_CODE")
-  val court: Court,
-  val subCode: String?,
-  val buildingName: String?,
-  val street: String?,
-  val locality: String?,
-  val town: String?,
-  val county: String?,
-  val postcode: String?,
-  val country: String?,
+  var court: Court,
+
+  var subCode: String?,
+  var buildingName: String?,
+  var street: String?,
+  var locality: String?,
+  var town: String?,
+  var county: String?,
+  var postcode: String?,
+  var country: String?,
+
   @CreatedDate
-  var createdDatetime: LocalDateTime?,
+  var createdDatetime: LocalDateTime = LocalDateTime.MIN,
   @LastModifiedDate
-  var lastUpdatedDatetime: LocalDateTime?,
+  var lastUpdatedDatetime: LocalDateTime = LocalDateTime.MIN,
 
   @OneToMany(cascade = [CascadeType.ALL], mappedBy = "building")
-  var contacts: List<Contact> = listOf()
+  val contacts: MutableList<Contact>? = mutableListOf()
 
 )

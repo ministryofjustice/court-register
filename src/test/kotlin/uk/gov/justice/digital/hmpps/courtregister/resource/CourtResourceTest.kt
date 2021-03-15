@@ -186,7 +186,7 @@ class CourtResourceTest : IntegrationTest() {
             user = "bobby.beans"
           )
         )
-        .body(BodyInserters.fromValue(CourtDto("ACCRYD", "A New Court", "a description", "YOUTH", true)))
+        .body(BodyInserters.fromValue(CourtDto("ACCRYD", "A New Court", "a description", CourtTypeDto("YOUTH", "Youth Court"), true)))
         .exchange()
         .expectStatus().isCreated
         .expectBody().json("inserted_court".loadJson())
@@ -209,7 +209,7 @@ class CourtResourceTest : IntegrationTest() {
         .uri("/court-maintenance")
         .accept(MediaType.APPLICATION_JSON)
         .headers(setAuthorisation(roles = listOf("ROLE_MAINTAIN_REF_DATA"), scopes = listOf("write")))
-        .body(BodyInserters.fromValue(CourtDto("R", "A New Court", "a description", "YOUTH", true)))
+        .body(BodyInserters.fromValue(CourtDto("R", "A New Court", "a description", CourtTypeDto("YOUTH", "Youth Court"), true)))
         .exchange()
         .expectStatus().isBadRequest
     }
