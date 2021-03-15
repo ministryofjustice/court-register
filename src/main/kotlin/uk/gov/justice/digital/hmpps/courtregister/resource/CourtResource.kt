@@ -2,6 +2,7 @@ package uk.gov.justice.digital.hmpps.courtregister.resource
 
 import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL
+import com.fasterxml.jackson.annotation.JsonProperty
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.media.ArraySchema
 import io.swagger.v3.oas.annotations.media.Content
@@ -130,14 +131,16 @@ data class CourtDto(
     court.buildings?.map { BuildingDto(it) }
   )
 
+  @JsonProperty
+  @Schema(description = "Type of court", example = "COU")
   fun courtType(): String = type.courtType
 }
 
 @JsonInclude(NON_NULL)
 @Schema(description = "Court Type")
 data class CourtTypeDto(
-  @Schema(description = "Type of court", example = "CROWN", required = true) val courtType: String,
-  @Schema(description = "Description of the type of court", example = "Crown Court", required = true) @NotBlank val courtName: String
+  @Schema(description = "Type of court", example = "COU", required = true) val courtType: String,
+  @Schema(description = "Description of the type of court", example = "County Court/County Divorce Ct", required = true) @NotBlank val courtName: String
 ) {
   constructor(courtType: CourtType) : this(courtType.id, courtType.description)
 }
