@@ -2,5 +2,9 @@
   "courtId": "ACCRYC",
   "courtName": "Accrington Youth Court",
   "courtType": "YOUTH",
+  "type": {
+    "courtType": "YOUTH",
+    "courtName": "Youth Court"
+  },
   "active": true
 }

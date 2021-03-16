@@ -6,6 +6,7 @@ import uk.gov.justice.digital.hmpps.courtregister.jpa.CourtRepository
 import uk.gov.justice.digital.hmpps.courtregister.jpa.CourtTypeRepository
 import uk.gov.justice.digital.hmpps.courtregister.resource.CourtDto
 import uk.gov.justice.digital.hmpps.courtregister.resource.CourtTypeDto
+import uk.gov.justice.digital.hmpps.courtregister.resource.InsertCourtDto
 import uk.gov.justice.digital.hmpps.courtregister.resource.UpdateCourtDto
 import javax.persistence.EntityExistsException
 import javax.persistence.EntityNotFoundException
@@ -43,7 +44,7 @@ class CourtService(
     return CourtDto(court)
   }
 
-  fun insertCourt(courtInsertRecord: CourtDto): CourtDto {
+  fun insertCourt(courtInsertRecord: InsertCourtDto): CourtDto {
     if (courtRepository.findById(courtInsertRecord.courtId).isPresent) {
       throw EntityExistsException("Court $courtInsertRecord.courtId already exists")
     }

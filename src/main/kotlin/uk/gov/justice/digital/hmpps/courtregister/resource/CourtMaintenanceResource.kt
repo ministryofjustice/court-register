@@ -141,7 +141,7 @@ class CourtMaintenanceResource(
     ]
   )
   fun insertCourt(
-    @RequestBody @Valid courtInsertRecord: CourtDto
+    @RequestBody @Valid courtInsertRecord: InsertCourtDto
   ): CourtDto {
     val newCourt = courtService.insertCourt(courtInsertRecord)
     snsService.sendEvent(COURT_REGISTER_INSERT, newCourt.courtId)
@@ -153,6 +153,25 @@ class CourtMaintenanceResource(
     return newCourt
   }
 }
+
+@JsonInclude(NON_NULL)
+@Schema(description = "Court Insert Record")
+data class InsertCourtDto(
+  @Schema(description = "Court ID", example = "ACCRYC", required = true)
+  @field:Size(max = 12, min = 2, message = "Court ID must be between 2 and 12") @NotBlank val courtId: String,
+  @Schema(description = "Name of the court", example = "Accrington Youth Court", required = true) @field:Size(
+    max = 80,
+    min = 2,
+    message = "Court name must be between 2 and 80"
+  ) @field:NotBlank(message = "Court ID is required") val courtName: String,
+  @Schema(description = "Description of the court", example = "Accrington Youth Court", required = false) @field:Size(
+    max = 200,
+    min = 2,
+    message = "Court name must be between 2 and 200"
+  ) val courtDescription: String?,
+  @Schema(description = "Type of court", example = "COU", required = true) val courtType: String,
+  @Schema(description = "Whether the court is still active", required = true) val active: Boolean
+)
 
 @JsonInclude(NON_NULL)
 @Schema(description = "Court Update Record")
@@ -167,6 +186,6 @@ data class UpdateCourtDto(
     min = 2,
     message = "Court name must be between 2 and 200"
   ) val courtDescription: String?,
-  @Schema(description = "Type of court", example = "CROWN", required = true) val courtType: String,
+  @Schema(description = "Type of court", example = "COU", required = true) val courtType: String,
   @Schema(description = "Whether the court is still active", required = true) val active: Boolean
 )

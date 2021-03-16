@@ -3,18 +3,30 @@
     "courtId": "ACCRYC",
     "courtName": "Accrington Youth Court",
     "courtType": "YOUTH",
+    "type": {
+      "courtType": "YOUTH",
+      "courtName": "Youth Court"
+    },
     "active": true
   },
   {
     "courtId": "KIDDYC",
     "courtName": "Kidderminster Youth Court",
     "courtType": "YOUTH",
+    "type": {
+      "courtType": "YOUTH",
+      "courtName": "Youth Court"
+    },
     "active": true
   },
   {
     "courtId": "KIDDYE",
     "courtName": "Kidderminster Crown Court",
     "courtType": "CROWN",
+    "type": {
+      "courtType": "CROWN",
+      "courtName": "Crown Court"
+    },
     "active": false
   }
 ]
