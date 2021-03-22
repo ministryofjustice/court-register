@@ -96,7 +96,7 @@ class BuildingContactMaintenanceResource(
   }
 
   @PreAuthorize("hasRole('ROLE_MAINTAIN_REF_DATA') and hasAuthority('SCOPE_write')")
-  @PostMapping("/id/{courtId}/buildings/{buildingId}")
+  @PostMapping("/id/{courtId}/buildings/{buildingId}/contacts")
   @ResponseStatus(HttpStatus.CREATED)
   @Operation(
     summary = "Add a new contact to a building",

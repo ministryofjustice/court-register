@@ -140,12 +140,40 @@ class CourtResource(private val courtService: CourtService, private val building
     ]
   )
   fun getBuildingFromId(
-    @Schema(description = "Court ID", example = "ACCRYC", required = true)
+    @Schema(description = "Court ID", example = "BRMNCC", required = true)
     @PathVariable @Size(max = 12, min = 2, message = "Court ID must be between 2 and 12") courtId: String,
     @Schema(description = "Building ID", example = "234231", required = true)
     @PathVariable buildingId: Long
   ): BuildingDto =
     buildingService.findById(courtId, buildingId)
+
+  @GetMapping("/buildings/sub-code/{subCode}")
+  @Operation(
+    summary = "Get specified building by sub-code",
+    description = "Information on a specific building by sub-code",
+    responses = [
+      ApiResponse(
+        responseCode = "200",
+        description = "Building Information Returned",
+        content = [Content(mediaType = "application/json", schema = Schema(implementation = BuildingDto::class))]
+      ),
+      ApiResponse(
+        responseCode = "400",
+        description = "Incorrect request to get building information",
+        content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))]
+      ),
+      ApiResponse(
+        responseCode = "404",
+        description = "Building SubCode not found",
+        content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))]
+      )
+    ]
+  )
+  fun getBuildingFromSubCode(
+    @Schema(description = "Building Sub Code", example = "BCCACC", required = true)
+    @PathVariable @Size(max = 12, min = 2, message = "Building Sub code must be between 2 and 12") subCode: String
+  ): BuildingDto =
+    buildingService.findBySubCode(subCode)
 
   @GetMapping("/id/{courtId}/buildings/id/{buildingId}/contacts/id/{contactId}")
   @Operation(

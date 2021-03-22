@@ -29,6 +29,30 @@ class BuildingContactService(
     return ContactDto(contact)
   }
 
+  fun insertContact(courtId: String, buildingId: Long, updateContactRecord: UpdateContactDto): ContactDto {
+
+    val building = buildingRepository.findById(buildingId)
+      .orElseThrow { EntityNotFoundException("Building Id $buildingId not found") }
+
+    if (courtId != building.court.id) {
+      throw EntityNotFoundException("Building $buildingId not in court $courtId")
+    }
+
+    val newContact = Contact(
+      type = updateContactRecord.type,
+      detail = updateContactRecord.detail,
+      building = building
+    )
+
+    return ContactDto(contactRepository.save(newContact))
+  }
+
+  fun deleteContact(courtId: String, buildingId: Long, contactId: Long) {
+    val contact = getContact(courtId, buildingId, contactId)
+
+    contactRepository.delete(contact)
+  }
+
   private fun getContact(
     courtId: String,
     buildingId: Long,
@@ -45,29 +69,5 @@ class BuildingContactService(
       throw EntityNotFoundException("Contact $contactId not in court $courtId")
     }
     return contact
-  }
-
-  fun insertContact(courtId: String, buildingId: Long, updateContactRecord: UpdateContactDto): ContactDto {
-
-    val building = buildingRepository.findById(buildingId)
-      .orElseThrow { EntityNotFoundException("Building Id $buildingId not found") }
-
-    if (courtId != building.court.id) {
-      throw EntityNotFoundException("Building $buildingId not in court $courtId")
-    }
-
-    val newContact = Contact(
-      type = updateContactRecord.type,
-      detail = updateContactRecord.detail,
-      building = building
-    )
-    contactRepository.save(newContact)
-    return ContactDto(newContact)
-  }
-
-  fun deleteContact(courtId: String, buildingId: Long, contactId: Long) {
-    val contact = getContact(courtId, buildingId, contactId)
-
-    contactRepository.delete(contact)
   }
 }

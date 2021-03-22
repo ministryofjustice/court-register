@@ -20,6 +20,10 @@ class CourtBuildingService(
     return BuildingDto(getBuilding(buildingId, courtId))
   }
 
+  fun findBySubCode(subCode: String): BuildingDto {
+    return BuildingDto(buildingRepository.findBySubCode(subCode).orElseThrow { EntityNotFoundException("Building subcode $subCode not found") })
+  }
+
   fun updateBuilding(courtId: String, buildingId: Long, updateBuildingRecord: UpdateBuildingDto): BuildingDto {
     val building = getBuilding(buildingId, courtId)
 
@@ -27,7 +31,7 @@ class CourtBuildingService(
       buildingRepository.findBySubCode(subCode = updateBuildingRecord.subCode)
         .ifPresent {
           if (buildingId != it.id) {
-            throw EntityExistsException("Building with this subcode already exists")
+            throw EntityExistsException("Building with this sub-code already exists")
           }
         }
     }
@@ -75,9 +79,7 @@ class CourtBuildingService(
       )
 
       court.buildings?.add(building)
-      buildingRepository.save(building)
-
-      return BuildingDto(building)
+      return BuildingDto(buildingRepository.save(building))
     }
   }
 

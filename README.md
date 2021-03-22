@@ -1,6 +1,6 @@
 # court-register
 
-[![CircleCI](https://circleci.com/gh/ministryofjustice/court-register/tree/master.svg?style=svg)](https://circleci.com/gh/ministryofjustice/court-register)
+[![CircleCI](https://circleci.com/gh/ministryofjustice/court-register/tree/main.svg?style=svg)](https://circleci.com/gh/ministryofjustice/court-register)
 [![API docs](https://img.shields.io/badge/API_docs_-view-85EA2D.svg?logo=swagger)](https://court-register-dev.hmpps.service.justice.gov.uk/swagger-ui.html)
 
 Self-contained fat-jar micro-service to publish court information
