@@ -212,6 +212,7 @@ data class CourtTypeDto(
 @Schema(description = "Building")
 data class BuildingDto(
   @Schema(description = "Unique ID of the building", example = "10000", required = true) val id: Long,
+  @Schema(description = "Court Id for this building", example = "ACCRYC") val courtId: String,
   @Schema(description = "Sub location code for referencing building", example = "AAABBB") val subCode: String?,
   @Schema(description = "Building Name", example = "Crown House") val buildingName: String?,
   @Schema(description = "Street Number and Name", example = "452 West Street") val street: String?,
@@ -223,7 +224,7 @@ data class BuildingDto(
   @Schema(description = "List of contacts for this building by type") val contacts: List<ContactDto>? = listOf()
 ) {
   constructor(building: Building) : this(
-    building.id!!, building.subCode, building.buildingName, building.street, building.locality,
+    building.id!!, building.court.id, building.subCode, building.buildingName, building.street, building.locality,
     building.town, building.county, building.postcode, building.country, building.contacts?.map { ContactDto(it) }
   )
 }
@@ -232,8 +233,10 @@ data class BuildingDto(
 @Schema(description = "Contact")
 data class ContactDto(
   @Schema(description = "Unique ID of the contact", example = "10000", required = true) val id: Long,
+  @Schema(description = "Court Id for this contact", example = "ACCRYC") val courtId: String,
+  @Schema(description = "Building Id for this contact", example = "12312") val buildingId: Long,
   @Schema(description = "Type of contact", example = "TEL", required = true, allowableValues = [ "TEL", "FAX"]) val type: String,
   @Schema(description = "Details of the contact", example = "555 55555", required = true) val detail: String?,
 ) {
-  constructor(contact: Contact) : this(contact.id!!, contact.type, contact.detail)
+  constructor(contact: Contact) : this(contact.id!!, contact.building.court.id, contact.building.id!!, contact.type, contact.detail)
 }

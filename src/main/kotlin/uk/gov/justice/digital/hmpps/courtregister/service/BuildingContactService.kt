@@ -16,11 +16,11 @@ class BuildingContactService(
   private val buildingRepository: BuildingRepository
 ) {
   fun findById(courtId: String, buildingId: Long, contactId: Long): ContactDto {
-    return ContactDto(getContact(contactId, buildingId, courtId))
+    return ContactDto(getContact(courtId, buildingId, contactId))
   }
 
   fun updateContact(courtId: String, buildingId: Long, contactId: Long, updateContactRecord: UpdateContactDto): ContactDto {
-    val contact = getContact(contactId, buildingId, courtId)
+    val contact = getContact(courtId, buildingId, contactId)
 
     with(contact) {
       type = updateContactRecord.type
@@ -30,9 +30,9 @@ class BuildingContactService(
   }
 
   private fun getContact(
-    contactId: Long,
+    courtId: String,
     buildingId: Long,
-    courtId: String
+    contactId: Long
   ): Contact {
     val contact = contactRepository.findById(contactId)
       .orElseThrow { EntityNotFoundException("Contact $contactId not found") }
@@ -65,9 +65,8 @@ class BuildingContactService(
     return ContactDto(newContact)
   }
 
-  fun deleteContact(contactId: Long) {
-    val contact = contactRepository.findById(contactId)
-      .orElseThrow { EntityNotFoundException("Contact Id $contactId not found") }
+  fun deleteContact(courtId: String, buildingId: Long, contactId: Long) {
+    val contact = getContact(courtId, buildingId, contactId)
 
     contactRepository.delete(contact)
   }

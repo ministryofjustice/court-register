@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.validation.annotation.Validated
+import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.PutMapping
@@ -154,6 +155,49 @@ class CourtBuildingMaintenanceResource(
     )
 
     return newBuilding
+  }
+
+  @PreAuthorize("hasRole('ROLE_MAINTAIN_REF_DATA') and hasAuthority('SCOPE_write')")
+  @Operation(
+    summary = "Delete specified building",
+    description = "Deletes building information, role required is MAINTAIN_REF_DATA",
+    security = [SecurityRequirement(name = "MAINTAIN_REF_DATA", scopes = ["write"])],
+    responses = [
+      ApiResponse(
+        responseCode = "200",
+        description = "Building Information Deleted",
+        content = [Content(mediaType = "application/json", schema = Schema(implementation = BuildingDto::class))]
+      ),
+      ApiResponse(
+        responseCode = "401",
+        description = "Unauthorized to access this endpoint",
+        content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))]
+      ),
+      ApiResponse(
+        responseCode = "403",
+        description = "Incorrect permissions to delete building",
+        content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))]
+      ),
+      ApiResponse(
+        responseCode = "404",
+        description = "Building ID not found",
+        content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))]
+      )
+    ]
+  )
+  @DeleteMapping("/id/{courtId}/buildings/{buildingId}")
+  fun deleteBuilding(
+    @Schema(description = "Court ID", example = "ACCRYC", required = true)
+    @PathVariable @Size(max = 12, min = 2, message = "Court ID must be between 2 and 12") courtId: String,
+    @Schema(description = "Building ID", example = "234231", required = true)
+    @PathVariable buildingId: Long
+  ) {
+    buildingService.deleteBuilding(courtId, buildingId)
+    snsService.sendEvent(EventType.COURT_REGISTER_BUILDING_DELETE, courtId)
+    auditService.sendAuditEvent(
+      EventType.COURT_REGISTER_BUILDING_DELETE.name,
+      mapOf("courtId" to courtId, "buildingId" to buildingId)
+    )
   }
 }
 

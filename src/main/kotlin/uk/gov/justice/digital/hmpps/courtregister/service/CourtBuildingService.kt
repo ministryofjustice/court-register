@@ -81,9 +81,8 @@ class CourtBuildingService(
     }
   }
 
-  fun deleteBuilding(buildingId: Long) {
-    val building = buildingRepository.findById(buildingId)
-      .orElseThrow { EntityNotFoundException("Building $buildingId not found") }
+  fun deleteBuilding(courtId: String, buildingId: Long) {
+    val building = getBuilding(buildingId, courtId)
 
     buildingRepository.delete(building)
   }
