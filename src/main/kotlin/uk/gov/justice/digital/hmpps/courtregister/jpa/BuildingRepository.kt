@@ -6,6 +6,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener
 import org.springframework.data.repository.CrudRepository
 import org.springframework.stereotype.Repository
 import java.time.LocalDateTime
+import java.util.Optional
 import javax.persistence.CascadeType
 import javax.persistence.Entity
 import javax.persistence.EntityListeners
@@ -18,7 +19,9 @@ import javax.persistence.ManyToOne
 import javax.persistence.OneToMany
 
 @Repository
-interface BuildingRepository : CrudRepository<Building, Long>
+interface BuildingRepository : CrudRepository<Building, Long> {
+  fun findBySubCode(subCode: String): Optional<Building>
+}
 
 @Entity
 @EntityListeners(AuditingEntityListener::class)
@@ -45,7 +48,7 @@ data class Building(
   @LastModifiedDate
   var lastUpdatedDatetime: LocalDateTime = LocalDateTime.MIN,
 
-  @OneToMany(cascade = [CascadeType.ALL], mappedBy = "building")
+  @OneToMany(cascade = [CascadeType.ALL], mappedBy = "building", orphanRemoval = true)
   val contacts: MutableList<Contact>? = mutableListOf()
 
 )

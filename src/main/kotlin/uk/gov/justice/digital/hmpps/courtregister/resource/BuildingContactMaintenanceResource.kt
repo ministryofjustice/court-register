@@ -1,7 +1,6 @@
 package uk.gov.justice.digital.hmpps.courtregister.resource
 
 import com.fasterxml.jackson.annotation.JsonInclude
-import com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.media.Content
 import io.swagger.v3.oas.annotations.media.Schema
@@ -20,44 +19,43 @@ import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.bind.annotation.RestController
 import uk.gov.justice.digital.hmpps.courtregister.ErrorResponse
 import uk.gov.justice.digital.hmpps.courtregister.service.AuditService
-import uk.gov.justice.digital.hmpps.courtregister.service.CourtService
-import uk.gov.justice.digital.hmpps.courtregister.service.EventType.COURT_REGISTER_INSERT
-import uk.gov.justice.digital.hmpps.courtregister.service.EventType.COURT_REGISTER_UPDATE
+import uk.gov.justice.digital.hmpps.courtregister.service.BuildingContactService
+import uk.gov.justice.digital.hmpps.courtregister.service.EventType
+import uk.gov.justice.digital.hmpps.courtregister.service.EventType.COURT_REGISTER_CONTACT_UPDATE
 import uk.gov.justice.digital.hmpps.courtregister.service.SnsService
 import javax.validation.Valid
-import javax.validation.constraints.NotBlank
 import javax.validation.constraints.Size
 
 @RestController
 @Validated
 @RequestMapping(name = "Court Maintenance", path = ["/court-maintenance"], produces = [MediaType.APPLICATION_JSON_VALUE])
-class CourtMaintenanceResource(
-  private val courtService: CourtService,
+class BuildingContactMaintenanceResource(
+  private val contactService: BuildingContactService,
   private val snsService: SnsService,
   private val auditService: AuditService,
 ) {
   @PreAuthorize("hasRole('ROLE_MAINTAIN_REF_DATA') and hasAuthority('SCOPE_write')")
   @Operation(
-    summary = "Update specified court details",
-    description = "Updates court information, role required is MAINTAIN_REF_DATA",
+    summary = "Update specified building contact details",
+    description = "Updates contact information, role required is MAINTAIN_REF_DATA",
     security = [SecurityRequirement(name = "MAINTAIN_REF_DATA", scopes = ["write"])],
     requestBody = io.swagger.v3.oas.annotations.parameters.RequestBody(
       content = [
         Content(
           mediaType = "application/json",
-          schema = Schema(implementation = UpdateCourtDto::class)
+          schema = Schema(implementation = UpdateContactDto::class)
         )
       ]
     ),
     responses = [
       ApiResponse(
         responseCode = "200",
-        description = "Court Information Updated",
-        content = [Content(mediaType = "application/json", schema = Schema(implementation = CourtDto::class))]
+        description = "Building Contact Information Updated",
+        content = [Content(mediaType = "application/json", schema = Schema(implementation = ContactDto::class))]
       ),
       ApiResponse(
         responseCode = "400",
-        description = "Information request to update court",
+        description = "Information request to update contact",
         content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))]
       ),
       ApiResponse(
@@ -67,60 +65,64 @@ class CourtMaintenanceResource(
       ),
       ApiResponse(
         responseCode = "403",
-        description = "Incorrect permissions to make court update",
+        description = "Incorrect permissions to make contact update",
         content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))]
       ),
       ApiResponse(
         responseCode = "404",
-        description = "Court ID not found",
+        description = "Contact ID not found",
         content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))]
       )
     ]
   )
-  @PutMapping("/id/{courtId}")
-  fun updateCourt(
+  @PutMapping("/id/{courtId}/buildings/{buildingId}/contacts/{contactId}")
+  fun updateContact(
     @Schema(description = "Court ID", example = "ACCRYC", required = true)
     @PathVariable @Size(max = 12, min = 2, message = "Court ID must be between 2 and 12") courtId: String,
-    @RequestBody @Valid courtUpdateRecord: UpdateCourtDto
-  ): CourtDto {
-    val updatedCourt = courtService.updateCourt(courtId, courtUpdateRecord)
-    snsService.sendEvent(COURT_REGISTER_UPDATE, courtId)
+    @Schema(description = "Building ID", example = "234231", required = true)
+    @PathVariable buildingId: Long,
+    @Schema(description = "Contact ID", example = "11111", required = true)
+    @PathVariable contactId: Long,
+    @RequestBody @Valid updateContactDto: UpdateContactDto
+  ): ContactDto {
+    val updatedContact = contactService.updateContact(courtId, buildingId, contactId, updateContactDto)
+    snsService.sendEvent(COURT_REGISTER_CONTACT_UPDATE, courtId)
     auditService.sendAuditEvent(
-      COURT_REGISTER_UPDATE.name,
-      courtId to courtUpdateRecord
+      COURT_REGISTER_CONTACT_UPDATE.name,
+      mapOf("courtId" to courtId, "buildingId" to buildingId, "contact" to updatedContact)
     )
-    return updatedCourt
+    return updatedContact
   }
 
   @PreAuthorize("hasRole('ROLE_MAINTAIN_REF_DATA') and hasAuthority('SCOPE_write')")
-  @PostMapping("")
+  @PostMapping("/id/{courtId}/buildings/{buildingId}")
   @ResponseStatus(HttpStatus.CREATED)
   @Operation(
-    summary = "Add a new court",
-    description = "Adds a new court information, role required is MAINTAIN_REF_DATA",
+    summary = "Add a new contact to a building",
+    description = "Adds a new contact to building, role required is MAINTAIN_REF_DATA",
     security = [SecurityRequirement(name = "MAINTAIN_REF_DATA", scopes = ["write"])],
     requestBody = io.swagger.v3.oas.annotations.parameters.RequestBody(
       content = [
         Content(
           mediaType = "application/json",
-          schema = Schema(implementation = CourtDto::class)
+          schema = Schema(implementation = UpdateContactDto::class)
         )
       ]
     ),
     responses = [
       ApiResponse(
         responseCode = "201",
-        description = "Court Information Inserted",
+        description = "Contact Information Inserted",
         content = [
           Content(
             mediaType = "application/json",
-            schema = Schema(implementation = CourtDto::class)
+            schema = Schema(implementation = ContactDto::class)
           )
         ]
       ),
       ApiResponse(
         responseCode = "400",
-        description = "Information request to add a court",
+        description = "Invalid request to add a contact",
         content = [
           Content(
             mediaType = "application/json",
@@ -135,57 +137,32 @@ class CourtMaintenanceResource(
       ),
       ApiResponse(
         responseCode = "403",
-        description = "Incorrect permissions to make court insert",
+        description = "Incorrect permissions to add contact insert",
         content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))]
       )
     ]
   )
-  fun insertCourt(
-    @RequestBody @Valid courtInsertRecord: InsertCourtDto
-  ): CourtDto {
-    val newCourt = courtService.insertCourt(courtInsertRecord)
-    snsService.sendEvent(COURT_REGISTER_INSERT, newCourt.courtId)
+  fun insertContact(
+    @Schema(description = "Court ID", example = "ACCRYC", required = true)
+    @PathVariable @Size(max = 12, min = 2, message = "Court ID must be between 2 and 12") courtId: String,
+    @Schema(description = "Contact ID", example = "11111", required = true)
+    @PathVariable buildingId: Long,
+    @RequestBody @Valid updateContactDto: UpdateContactDto
+  ): ContactDto {
+    val newContact = contactService.insertContact(courtId, buildingId, updateContactDto)
+    snsService.sendEvent(EventType.COURT_REGISTER_CONTACT_INSERT, courtId)
     auditService.sendAuditEvent(
-      COURT_REGISTER_INSERT.name,
-      courtInsertRecord
+      EventType.COURT_REGISTER_CONTACT_INSERT.name,
+      mapOf("courtId" to courtId, "buildingId" to buildingId, "contact" to newContact)
     )
 
-    return newCourt
+    return newContact
   }
 }
 
-@JsonInclude(NON_NULL)
-@Schema(description = "Court Insert Record")
-data class InsertCourtDto(
-  @Schema(description = "Court ID", example = "ACCRYC", required = true)
-  @field:Size(max = 12, min = 2, message = "Court ID must be between 2 and 12") @NotBlank val courtId: String,
-  @Schema(description = "Name of the court", example = "Accrington Youth Court", required = true) @field:Size(
-    max = 80,
-    min = 2,
-    message = "Court name must be between 2 and 80"
-  ) @field:NotBlank(message = "Court ID is required") val courtName: String,
-  @Schema(description = "Description of the court", example = "Accrington Youth Court", required = false) @field:Size(
-    max = 200,
-    min = 2,
-    message = "Court name must be between 2 and 200"
-  ) val courtDescription: String?,
-  @Schema(description = "Type of court", example = "COU", required = true) val courtType: String,
-  @Schema(description = "Whether the court is still active", required = true) val active: Boolean
-)
-
-@JsonInclude(NON_NULL)
-@Schema(description = "Court Update Record")
-data class UpdateCourtDto(
-  @Schema(description = "Name of the court", example = "Accrington Youth Court", required = true) @field:Size(
-    max = 80,
-    min = 2,
-    message = "Court name must be between 2 and 80"
-  ) @field:NotBlank(message = "Court ID is required") val courtName: String,
-  @Schema(description = "Description of the court", example = "Accrington Youth Court", required = false) @field:Size(
-    max = 200,
-    min = 2,
-    message = "Court name must be between 2 and 200"
-  ) val courtDescription: String?,
-  @Schema(description = "Type of court", example = "COU", required = true) val courtType: String,
-  @Schema(description = "Whether the court is still active", required = true) val active: Boolean
+@JsonInclude(JsonInclude.Include.NON_NULL)
+@Schema(description = "Contact")
+data class UpdateContactDto(
+  @Schema(description = "Type of contact", example = "TEL", required = true, allowableValues = [ "TEL", "FAX"]) val type: String,
+  @Schema(description = "Details of the contact", example = "555 55555", required = true) val detail: String,
 )

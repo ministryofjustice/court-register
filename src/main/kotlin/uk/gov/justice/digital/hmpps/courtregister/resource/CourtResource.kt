@@ -19,6 +19,8 @@ import uk.gov.justice.digital.hmpps.courtregister.jpa.Building
 import uk.gov.justice.digital.hmpps.courtregister.jpa.Contact
 import uk.gov.justice.digital.hmpps.courtregister.jpa.Court
 import uk.gov.justice.digital.hmpps.courtregister.jpa.CourtType
+import uk.gov.justice.digital.hmpps.courtregister.service.BuildingContactService
+import uk.gov.justice.digital.hmpps.courtregister.service.CourtBuildingService
 import uk.gov.justice.digital.hmpps.courtregister.service.CourtService
 import javax.validation.constraints.NotBlank
 import javax.validation.constraints.Size
@@ -26,7 +28,7 @@ import javax.validation.constraints.Size
 @RestController
 @Validated
 @RequestMapping("/courts", produces = [MediaType.APPLICATION_JSON_VALUE])
-class CourtResource(private val courtService: CourtService) {
+class CourtResource(private val courtService: CourtService, private val buildingService: CourtBuildingService, private val contactService: BuildingContactService) {
   @GetMapping("/id/{courtId}")
   @Operation(
     summary = "Get specified court",
@@ -114,6 +116,67 @@ class CourtResource(private val courtService: CourtService) {
   )
   fun getAllCourts(): List<CourtDto> =
     courtService.findAll(false)
+
+  @GetMapping("/id/{courtId}/buildings/id/{buildingId}")
+  @Operation(
+    summary = "Get specified building",
+    description = "Information on a specific building",
+    responses = [
+      ApiResponse(
+        responseCode = "200",
+        description = "Building Information Returned",
+        content = [Content(mediaType = "application/json", schema = Schema(implementation = BuildingDto::class))]
+      ),
+      ApiResponse(
+        responseCode = "400",
+        description = "Incorrect request to get building information",
+        content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))]
+      ),
+      ApiResponse(
+        responseCode = "404",
+        description = "Building ID not found",
+        content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))]
+      )
+    ]
+  )
+  fun getBuildingFromId(
+    @Schema(description = "Court ID", example = "ACCRYC", required = true)
+    @PathVariable @Size(max = 12, min = 2, message = "Court ID must be between 2 and 12") courtId: String,
+    @Schema(description = "Building ID", example = "234231", required = true)
+    @PathVariable buildingId: Long
+  ): BuildingDto =
+    buildingService.findById(courtId, buildingId)
+
+  @GetMapping("/id/{courtId}/buildings/id/{buildingId}/contacts/id/{contactId}")
+  @Operation(
+    summary = "Get specified contact",
+    description = "Information on a specific contact",
+    responses = [
+      ApiResponse(
+        responseCode = "200",
+        description = "Contact Information Returned",
+        content = [Content(mediaType = "application/json", schema = Schema(implementation = ContactDto::class))]
+      ),
+      ApiResponse(
+        responseCode = "400",
+        description = "Incorrect request to get contact information",
+        content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))]
+      ),
+      ApiResponse(
+        responseCode = "404",
+        description = "Contact ID not found",
+        content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))]
+      )
+    ]
+  )
+  fun getContactFromId(
+    @Schema(description = "Court ID", example = "ACCRYC", required = true)
+    @PathVariable @Size(max = 12, min = 2, message = "Court ID must be between 2 and 12") courtId: String,
+    @Schema(description = "Building ID", example = "234231", required = true)
+    @PathVariable buildingId: Long,
+    @Schema(description = "Contact ID", example = "11111", required = true) @PathVariable contactId: Long
+  ): ContactDto =
+    contactService.findById(courtId, buildingId, contactId)
 }
 
 @JsonInclude(NON_NULL)
