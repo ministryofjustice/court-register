@@ -43,6 +43,6 @@ data class Court(
   @Column(nullable = false)
   var lastUpdatedDatetime: LocalDateTime = LocalDateTime.MIN,
 
-  @OneToMany(cascade = [CascadeType.ALL], mappedBy = "court")
+  @OneToMany(cascade = [CascadeType.ALL], mappedBy = "court", orphanRemoval = true)
   val buildings: MutableList<Building>? = mutableListOf()
 )

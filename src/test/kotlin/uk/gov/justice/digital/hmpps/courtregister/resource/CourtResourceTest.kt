@@ -15,6 +15,10 @@ import org.springframework.http.HttpHeaders
 import org.springframework.http.MediaType
 import org.springframework.web.reactive.function.BodyInserters
 import uk.gov.justice.digital.hmpps.courtregister.helper.JwtAuthHelper
+import uk.gov.justice.digital.hmpps.courtregister.jpa.Building
+import uk.gov.justice.digital.hmpps.courtregister.jpa.BuildingRepository
+import uk.gov.justice.digital.hmpps.courtregister.jpa.Contact
+import uk.gov.justice.digital.hmpps.courtregister.jpa.ContactRepository
 import uk.gov.justice.digital.hmpps.courtregister.jpa.Court
 import uk.gov.justice.digital.hmpps.courtregister.jpa.CourtRepository
 import uk.gov.justice.digital.hmpps.courtregister.jpa.CourtType
@@ -28,6 +32,12 @@ import java.util.Optional
 class CourtResourceTest : IntegrationTest() {
   @MockBean
   private lateinit var courtRepository: CourtRepository
+
+  @MockBean
+  private lateinit var buildingRepository: BuildingRepository
+
+  @MockBean
+  private lateinit var contactRepository: ContactRepository
 
   @MockBean
   private lateinit var courtTypeRepository: CourtTypeRepository
@@ -221,6 +231,41 @@ class CourtResourceTest : IntegrationTest() {
     @Test
     fun `find court`() {
       val court = Court("ACCRYC", "Accrington Youth Court", null, CourtType("YOUTH", "Youth Court"), true)
+      val building1 = Building(
+        id = 1,
+        court = court,
+        subCode = "SUBT111",
+        street = "West Cross",
+        buildingName = "Annex",
+        locality = "Mumble",
+        town = "Sheffield",
+        postcode = "SA4 5TH",
+        county = "Yorkshire",
+        country = "UK"
+      )
+      val building2 = Building(
+        id = 2,
+        court = court,
+        subCode = null,
+        street = "West Cross",
+        buildingName = "Main building",
+        locality = "A Place",
+        town = "Sheffield",
+        postcode = "SA4 5TT",
+        county = "Yorkshire",
+        country = "UK"
+      )
+
+      court.buildings?.add(building1)
+      court.buildings?.add(building2)
+
+      val contact1 = Contact(-1, building1, "TEL", "555 666666")
+      val contact2 = Contact(-2, building1, "EMAIL", "test@test.com")
+      val contact3 = Contact(-3, building2, "TEL", "555 6666655")
+
+      building1.contacts?.add(contact1)
+      building1.contacts?.add(contact2)
+      building2.contacts?.add(contact3)
 
       whenever(courtRepository.findById(anyString())).thenReturn(
         Optional.of(court)
@@ -237,6 +282,321 @@ class CourtResourceTest : IntegrationTest() {
         .exchange()
         .expectStatus().isBadRequest
         .expectBody().json("court_id_badrequest_getCourtFromId".loadJson())
+    }
+  }
+
+  @Suppress("ClassName")
+  @Nested
+  inner class updateAndInsertBuildings {
+
+    @BeforeEach
+    internal fun drainAuditQueue() {
+      awsSqsClient.purgeQueue(PurgeQueueRequest(queueName.queueUrl()))
+    }
+
+    @Test
+    fun `correct permission are needed to update building data`() {
+      webTestClient.put()
+        .uri("/court-maintenance/id/ACCRYC/buildings/1")
+        .accept(MediaType.APPLICATION_JSON)
+        .headers(setAuthorisation(roles = listOf("ROLE_DUMMY"), scopes = listOf("write")))
+        .body(
+          BodyInserters.fromValue(
+            UpdateBuildingDto(
+              subCode = "SUBT111",
+              street = "West Cross",
+              buildingName = "Annex",
+              locality = "Mumble",
+              town = "Sheffield",
+              postcode = "SA4 5TH",
+              county = "Yorkshire",
+              country = "UK"
+            )
+          )
+        )
+        .exchange()
+        .expectStatus().isForbidden
+    }
+
+    @Test
+    fun `correct scopes are needed to update building data`() {
+      webTestClient.put()
+        .uri("/court-maintenance/id/ACCRYC/buildings/1")
+        .accept(MediaType.APPLICATION_JSON)
+        .headers(setAuthorisation(roles = listOf("ROLE_MAINTAIN_REF_DATA"), scopes = listOf("read")))
+        .body(
+          BodyInserters.fromValue(
+            UpdateBuildingDto(
+              subCode = "SUBT111",
+              street = "West Cross",
+              buildingName = "Annex",
+              locality = "Mumble",
+              town = "Sheffield",
+              postcode = "SA4 5TH",
+              county = "Yorkshire",
+              country = "UK"
+            )
+          )
+        )
+        .exchange().expectStatus().isForbidden
+    }
+
+    @Test
+    fun `update a building`() {
+      whenever(buildingRepository.findById(1)).thenReturn(
+        Optional.of(
+          Building(
+            id = 1,
+            court = Court("ACCRYC", "Accrington Youth Court", null, CourtType("YOUTH", "Youth Court"), true),
+            subCode = "SUBBUILD1",
+            street = "West Cross",
+            buildingName = "Annex",
+            locality = "Yorkshire",
+            town = "Sheffield",
+            postcode = "S11 9BQ",
+            county = "South Yorkshire",
+            country = "UK"
+          )
+        )
+      )
+
+      whenever(buildingRepository.findBySubCode("SUBT111")).thenReturn(Optional.empty())
+
+      webTestClient.put()
+        .uri("/court-maintenance/id/ACCRYC/buildings/1")
+        .accept(MediaType.APPLICATION_JSON)
+        .headers(
+          setAuthorisation(
+            roles = listOf("ROLE_MAINTAIN_REF_DATA"),
+            scopes = listOf("write"),
+            user = "bobby.beans"
+          )
+        )
+        .body(
+          BodyInserters.fromValue(
+            UpdateBuildingDto(
+              subCode = "SUBT111",
+              street = "West Cross",
+              buildingName = "Annex",
+              locality = "Mumble",
+              town = "Sheffield",
+              postcode = "SA4 5TH",
+              county = "Yorkshire",
+              country = "UK"
+            )
+          )
+        )
+        .exchange()
+        .expectStatus().isOk
+        .expectBody().json("updated_building".loadJson())
+
+      assertThat(auditEventMessageCount()).isEqualTo(1)
+      val auditMessage = auditMessage()
+      JsonAssertions.assertThatJson(auditMessage).node("what").isEqualTo("COURT_REGISTER_BUILDING_UPDATE")
+      JsonAssertions.assertThatJson(auditMessage).node("who").isEqualTo("bobby.beans")
+      JsonAssertions.assertThatJson(auditMessage).node("service").isEqualTo("court-register")
+      JsonAssertions.assertThatJson(auditMessage).node("details").isNotNull
+      JsonAssertions.assertThatJson(auditMessage).node("when").asString().satisfies {
+        val whenDateTime = LocalDateTime.ofInstant(Instant.parse(it), ZoneOffset.UTC)
+        assertThat(whenDateTime).isCloseToUtcNow(within(5, ChronoUnit.SECONDS))
+      }
+    }
+
+    @Test
+    fun `insert a building`() {
+      val court = Court("ACCRYC", "Accrington Youth Court", null, CourtType("YOUTH", "Youth Court"), true)
+      whenever(courtRepository.findById("ACCRYD")).thenReturn(
+        Optional.of(court)
+      )
+
+      val createdBuilding = Building(
+        court = court,
+        subCode = "SUBT111",
+        street = "West Cross",
+        buildingName = "Annex",
+        locality = "Mumble",
+        town = "Sheffield",
+        postcode = "SA4 5TH",
+        county = "Yorkshire",
+        country = "UK"
+      )
+
+      val updatedBuilding = createdBuilding.copy(id = 1)
+
+      whenever(buildingRepository.save(createdBuilding)).thenReturn(
+        updatedBuilding
+      )
+
+      webTestClient.post()
+        .uri("/court-maintenance/id/ACCRYD/buildings")
+        .accept(MediaType.APPLICATION_JSON)
+        .headers(
+          setAuthorisation(
+            roles = listOf("ROLE_MAINTAIN_REF_DATA"),
+            scopes = listOf("write"),
+            user = "bobby.beans"
+          )
+        )
+        .body(
+          BodyInserters.fromValue(
+            UpdateBuildingDto(
+              subCode = "SUBT111",
+              street = "West Cross",
+              buildingName = "Annex",
+              locality = "Mumble",
+              town = "Sheffield",
+              postcode = "SA4 5TH",
+              county = "Yorkshire",
+              country = "UK"
+            )
+          )
+        )
+        .exchange()
+        .expectStatus().isCreated
+        .expectBody().json("inserted_building".loadJson())
+
+      assertThat(auditEventMessageCount()).isEqualTo(1)
+      val auditMessage = auditMessage()
+      JsonAssertions.assertThatJson(auditMessage).node("what").isEqualTo("COURT_REGISTER_BUILDING_INSERT")
+      JsonAssertions.assertThatJson(auditMessage).node("who").isEqualTo("bobby.beans")
+      JsonAssertions.assertThatJson(auditMessage).node("service").isEqualTo("court-register")
+      JsonAssertions.assertThatJson(auditMessage).node("details").isNotNull
+      JsonAssertions.assertThatJson(auditMessage).node("when").asString().satisfies {
+        val whenDateTime = LocalDateTime.ofInstant(Instant.parse(it), ZoneOffset.UTC)
+        assertThat(whenDateTime).isCloseToUtcNow(within(5, ChronoUnit.SECONDS))
+      }
+    }
+  }
+
+  @Suppress("ClassName")
+  @Nested
+  inner class updateAndInsertContacts {
+
+    @BeforeEach
+    internal fun drainAuditQueue() {
+      awsSqsClient.purgeQueue(PurgeQueueRequest(queueName.queueUrl()))
+    }
+
+    @Test
+    fun `correct permission are needed to update contact data`() {
+      webTestClient.put()
+        .uri("/court-maintenance/id/ACCRYC/buildings/1/contacts/1")
+        .accept(MediaType.APPLICATION_JSON)
+        .headers(setAuthorisation(roles = listOf("ROLE_DUMMY"), scopes = listOf("write")))
+        .body(BodyInserters.fromValue(UpdateContactDto("TEL", "5555 666666")))
+        .exchange()
+        .expectStatus().isForbidden
+    }
+
+    @Test
+    fun `correct scopes are needed to update contact data`() {
+      webTestClient.put()
+        .uri("/court-maintenance/id/ACCRYC/buildings/1/contacts/1")
+        .accept(MediaType.APPLICATION_JSON)
+        .headers(setAuthorisation(roles = listOf("ROLE_MAINTAIN_REF_DATA"), scopes = listOf("read")))
+        .body(BodyInserters.fromValue(UpdateContactDto("TEL", "5555 666666")))
+        .exchange().expectStatus().isForbidden
+    }
+
+    @Test
+    fun `update a contact`() {
+      val court = Court("ACCRYC", "Accrington Youth Court", null, CourtType("YOUTH", "Youth Court"), true)
+      val building = Building(
+        id = 1,
+        court = court,
+        subCode = "SUBT111",
+        street = "West Cross",
+        buildingName = "Annex",
+        locality = "Mumble",
+        town = "Sheffield",
+        postcode = "SA4 5TH",
+        county = "Yorkshire",
+        country = "UK"
+      )
+
+      whenever(contactRepository.findById(1)).thenReturn(
+        Optional.of(Contact(building = building, type = "TEL", detail = "5555 6666666", id = 1))
+      )
+
+      webTestClient.put()
+        .uri("/court-maintenance/id/ACCRYC/buildings/1/contacts/1")
+        .accept(MediaType.APPLICATION_JSON)
+        .headers(
+          setAuthorisation(
+            roles = listOf("ROLE_MAINTAIN_REF_DATA"),
+            scopes = listOf("write"),
+            user = "bobby.beans"
+          )
+        )
+        .body(BodyInserters.fromValue(UpdateContactDto("TEL", "7777 22222222")))
+        .exchange()
+        .expectStatus().isOk
+        .expectBody().json("updated_contact".loadJson())
+
+      assertThat(auditEventMessageCount()).isEqualTo(1)
+      val auditMessage = auditMessage()
+      JsonAssertions.assertThatJson(auditMessage).node("what").isEqualTo("COURT_REGISTER_CONTACT_UPDATE")
+      JsonAssertions.assertThatJson(auditMessage).node("who").isEqualTo("bobby.beans")
+      JsonAssertions.assertThatJson(auditMessage).node("service").isEqualTo("court-register")
+      JsonAssertions.assertThatJson(auditMessage).node("details").isNotNull
+      JsonAssertions.assertThatJson(auditMessage).node("when").asString().satisfies {
+        val whenDateTime = LocalDateTime.ofInstant(Instant.parse(it), ZoneOffset.UTC)
+        assertThat(whenDateTime).isCloseToUtcNow(within(5, ChronoUnit.SECONDS))
+      }
+    }
+
+    @Test
+    fun `insert a contact`() {
+      val court = Court("ACCRYC", "Accrington Youth Court", null, CourtType("YOUTH", "Youth Court"), true)
+      val building = Building(
+        id = 1,
+        court = court,
+        subCode = "SUBT111",
+        street = "West Cross",
+        buildingName = "Annex",
+        locality = "Mumble",
+        town = "Sheffield",
+        postcode = "SA4 5TH",
+        county = "Yorkshire",
+        country = "UK"
+      )
+      building.contacts?.add(Contact(id = 1, type = "TEL", detail = "5555 33333", building = building))
+
+      whenever(buildingRepository.findById(1)).thenReturn(
+        Optional.of(building)
+      )
+
+      val contactToSave = Contact(type = "EMAIL", detail = "test@test.com", building = building)
+
+      whenever(contactRepository.save(contactToSave)).thenReturn(
+        contactToSave.copy(id = 2)
+      )
+
+      webTestClient.post()
+        .uri("/court-maintenance/id/ACCRYC/buildings/1/contacts")
+        .accept(MediaType.APPLICATION_JSON)
+        .headers(
+          setAuthorisation(
+            roles = listOf("ROLE_MAINTAIN_REF_DATA"),
+            scopes = listOf("write"),
+            user = "bobby.beans"
+          )
+        )
+        .body(BodyInserters.fromValue(UpdateContactDto("EMAIL", "test@test.com")))
+        .exchange()
+        .expectStatus().isCreated
+        .expectBody().json("inserted_contact".loadJson())
+
+      assertThat(auditEventMessageCount()).isEqualTo(1)
+      val auditMessage = auditMessage()
+      JsonAssertions.assertThatJson(auditMessage).node("what").isEqualTo("COURT_REGISTER_CONTACT_INSERT")
+      JsonAssertions.assertThatJson(auditMessage).node("who").isEqualTo("bobby.beans")
+      JsonAssertions.assertThatJson(auditMessage).node("service").isEqualTo("court-register")
+      JsonAssertions.assertThatJson(auditMessage).node("details").isNotNull
+      JsonAssertions.assertThatJson(auditMessage).node("when").asString().satisfies {
+        val whenDateTime = LocalDateTime.ofInstant(Instant.parse(it), ZoneOffset.UTC)
+        assertThat(whenDateTime).isCloseToUtcNow(within(5, ChronoUnit.SECONDS))
+      }
     }
   }
 

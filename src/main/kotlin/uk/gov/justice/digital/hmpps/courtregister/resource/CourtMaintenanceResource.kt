@@ -30,7 +30,7 @@ import javax.validation.constraints.Size
 
 @RestController
 @Validated
-@RequestMapping("/court-maintenance", produces = [MediaType.APPLICATION_JSON_VALUE])
+@RequestMapping(name = "Court Maintenance", path = ["/court-maintenance"], produces = [MediaType.APPLICATION_JSON_VALUE])
 class CourtMaintenanceResource(
   private val courtService: CourtService,
   private val snsService: SnsService,
