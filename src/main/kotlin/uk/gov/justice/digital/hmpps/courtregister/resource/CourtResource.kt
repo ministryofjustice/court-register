@@ -8,6 +8,8 @@ import io.swagger.v3.oas.annotations.media.ArraySchema
 import io.swagger.v3.oas.annotations.media.Content
 import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.responses.ApiResponse
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.Pageable
 import org.springframework.http.MediaType
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.GetMapping
@@ -77,6 +79,26 @@ class CourtResource(private val courtService: CourtService, private val building
   fun getActiveCourts(): List<CourtDto> =
     courtService.findAll(true)
 
+  @GetMapping("/paged") // TODO DT-768 add open api docs for implicit pageable parameters
+  @Operation(
+    summary = "Get page of active courts",
+    description = "Page of courts (active only)",
+    responses = [
+      ApiResponse(
+        responseCode = "200",
+        description = "Page of Active Court Information Returned",
+        content = arrayOf(
+          Content(
+            mediaType = "application/json",
+            array = ArraySchema(schema = Schema(implementation = CourtDto::class))
+          )
+        )
+      )
+    ]
+  )
+  fun getPageOfActiveCourts(pageable: Pageable = Pageable.unpaged()): Page<CourtDto> =
+    courtService.findPage(true, pageable)
+
   @GetMapping("/types")
   @Operation(
     summary = "Get all types of court",
@@ -116,6 +138,26 @@ class CourtResource(private val courtService: CourtService, private val building
   )
   fun getAllCourts(): List<CourtDto> =
     courtService.findAll(false)
+
+  @GetMapping("/all/paged") // TODO DT-1768 Add swagger docs for implicit pageable parameters
+  @Operation(
+    summary = "Get page of active and inactive courts",
+    description = "Page of active/inactive courts",
+    responses = [
+      ApiResponse(
+        responseCode = "200",
+        description = "All Court Information Returned (Active only)",
+        content = arrayOf(
+          Content(
+            mediaType = "application/json",
+            array = ArraySchema(schema = Schema(implementation = CourtDto::class))
+          )
+        )
+      )
+    ]
+  )
+  fun getPageOfCourts(pageable: Pageable): Page<CourtDto> =
+    courtService.findPage(false, pageable)
 
   @GetMapping("/id/{courtId}/buildings/id/{buildingId}")
   @Operation(

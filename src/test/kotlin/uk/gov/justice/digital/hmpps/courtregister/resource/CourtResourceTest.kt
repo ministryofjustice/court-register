@@ -1,7 +1,11 @@
 package uk.gov.justice.digital.hmpps.courtregister.resource
 
 import com.amazonaws.services.sqs.model.PurgeQueueRequest
-import com.nhaarman.mockito_kotlin.whenever
+import com.nhaarman.mockitokotlin2.any
+import com.nhaarman.mockitokotlin2.check
+import com.nhaarman.mockitokotlin2.eq
+import com.nhaarman.mockitokotlin2.verify
+import com.nhaarman.mockitokotlin2.whenever
 import net.javacrumbs.jsonunit.assertj.JsonAssertions
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.within
@@ -11,8 +15,11 @@ import org.junit.jupiter.api.Test
 import org.mockito.ArgumentMatchers.anyString
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.mock.mockito.MockBean
+import org.springframework.data.domain.PageImpl
+import org.springframework.data.domain.Pageable
 import org.springframework.http.HttpHeaders
 import org.springframework.http.MediaType
+import org.springframework.test.web.reactive.server.expectBody
 import org.springframework.web.reactive.function.BodyInserters
 import uk.gov.justice.digital.hmpps.courtregister.helper.JwtAuthHelper
 import uk.gov.justice.digital.hmpps.courtregister.jpa.Building
@@ -29,6 +36,7 @@ import java.time.ZoneOffset
 import java.time.temporal.ChronoUnit
 import java.util.Optional
 
+@Suppress("ClassName")
 class CourtResourceTest : IntegrationTest() {
   @MockBean
   private lateinit var courtRepository: CourtRepository
@@ -45,7 +53,6 @@ class CourtResourceTest : IntegrationTest() {
   @Autowired
   protected lateinit var jwtAuthHelper: JwtAuthHelper
 
-  @Suppress("ClassName")
   @Nested
   inner class findAll {
     @Test
@@ -62,6 +69,32 @@ class CourtResourceTest : IntegrationTest() {
         .exchange()
         .expectStatus().isOk
         .expectBody().json("courts".loadJson())
+    }
+
+    @Test
+    fun `find page of active courts`() {
+      val courts = listOf(
+        Court("ACCRYC", "Accrington Youth Court", null, CourtType("YTH", "Youth Court"), true),
+        Court("BOSTMC", "Boston Magistrates Court", null, CourtType("CRN", "Crown Court"), true),
+        Court("BRNTCT", "Barnet County Court", null, CourtType("COU", "County Court"), true),
+      )
+      whenever(courtRepository.findByActiveOrderById(eq(true), any())).thenReturn(PageImpl(courts))
+
+      val test = webTestClient.get().uri("/courts/paged?page=0&size=3")
+        .exchange()
+        .expectStatus().isOk
+        .expectBody()
+        .jsonPath("$.content[0].courtId").isEqualTo("ACCRYC")
+        .jsonPath("$.content[0].courtName").isEqualTo("Accrington Youth Court")
+        .jsonPath("$.content[0].courtType").isEqualTo("YTH")
+        .jsonPath("$.content[0].active").isEqualTo(true)
+        .jsonPath("$.content[1].courtId").isEqualTo("BOSTMC")
+        .jsonPath("$.content[2].courtId").isEqualTo("BRNTCT")
+
+      verify(courtRepository).findByActiveOrderById(eq(true), check {
+        assertThat(it.pageNumber).isEqualTo(0)
+        assertThat(it.pageSize).isEqualTo(3)
+      })
     }
 
     @Test
@@ -82,6 +115,32 @@ class CourtResourceTest : IntegrationTest() {
     }
 
     @Test
+    fun `find page of courts`() {
+      val courts = listOf(
+        Court("ACCRYC", "Accrington Youth Court", null, CourtType("YTH", "Youth Court"), false),
+        Court("BOSTMC", "Boston Magistrates Court", null, CourtType("CRN", "Crown Court"), false),
+        Court("BRNTCT", "Barnet County Court", null, CourtType("COU", "County Court"), true),
+      )
+      whenever(courtRepository.findByActiveOrderById(eq(true), any())).thenReturn(PageImpl(courts))
+
+      val test = webTestClient.get().uri("/courts/all/paged?page=0&size=3")
+        .exchange()
+        .expectStatus().isOk
+        .expectBody()
+        .jsonPath("$.content[0].courtId").isEqualTo("ACCRYC")
+        .jsonPath("$.content[0].courtName").isEqualTo("Accrington Youth Court")
+        .jsonPath("$.content[0].courtType").isEqualTo("YTH")
+        .jsonPath("$.content[0].active").isEqualTo(false)
+        .jsonPath("$.content[1].courtId").isEqualTo("BOSTMC")
+        .jsonPath("$.content[2].courtId").isEqualTo("BRNTCT")
+
+      verify(courtRepository).findByActiveOrderById(eq(true), check {
+        assertThat(it.pageNumber).isEqualTo(0)
+        assertThat(it.pageSize).isEqualTo(3)
+      })
+    }
+
+    @Test
     fun `find courts types`() {
       whenever(courtTypeRepository.findAll()).thenReturn(
         listOf(
@@ -97,7 +156,6 @@ class CourtResourceTest : IntegrationTest() {
     }
   }
 
-  @Suppress("ClassName")
   @Nested
   inner class updateAndInsertCourts {
 
@@ -225,7 +283,6 @@ class CourtResourceTest : IntegrationTest() {
     }
   }
 
-  @Suppress("ClassName")
   @Nested
   inner class findById {
     @Test
@@ -285,7 +342,6 @@ class CourtResourceTest : IntegrationTest() {
     }
   }
 
-  @Suppress("ClassName")
   @Nested
   inner class updateAndInsertBuildings {
 
@@ -468,7 +524,6 @@ class CourtResourceTest : IntegrationTest() {
     }
   }
 
-  @Suppress("ClassName")
   @Nested
   inner class updateAndInsertContacts {
 

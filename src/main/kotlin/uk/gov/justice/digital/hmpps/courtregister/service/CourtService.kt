@@ -1,5 +1,9 @@
 package uk.gov.justice.digital.hmpps.courtregister.service
 
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.PageImpl
+import org.springframework.data.domain.Pageable
+import org.springframework.data.domain.Sort
 import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.courtregister.jpa.Court
 import uk.gov.justice.digital.hmpps.courtregister.jpa.CourtRepository
@@ -29,6 +33,16 @@ class CourtService(
       return courtRepository.findByActiveOrderById(true).map { CourtDto(it) }
     }
     return courtRepository.findAll().map { CourtDto(it) }
+  }
+
+  fun findPage(activeOnly: Boolean = false, pageable: Pageable = Pageable.unpaged()): Page<CourtDto> {
+    if (activeOnly) {
+      return courtRepository.findByActiveOrderById(true, pageable).map { CourtDto(it) }
+    }
+    return courtRepository.findAll(pageable)
+      .map { CourtDto(it) }
+      .toList()
+      .let { PageImpl(it) }
   }
 
   fun updateCourt(courtId: String, courtUpdateRecord: UpdateCourtDto): CourtDto {
