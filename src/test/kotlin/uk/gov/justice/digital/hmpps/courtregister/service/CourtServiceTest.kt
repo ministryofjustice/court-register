@@ -1,6 +1,5 @@
 package uk.gov.justice.digital.hmpps.courtregister.service
 
-import com.nhaarman.mockitokotlin2.eq
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.whenever
@@ -9,7 +8,6 @@ import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.mockito.ArgumentMatchers.anyString
-import org.springframework.data.domain.Pageable
 import uk.gov.justice.digital.hmpps.courtregister.jpa.Court
 import uk.gov.justice.digital.hmpps.courtregister.jpa.CourtRepository
 import uk.gov.justice.digital.hmpps.courtregister.jpa.CourtType

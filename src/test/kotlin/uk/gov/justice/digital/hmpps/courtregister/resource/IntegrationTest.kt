@@ -4,16 +4,10 @@ import com.amazonaws.services.sqs.AmazonSQSAsync
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.boot.test.mock.mockito.MockBean
-import org.springframework.boot.test.mock.mockito.SpyBean
 import org.springframework.http.HttpHeaders
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.web.reactive.server.WebTestClient
 import uk.gov.justice.digital.hmpps.courtregister.helper.JwtAuthHelper
-import uk.gov.justice.digital.hmpps.courtregister.jpa.BuildingRepository
-import uk.gov.justice.digital.hmpps.courtregister.jpa.ContactRepository
-import uk.gov.justice.digital.hmpps.courtregister.jpa.CourtRepository
-import uk.gov.justice.digital.hmpps.courtregister.jpa.CourtTypeRepository
 
 @Suppress("SpringJavaInjectionPointsAutowiringInspection")
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)

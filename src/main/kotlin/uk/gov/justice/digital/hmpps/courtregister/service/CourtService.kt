@@ -1,9 +1,7 @@
 package uk.gov.justice.digital.hmpps.courtregister.service
 
 import org.springframework.data.domain.Page
-import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.Pageable
-import org.springframework.data.domain.Sort
 import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.courtregister.jpa.Court
 import uk.gov.justice.digital.hmpps.courtregister.jpa.CourtRepository
