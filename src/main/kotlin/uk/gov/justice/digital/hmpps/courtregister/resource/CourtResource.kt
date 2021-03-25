@@ -31,7 +31,7 @@ import uk.gov.justice.digital.hmpps.courtregister.service.CourtService
 import javax.validation.constraints.NotBlank
 import javax.validation.constraints.Size
 
-// This is a hack to get around the fact that springsdocs responses cannot contain generics
+// This is a hack to get around the fact that springdocs responses cannot contain generics
 class CourtDtoPage : PageImpl<CourtDto>(mutableListOf<CourtDto>())
 
 @RestController
