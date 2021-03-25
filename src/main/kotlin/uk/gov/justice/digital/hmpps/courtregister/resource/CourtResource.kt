@@ -12,6 +12,7 @@ import io.swagger.v3.oas.annotations.media.Content
 import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.responses.ApiResponse
 import org.springframework.data.domain.Page
+import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.Pageable
 import org.springframework.http.MediaType
 import org.springframework.validation.annotation.Validated
@@ -29,6 +30,9 @@ import uk.gov.justice.digital.hmpps.courtregister.service.CourtBuildingService
 import uk.gov.justice.digital.hmpps.courtregister.service.CourtService
 import javax.validation.constraints.NotBlank
 import javax.validation.constraints.Size
+
+// This is a hack to get around the fact that springsdocs responses cannot contain generics
+class CourtDtoPage : PageImpl<CourtDto>(mutableListOf<CourtDto>())
 
 @RestController
 @Validated
@@ -97,7 +101,7 @@ class CourtResource(
         content = arrayOf(
           Content(
             mediaType = "application/json",
-            array = ArraySchema(schema = Schema(implementation = CourtDto::class))
+            array = ArraySchema(schema = Schema(implementation = CourtDtoPage::class))
           )
         )
       )
@@ -157,7 +161,7 @@ class CourtResource(
         content = arrayOf(
           Content(
             mediaType = "application/json",
-            array = ArraySchema(schema = Schema(implementation = CourtDto::class))
+            array = ArraySchema(schema = Schema(implementation = CourtDtoPage::class))
           )
         )
       )
