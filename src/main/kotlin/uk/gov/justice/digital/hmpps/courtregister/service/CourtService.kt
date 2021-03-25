@@ -1,5 +1,7 @@
 package uk.gov.justice.digital.hmpps.courtregister.service
 
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.courtregister.jpa.Court
 import uk.gov.justice.digital.hmpps.courtregister.jpa.CourtRepository
@@ -31,6 +33,13 @@ class CourtService(
     return courtRepository.findAll().map { CourtDto(it) }
   }
 
+  fun findPage(activeOnly: Boolean = false, pageable: Pageable = Pageable.unpaged()): Page<CourtDto> =
+    when (activeOnly) {
+      true -> courtRepository.findByActiveOrderById(true, pageable)
+      false -> courtRepository.findAll(pageable)
+    }
+      .map { CourtDto(it) }
+
   fun updateCourt(courtId: String, courtUpdateRecord: UpdateCourtDto): CourtDto {
     val court = courtRepository.findById(courtId)
       .orElseThrow { EntityNotFoundException("Court $courtId not found") }
@@ -50,7 +59,8 @@ class CourtService(
     }
 
     with(courtInsertRecord) {
-      val court = Court(courtId, courtName, courtDescription, courtTypeRepository.findById(courtType).orElseThrow(), active)
+      val court =
+        Court(courtId, courtName, courtDescription, courtTypeRepository.findById(courtType).orElseThrow(), active)
       courtRepository.save(court)
       return CourtDto(court)
     }

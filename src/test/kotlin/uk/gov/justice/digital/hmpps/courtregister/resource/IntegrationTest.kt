@@ -4,8 +4,10 @@ import com.amazonaws.services.sqs.AmazonSQSAsync
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.http.HttpHeaders
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.web.reactive.server.WebTestClient
+import uk.gov.justice.digital.hmpps.courtregister.helper.JwtAuthHelper
 
 @Suppress("SpringJavaInjectionPointsAutowiringInspection")
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -18,6 +20,9 @@ abstract class IntegrationTest {
   @Autowired
   protected lateinit var awsSqsClient: AmazonSQSAsync
 
+  @Autowired
+  protected lateinit var jwtAuthHelper: JwtAuthHelper
+
   @Value("\${sqs.queue.name}")
   protected lateinit var queueName: String
 
@@ -27,4 +32,10 @@ abstract class IntegrationTest {
   }
 
   fun String.queueUrl(): String = awsSqsClient.getQueueUrl(this).queueUrl
+
+  internal fun setAuthorisation(
+    user: String = "court-reg-client",
+    roles: List<String> = listOf(),
+    scopes: List<String> = listOf()
+  ): (HttpHeaders) -> Unit = jwtAuthHelper.setAuthorisation(user, roles, scopes)
 }

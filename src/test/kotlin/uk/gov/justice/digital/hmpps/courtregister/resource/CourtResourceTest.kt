@@ -1,7 +1,7 @@
 package uk.gov.justice.digital.hmpps.courtregister.resource
 
 import com.amazonaws.services.sqs.model.PurgeQueueRequest
-import com.nhaarman.mockito_kotlin.whenever
+import com.nhaarman.mockitokotlin2.whenever
 import net.javacrumbs.jsonunit.assertj.JsonAssertions
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.within
@@ -9,12 +9,10 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.mockito.ArgumentMatchers.anyString
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.mock.mockito.MockBean
-import org.springframework.http.HttpHeaders
 import org.springframework.http.MediaType
+import org.springframework.test.web.reactive.server.expectBody
 import org.springframework.web.reactive.function.BodyInserters
-import uk.gov.justice.digital.hmpps.courtregister.helper.JwtAuthHelper
 import uk.gov.justice.digital.hmpps.courtregister.jpa.Building
 import uk.gov.justice.digital.hmpps.courtregister.jpa.BuildingRepository
 import uk.gov.justice.digital.hmpps.courtregister.jpa.Contact
@@ -29,6 +27,7 @@ import java.time.ZoneOffset
 import java.time.temporal.ChronoUnit
 import java.util.Optional
 
+@Suppress("ClassName")
 class CourtResourceTest : IntegrationTest() {
   @MockBean
   private lateinit var courtRepository: CourtRepository
@@ -42,10 +41,6 @@ class CourtResourceTest : IntegrationTest() {
   @MockBean
   private lateinit var courtTypeRepository: CourtTypeRepository
 
-  @Autowired
-  protected lateinit var jwtAuthHelper: JwtAuthHelper
-
-  @Suppress("ClassName")
   @Nested
   inner class findAll {
     @Test
@@ -97,7 +92,6 @@ class CourtResourceTest : IntegrationTest() {
     }
   }
 
-  @Suppress("ClassName")
   @Nested
   inner class updateAndInsertCourts {
 
@@ -225,7 +219,6 @@ class CourtResourceTest : IntegrationTest() {
     }
   }
 
-  @Suppress("ClassName")
   @Nested
   inner class findById {
     @Test
@@ -285,7 +278,6 @@ class CourtResourceTest : IntegrationTest() {
     }
   }
 
-  @Suppress("ClassName")
   @Nested
   inner class updateAndInsertBuildings {
 
@@ -468,7 +460,6 @@ class CourtResourceTest : IntegrationTest() {
     }
   }
 
-  @Suppress("ClassName")
   @Nested
   inner class updateAndInsertContacts {
 
@@ -602,12 +593,6 @@ class CourtResourceTest : IntegrationTest() {
 
   private fun String.loadJson(): String =
     CourtResourceTest::class.java.getResource("$this.json").readText()
-
-  internal fun setAuthorisation(
-    user: String = "court-reg-client",
-    roles: List<String> = listOf(),
-    scopes: List<String> = listOf()
-  ): (HttpHeaders) -> Unit = jwtAuthHelper.setAuthorisation(user, roles, scopes)
 
   fun auditEventMessageCount(): Int? {
     val queueAttributes = awsSqsClient.getQueueAttributes(queueName.queueUrl(), listOf("ApproximateNumberOfMessages"))
