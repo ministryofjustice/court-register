@@ -35,15 +35,12 @@ class CourtService(
     return courtRepository.findAll().map { CourtDto(it) }
   }
 
-  fun findPage(activeOnly: Boolean = false, pageable: Pageable = Pageable.unpaged()): Page<CourtDto> {
-    if (activeOnly) {
-      return courtRepository.findByActiveOrderById(true, pageable).map { CourtDto(it) }
+  fun findPage(activeOnly: Boolean = false, pageable: Pageable = Pageable.unpaged()): Page<CourtDto> =
+    when (activeOnly) {
+      true -> courtRepository.findByActiveOrderById(true, pageable)
+      false -> courtRepository.findAll(pageable)
     }
-    return courtRepository.findAll(pageable)
       .map { CourtDto(it) }
-      .toList()
-      .let { PageImpl(it) }
-  }
 
   fun updateCourt(courtId: String, courtUpdateRecord: UpdateCourtDto): CourtDto {
     val court = courtRepository.findById(courtId)
@@ -64,7 +61,8 @@ class CourtService(
     }
 
     with(courtInsertRecord) {
-      val court = Court(courtId, courtName, courtDescription, courtTypeRepository.findById(courtType).orElseThrow(), active)
+      val court =
+        Court(courtId, courtName, courtDescription, courtTypeRepository.findById(courtType).orElseThrow(), active)
       courtRepository.save(court)
       return CourtDto(court)
     }

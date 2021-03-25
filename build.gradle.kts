@@ -34,6 +34,7 @@ dependencies {
   implementation("org.springdoc:springdoc-openapi-webmvc-core:1.5.4")
   implementation("org.springdoc:springdoc-openapi-ui:1.5.4")
   implementation("org.springdoc:springdoc-openapi-kotlin:1.5.4")
+  implementation("org.springdoc:springdoc-openapi-data-rest:1.5.4")
 
   implementation(platform("com.amazonaws:aws-java-sdk-bom:1.11.958"))
   implementation("com.amazonaws:aws-java-sdk-sns:1.11.958")
@@ -45,4 +46,5 @@ dependencies {
   testImplementation("org.awaitility:awaitility-kotlin:4.0.3")
   testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactive:1.4.2")
   testImplementation("io.jsonwebtoken:jjwt:0.9.1")
+  testImplementation("org.mockito:mockito-inline:3.7.7")
 }

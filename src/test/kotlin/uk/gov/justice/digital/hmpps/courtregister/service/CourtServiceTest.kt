@@ -1,6 +1,5 @@
 package uk.gov.justice.digital.hmpps.courtregister.service
 
-import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.eq
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.verify
@@ -52,7 +51,7 @@ class CourtServiceTest {
         Court("ACCRYV", "A Court 2", null, CourtType("COUNTY", "County Court"), true),
         Court("ACCRYT", "A Court 3", null, CourtType("OTHER", "Other Type Court"), true)
       )
-      whenever(courtRepository.findByActiveOrderById(eq(true))).thenReturn(
+      whenever(courtRepository.findByActiveOrderById(true)).thenReturn(
         listOfCourts
       )
       val courts = courtService.findAll(true)
@@ -63,7 +62,7 @@ class CourtServiceTest {
           CourtDto("ACCRYT", "A Court 3", null, CourtTypeDto("OTHER", "Other Type Court"), true)
         )
       )
-      verify(courtRepository).findByActiveOrderById(true, Pageable.unpaged())
+      verify(courtRepository).findByActiveOrderById(true)
     }
 
     @Test

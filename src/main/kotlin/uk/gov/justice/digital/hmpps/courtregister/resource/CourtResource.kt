@@ -4,6 +4,9 @@ import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL
 import com.fasterxml.jackson.annotation.JsonProperty
 import io.swagger.v3.oas.annotations.Operation
+import io.swagger.v3.oas.annotations.Parameter
+import io.swagger.v3.oas.annotations.Parameters
+import io.swagger.v3.oas.annotations.enums.ParameterIn
 import io.swagger.v3.oas.annotations.media.ArraySchema
 import io.swagger.v3.oas.annotations.media.Content
 import io.swagger.v3.oas.annotations.media.Schema
@@ -30,7 +33,11 @@ import javax.validation.constraints.Size
 @RestController
 @Validated
 @RequestMapping("/courts", produces = [MediaType.APPLICATION_JSON_VALUE])
-class CourtResource(private val courtService: CourtService, private val buildingService: CourtBuildingService, private val contactService: BuildingContactService) {
+class CourtResource(
+  private val courtService: CourtService,
+  private val buildingService: CourtBuildingService,
+  private val contactService: BuildingContactService
+) {
   @GetMapping("/id/{courtId}")
   @Operation(
     summary = "Get specified court",
@@ -79,7 +86,7 @@ class CourtResource(private val courtService: CourtService, private val building
   fun getActiveCourts(): List<CourtDto> =
     courtService.findAll(true)
 
-  @GetMapping("/paged") // TODO DT-768 add open api docs for implicit pageable parameters
+  @GetMapping("/paged")
   @Operation(
     summary = "Get page of active courts",
     description = "Page of courts (active only)",
@@ -139,7 +146,7 @@ class CourtResource(private val courtService: CourtService, private val building
   fun getAllCourts(): List<CourtDto> =
     courtService.findAll(false)
 
-  @GetMapping("/all/paged") // TODO DT-1768 Add swagger docs for implicit pageable parameters
+  @GetMapping("/all/paged")
   @Operation(
     summary = "Get page of active and inactive courts",
     description = "Page of active/inactive courts",
@@ -156,7 +163,7 @@ class CourtResource(private val courtService: CourtService, private val building
       )
     ]
   )
-  fun getPageOfCourts(pageable: Pageable): Page<CourtDto> =
+  fun getPageOfCourts(pageable: Pageable = Pageable.unpaged()): Page<CourtDto> =
     courtService.findPage(false, pageable)
 
   @GetMapping("/id/{courtId}/buildings/id/{buildingId}")
@@ -252,9 +259,21 @@ class CourtResource(private val courtService: CourtService, private val building
 @JsonInclude(NON_NULL)
 @Schema(description = "Court Information")
 data class CourtDto(
-  @Schema(description = "Court ID", example = "ACCRYC", required = true) @field:Size(max = 12, min = 2, message = "Court ID must be between 2 and 12") @NotBlank val courtId: String,
-  @Schema(description = "Name of the court", example = "Accrington Youth Court", required = true) @field:Size(max = 80, min = 2, message = "Court name must be between 2 and 80") @NotBlank val courtName: String,
-  @Schema(description = "Description of the court", example = "Accrington Youth Court", required = false) @field:Size(max = 200, min = 2, message = "Court name must be between 2 and 200") val courtDescription: String?,
+  @Schema(description = "Court ID", example = "ACCRYC", required = true) @field:Size(
+    max = 12,
+    min = 2,
+    message = "Court ID must be between 2 and 12"
+  ) @NotBlank val courtId: String,
+  @Schema(description = "Name of the court", example = "Accrington Youth Court", required = true) @field:Size(
+    max = 80,
+    min = 2,
+    message = "Court name must be between 2 and 80"
+  ) @NotBlank val courtName: String,
+  @Schema(description = "Description of the court", example = "Accrington Youth Court", required = false) @field:Size(
+    max = 200,
+    min = 2,
+    message = "Court name must be between 2 and 200"
+  ) val courtDescription: String?,
   @Schema(description = "Type of court with description", required = true) val type: CourtTypeDto,
   @Schema(description = "Whether the court is still active", required = true) val active: Boolean,
   @Schema(description = "List of buildings for this court entity") val buildings: List<BuildingDto>? = listOf()
@@ -273,7 +292,11 @@ data class CourtDto(
 @Schema(description = "Court Type")
 data class CourtTypeDto(
   @Schema(description = "Type of court", example = "COU", required = true) val courtType: String,
-  @Schema(description = "Description of the type of court", example = "County Court/County Divorce Ct", required = true) @NotBlank val courtName: String
+  @Schema(
+    description = "Description of the type of court",
+    example = "County Court/County Divorce Ct",
+    required = true
+  ) @NotBlank val courtName: String
 ) {
   constructor(courtType: CourtType) : this(courtType.id, courtType.description)
 }
@@ -305,8 +328,19 @@ data class ContactDto(
   @Schema(description = "Unique ID of the contact", example = "10000", required = true) val id: Long,
   @Schema(description = "Court Id for this contact", example = "ACCRYC") val courtId: String,
   @Schema(description = "Building Id for this contact", example = "12312") val buildingId: Long,
-  @Schema(description = "Type of contact", example = "TEL", required = true, allowableValues = [ "TEL", "FAX"]) val type: String,
+  @Schema(
+    description = "Type of contact",
+    example = "TEL",
+    required = true,
+    allowableValues = ["TEL", "FAX"]
+  ) val type: String,
   @Schema(description = "Details of the contact", example = "555 55555", required = true) val detail: String?,
 ) {
-  constructor(contact: Contact) : this(contact.id!!, contact.building.court.id, contact.building.id!!, contact.type, contact.detail)
+  constructor(contact: Contact) : this(
+    contact.id!!,
+    contact.building.court.id,
+    contact.building.id!!,
+    contact.type,
+    contact.detail
+  )
 }

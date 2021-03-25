@@ -3,6 +3,7 @@ package uk.gov.justice.digital.hmpps.courtregister.resource
 import com.amazonaws.services.sqs.model.PurgeQueueRequest
 import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.check
+import com.nhaarman.mockitokotlin2.doReturn
 import com.nhaarman.mockitokotlin2.eq
 import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.whenever
@@ -50,9 +51,6 @@ class CourtResourceTest : IntegrationTest() {
   @MockBean
   private lateinit var courtTypeRepository: CourtTypeRepository
 
-  @Autowired
-  protected lateinit var jwtAuthHelper: JwtAuthHelper
-
   @Nested
   inner class findAll {
     @Test
@@ -62,39 +60,12 @@ class CourtResourceTest : IntegrationTest() {
         Court("KIDDYC", "Kidderminster Youth Court", null, CourtType("YOUTH", "Youth Court"), true)
       )
 
-      whenever(courtRepository.findByActiveOrderById(true)).thenReturn(
-        courts
-      )
+      doReturn(courts).whenever(courtRepository).findByActiveOrderById(true)
+
       webTestClient.get().uri("/courts")
         .exchange()
         .expectStatus().isOk
         .expectBody().json("courts".loadJson())
-    }
-
-    @Test
-    fun `find page of active courts`() {
-      val courts = listOf(
-        Court("ACCRYC", "Accrington Youth Court", null, CourtType("YTH", "Youth Court"), true),
-        Court("BOSTMC", "Boston Magistrates Court", null, CourtType("CRN", "Crown Court"), true),
-        Court("BRNTCT", "Barnet County Court", null, CourtType("COU", "County Court"), true),
-      )
-      whenever(courtRepository.findByActiveOrderById(eq(true), any())).thenReturn(PageImpl(courts))
-
-      val test = webTestClient.get().uri("/courts/paged?page=0&size=3")
-        .exchange()
-        .expectStatus().isOk
-        .expectBody()
-        .jsonPath("$.content[0].courtId").isEqualTo("ACCRYC")
-        .jsonPath("$.content[0].courtName").isEqualTo("Accrington Youth Court")
-        .jsonPath("$.content[0].courtType").isEqualTo("YTH")
-        .jsonPath("$.content[0].active").isEqualTo(true)
-        .jsonPath("$.content[1].courtId").isEqualTo("BOSTMC")
-        .jsonPath("$.content[2].courtId").isEqualTo("BRNTCT")
-
-      verify(courtRepository).findByActiveOrderById(eq(true), check {
-        assertThat(it.pageNumber).isEqualTo(0)
-        assertThat(it.pageSize).isEqualTo(3)
-      })
     }
 
     @Test
@@ -112,32 +83,6 @@ class CourtResourceTest : IntegrationTest() {
         .exchange()
         .expectStatus().isOk
         .expectBody().json("courts_all".loadJson())
-    }
-
-    @Test
-    fun `find page of courts`() {
-      val courts = listOf(
-        Court("ACCRYC", "Accrington Youth Court", null, CourtType("YTH", "Youth Court"), false),
-        Court("BOSTMC", "Boston Magistrates Court", null, CourtType("CRN", "Crown Court"), false),
-        Court("BRNTCT", "Barnet County Court", null, CourtType("COU", "County Court"), true),
-      )
-      whenever(courtRepository.findByActiveOrderById(eq(true), any())).thenReturn(PageImpl(courts))
-
-      val test = webTestClient.get().uri("/courts/all/paged?page=0&size=3")
-        .exchange()
-        .expectStatus().isOk
-        .expectBody()
-        .jsonPath("$.content[0].courtId").isEqualTo("ACCRYC")
-        .jsonPath("$.content[0].courtName").isEqualTo("Accrington Youth Court")
-        .jsonPath("$.content[0].courtType").isEqualTo("YTH")
-        .jsonPath("$.content[0].active").isEqualTo(false)
-        .jsonPath("$.content[1].courtId").isEqualTo("BOSTMC")
-        .jsonPath("$.content[2].courtId").isEqualTo("BRNTCT")
-
-      verify(courtRepository).findByActiveOrderById(eq(true), check {
-        assertThat(it.pageNumber).isEqualTo(0)
-        assertThat(it.pageSize).isEqualTo(3)
-      })
     }
 
     @Test
@@ -657,12 +602,6 @@ class CourtResourceTest : IntegrationTest() {
 
   private fun String.loadJson(): String =
     CourtResourceTest::class.java.getResource("$this.json").readText()
-
-  internal fun setAuthorisation(
-    user: String = "court-reg-client",
-    roles: List<String> = listOf(),
-    scopes: List<String> = listOf()
-  ): (HttpHeaders) -> Unit = jwtAuthHelper.setAuthorisation(user, roles, scopes)
 
   fun auditEventMessageCount(): Int? {
     val queueAttributes = awsSqsClient.getQueueAttributes(queueName.queueUrl(), listOf("ApproximateNumberOfMessages"))
