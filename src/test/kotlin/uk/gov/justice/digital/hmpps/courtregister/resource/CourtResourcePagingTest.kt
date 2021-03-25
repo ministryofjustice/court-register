@@ -1,7 +1,6 @@
 package uk.gov.justice.digital.hmpps.courtregister.resource
 
 import org.assertj.core.api.Assertions.assertThat
-import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
@@ -13,7 +12,7 @@ import uk.gov.justice.digital.hmpps.courtregister.jpa.CourtType
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @Transactional
-class CourtResourcePagingTest: IntegrationTest() {
+class CourtResourcePagingTest : IntegrationTest() {
 
   @Autowired
   private lateinit var courtRepository: CourtRepository
@@ -24,11 +23,6 @@ class CourtResourcePagingTest: IntegrationTest() {
   fun `insert inactive test court`() {
     courtRepository.save(inactiveTestCourt)
   }
-//
-//  @AfterAll
-//  fun `delete test court`() {
-//    courtRepository.delete(inactiveTestCourt)
-//  }
 
   @Test
   fun `find page of courts`() {
