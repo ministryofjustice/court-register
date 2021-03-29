@@ -103,7 +103,7 @@ class CourtMaintenanceResource(
       content = [
         Content(
           mediaType = "application/json",
-          schema = Schema(implementation = CourtDto::class)
+          schema = Schema(implementation = InsertCourtDto::class)
         )
       ]
     ),
