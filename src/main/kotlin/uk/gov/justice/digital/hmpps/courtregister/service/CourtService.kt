@@ -35,9 +35,9 @@ class CourtService(
 
   fun findPage(
     active: Boolean? = null,
-    courtTypeId: String? = null,
+    courtTypeIds: List<String>? = null,
     pageable: Pageable = Pageable.unpaged()
-  ): Page<CourtDto> = courtRepository.findPage(active, courtTypeId, pageable).map { CourtDto(it) }
+  ): Page<CourtDto> = courtRepository.findPage(active, courtTypeIds, pageable).map { CourtDto(it) }
 
   fun updateCourt(courtId: String, courtUpdateRecord: UpdateCourtDto): CourtDto {
     val court = courtRepository.findById(courtId)
