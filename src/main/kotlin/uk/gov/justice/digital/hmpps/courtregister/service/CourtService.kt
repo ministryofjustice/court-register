@@ -37,17 +37,7 @@ class CourtService(
     active: Boolean? = null,
     courtTypeId: String? = null,
     pageable: Pageable = Pageable.unpaged()
-  ): Page<CourtDto> {
-    // TODO this is unsustainable - try using the spring data jpa query DSL
-    val courtType = courtTypeId?.let { courtTypeRepository.findById(it).orElse(null) }
-    return when {
-      active != null && courtType != null -> courtRepository.findByActiveAndCourtType(active, courtType, pageable)
-      active != null -> courtRepository.findByActive(active, pageable)
-      courtType != null -> courtRepository.findByCourtType(courtType, pageable)
-      else -> courtRepository.findAll(pageable)
-    }
-      .map { CourtDto(it) }
-  }
+  ): Page<CourtDto> = courtRepository.findPage(active, courtTypeId, pageable).map { CourtDto(it) }
 
   fun updateCourt(courtId: String, courtUpdateRecord: UpdateCourtDto): CourtDto {
     val court = courtRepository.findById(courtId)
