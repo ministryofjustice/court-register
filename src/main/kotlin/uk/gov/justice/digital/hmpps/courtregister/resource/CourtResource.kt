@@ -128,7 +128,7 @@ class CourtResource(
   fun getAllCourts(): List<CourtDto> =
     courtService.findAll(false)
 
-  @GetMapping("/all/paged")
+  @GetMapping("/paged")
   @Operation(
     summary = "Get page of courts",
     description = "Page of courts",

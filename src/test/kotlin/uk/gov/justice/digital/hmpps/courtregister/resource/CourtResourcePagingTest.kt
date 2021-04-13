@@ -33,7 +33,7 @@ class CourtResourcePagingTest : IntegrationTest() {
 
   @Test
   fun `find page of courts`() {
-    webTestClient.get().uri("/courts/all/paged?page=0&size=3&sort=courtName")
+    webTestClient.get().uri("/courts/paged?page=0&size=3&sort=courtName")
       .exchange()
       .expectStatus().isOk
       .expectBody()
@@ -51,7 +51,7 @@ class CourtResourcePagingTest : IntegrationTest() {
 
   @Test
   fun `find page of active courts`() {
-    webTestClient.get().uri("/courts/all/paged?page=0&size=3&sort=courtName&active=true")
+    webTestClient.get().uri("/courts/paged?page=0&size=3&sort=courtName&active=true")
       .exchange()
       .expectStatus().isOk
       .expectBody()
@@ -62,7 +62,7 @@ class CourtResourcePagingTest : IntegrationTest() {
 
   @Test
   fun `find page filtered by court type`() {
-    webTestClient.get().uri("/courts/all/paged?page=0&size=3&sort=courtName&courtTypeIds=YTH")
+    webTestClient.get().uri("/courts/paged?page=0&size=3&sort=courtName&courtTypeIds=YTH")
       .exchange()
       .expectStatus().isOk
       .expectBody()
@@ -75,7 +75,7 @@ class CourtResourcePagingTest : IntegrationTest() {
 
   @Test
   fun `find page filtered by court type and active flag`() {
-    webTestClient.get().uri("/courts/all/paged?page=0&size=3&sort=courtName&courtTypeIds=YTH&active=true")
+    webTestClient.get().uri("/courts/paged?page=0&size=3&sort=courtName&courtTypeIds=YTH&active=true")
       .exchange()
       .expectStatus().isOk
       .expectBody()
@@ -91,7 +91,7 @@ class CourtResourcePagingTest : IntegrationTest() {
 
   @Test
   fun `find page filtered by multiple court types`() {
-    webTestClient.get().uri("/courts/all/paged?page=0&size=3&sort=courtName&courtTypeIds=YTH&courtTypeIds=CRN")
+    webTestClient.get().uri("/courts/paged?page=0&size=3&sort=courtName&courtTypeIds=YTH&courtTypeIds=CRN")
       .exchange()
       .expectStatus().isOk
       .expectBody()
@@ -103,7 +103,7 @@ class CourtResourcePagingTest : IntegrationTest() {
 
   @Test
   fun `find page filtered by multiple court types and active flag`() {
-    webTestClient.get().uri("/courts/all/paged?page=0&size=3&sort=courtName&courtTypeIds=YTH&courtTypeIds=CRN&active=true")
+    webTestClient.get().uri("/courts/paged?page=0&size=3&sort=courtName&courtTypeIds=YTH&courtTypeIds=CRN&active=true")
       .exchange()
       .expectStatus().isOk
       .expectBody()
