@@ -21,7 +21,9 @@ import javax.persistence.OneToMany
 @Repository
 interface CourtRepository : PagingAndSortingRepository<Court, String> {
   fun findByActiveOrderById(active: Boolean): List<Court>
-  fun findByActiveOrderById(active: Boolean, pageable: Pageable): Page<Court>
+  fun findByActive(active: Boolean, pageable: Pageable): Page<Court>
+  fun findByCourtType(courtType: CourtType, pageable: Pageable): Page<Court>
+  fun findByActiveAndCourtType(active: Boolean, courtType: CourtType, pageable: Pageable): Page<Court>
 }
 
 @Entity

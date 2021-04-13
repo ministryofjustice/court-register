@@ -26,7 +26,7 @@ class CourtResourcePagingTest : IntegrationTest() {
 
   @Test
   fun `find page of courts`() {
-    webTestClient.get().uri("/courts/all/paged?page=0&size=3&sort=id")
+    webTestClient.get().uri("/courts/all/paged?page=0&size=3&sort=courtName")
       .exchange()
       .expectStatus().isOk
       .expectBody()
@@ -41,7 +41,7 @@ class CourtResourcePagingTest : IntegrationTest() {
 
   @Test
   fun `find page of active courts`() {
-    webTestClient.get().uri("/courts/paged?page=0&size=3&sort=id")
+    webTestClient.get().uri("/courts/all/paged?page=0&size=3&sort=courtName&active=true")
       .exchange()
       .expectStatus().isOk
       .expectBody()
@@ -52,5 +52,42 @@ class CourtResourcePagingTest : IntegrationTest() {
       .jsonPath("$.last").isEqualTo(false)
       .jsonPath("$.content[0].courtId").value<String> { assertThat(it).isNotEqualTo("AAAAAA") }
       .jsonPath("$.content[0].active").isEqualTo(true)
+  }
+
+  @Test
+  fun `find page filtered by court type`() {
+    webTestClient.get().uri("/courts/all/paged?page=0&size=3&sort=courtName&courtTypeId=YTH")
+      .exchange()
+      .expectStatus().isOk
+      .expectBody()
+      .jsonPath("$.content.length()").isEqualTo(3)
+      .jsonPath("$.size").isEqualTo(3)
+      .jsonPath("$.totalElements").value<Int> { assertThat(it).isGreaterThan(3) }
+      .jsonPath("$.totalPages").value<Int> { assertThat(it).isGreaterThan(1) }
+      .jsonPath("$.last").isEqualTo(false)
+      .jsonPath("$.content[0].courtId").value<String> { assertThat(it).isEqualTo("AAAAAA") }
+      .jsonPath("$.content[0].type.courtType").isEqualTo("YTH")
+      .jsonPath("$.content[1].type.courtType").isEqualTo("YTH")
+      .jsonPath("$.content[2].type.courtType").isEqualTo("YTH")
+  }
+
+  @Test
+  fun `find page filtered by court type and active flag`() {
+    webTestClient.get().uri("/courts/all/paged?page=0&size=3&sort=courtName&courtTypeId=YTH&active=true")
+      .exchange()
+      .expectStatus().isOk
+      .expectBody()
+      .jsonPath("$.content.length()").isEqualTo(3)
+      .jsonPath("$.size").isEqualTo(3)
+      .jsonPath("$.totalElements").value<Int> { assertThat(it).isGreaterThan(3) }
+      .jsonPath("$.totalPages").value<Int> { assertThat(it).isGreaterThan(1) }
+      .jsonPath("$.last").isEqualTo(false)
+      .jsonPath("$.content[0].courtId").value<String> { assertThat(it).isNotEqualTo("AAAAAA") }
+      .jsonPath("$.content[0].type.courtType").isEqualTo("YTH")
+      .jsonPath("$.content[0].active").isEqualTo(true)
+      .jsonPath("$.content[1].type.courtType").isEqualTo("YTH")
+      .jsonPath("$.content[1].active").isEqualTo(true)
+      .jsonPath("$.content[2].type.courtType").isEqualTo("YTH")
+      .jsonPath("$.content[2].active").isEqualTo(true)
   }
 }

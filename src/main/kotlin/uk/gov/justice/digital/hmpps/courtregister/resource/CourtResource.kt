@@ -16,6 +16,7 @@ import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 import uk.gov.justice.digital.hmpps.courtregister.ErrorResponse
 import uk.gov.justice.digital.hmpps.courtregister.jpa.Building
@@ -87,26 +88,6 @@ class CourtResource(
   fun getActiveCourts(): List<CourtDto> =
     courtService.findAll(true)
 
-  @GetMapping("/paged")
-  @Operation(
-    summary = "Get page of active courts",
-    description = "Page of courts (active only)",
-    responses = [
-      ApiResponse(
-        responseCode = "200",
-        description = "Page of Active Court Information Returned",
-        content = arrayOf(
-          Content(
-            mediaType = "application/json",
-            array = ArraySchema(schema = Schema(implementation = CourtDtoPage::class))
-          )
-        )
-      )
-    ]
-  )
-  fun getPageOfActiveCourts(pageable: Pageable = Pageable.unpaged()): Page<CourtDto> =
-    courtService.findPage(true, pageable)
-
   @GetMapping("/types")
   @Operation(
     summary = "Get all types of court",
@@ -149,12 +130,12 @@ class CourtResource(
 
   @GetMapping("/all/paged")
   @Operation(
-    summary = "Get page of active and inactive courts",
-    description = "Page of active/inactive courts",
+    summary = "Get page of courts",
+    description = "Page of courts",
     responses = [
       ApiResponse(
         responseCode = "200",
-        description = "All Court Information Returned (Active only)",
+        description = "All Court Information Returned",
         content = arrayOf(
           Content(
             mediaType = "application/json",
@@ -164,8 +145,12 @@ class CourtResource(
       )
     ]
   )
-  fun getPageOfCourts(pageable: Pageable = Pageable.unpaged()): Page<CourtDto> =
-    courtService.findPage(false, pageable)
+  fun getPageOfCourts(
+    @Schema(description = "Active?", example = "true", required = false) @RequestParam active: Boolean? = null,
+    @Schema(description = "Court Type", example = "CROWN", required = false) @RequestParam courtTypeId: String? = null,
+    pageable: Pageable = Pageable.unpaged()
+  ): Page<CourtDto> =
+    courtService.findPage(active, courtTypeId, pageable)
 
   @GetMapping("/id/{courtId}/buildings/id/{buildingId}")
   @Operation(
