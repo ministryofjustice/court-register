@@ -5,7 +5,9 @@ import org.springframework.data.annotation.LastModifiedDate
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.data.jpa.domain.support.AuditingEntityListener
+import org.springframework.data.jpa.repository.Query
 import org.springframework.data.repository.PagingAndSortingRepository
+import org.springframework.data.repository.query.Param
 import org.springframework.stereotype.Repository
 import java.time.LocalDateTime
 import javax.persistence.CascadeType
@@ -20,8 +22,21 @@ import javax.persistence.OneToMany
 
 @Repository
 interface CourtRepository : PagingAndSortingRepository<Court, String> {
+
   fun findByActiveOrderById(active: Boolean): List<Court>
-  fun findByActiveOrderById(active: Boolean, pageable: Pageable): Page<Court>
+
+  @Query(
+    """
+    select c from Court c 
+    where (:active is null or c.active = :active) 
+    and (coalesce(:courtTypeIds) is null or c.courtType.id in (:courtTypeIds)) 
+  """
+  )
+  fun findPage(
+    @Param("active") active: Boolean?,
+    @Param("courtTypeIds") courtTypeId: List<String>?,
+    pageable: Pageable
+  ): Page<Court>
 }
 
 @Entity
