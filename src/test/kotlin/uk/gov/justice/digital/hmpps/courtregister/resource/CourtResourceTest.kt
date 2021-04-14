@@ -11,7 +11,6 @@ import org.junit.jupiter.api.Test
 import org.mockito.ArgumentMatchers.anyString
 import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.http.MediaType
-import org.springframework.test.web.reactive.server.expectBody
 import org.springframework.web.reactive.function.BodyInserters
 import uk.gov.justice.digital.hmpps.courtregister.jpa.Building
 import uk.gov.justice.digital.hmpps.courtregister.jpa.BuildingRepository
@@ -190,7 +189,17 @@ class CourtResourceTest : IntegrationTest() {
             user = "bobby.beans"
           )
         )
-        .body(BodyInserters.fromValue(CourtDto("ACCRYD", "A New Court", "a description", CourtTypeDto("YOUTH", "Youth Court"), true)))
+        .body(
+          BodyInserters.fromValue(
+            mapOf(
+              "courtId" to "ACCRYD",
+              "courtName" to "A New Court",
+              "courtDescription" to "a description",
+              "courtType" to "YOUTH",
+              "active" to true,
+            )
+          )
+        )
         .exchange()
         .expectStatus().isCreated
         .expectBody().json("inserted_court".loadJson())
@@ -213,7 +222,17 @@ class CourtResourceTest : IntegrationTest() {
         .uri("/court-maintenance")
         .accept(MediaType.APPLICATION_JSON)
         .headers(setAuthorisation(roles = listOf("ROLE_MAINTAIN_REF_DATA"), scopes = listOf("write")))
-        .body(BodyInserters.fromValue(CourtDto("R", "A New Court", "a description", CourtTypeDto("YOUTH", "Youth Court"), true)))
+        .body(
+          BodyInserters.fromValue(
+            mapOf(
+              "courtId" to "R",
+              "courtName" to "A New Court",
+              "courtDescription" to "a description",
+              "courtType" to "YOUTH",
+              "active" to true,
+            )
+          )
+        )
         .exchange()
         .expectStatus().isBadRequest
     }

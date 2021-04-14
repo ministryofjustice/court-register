@@ -2,7 +2,6 @@
   "courtId": "ACCRYC",
   "courtName": "Updated Court",
   "courtDescription": "a description",
-  "courtType": "YOUTH",
   "type": {
     "courtType": "YOUTH",
     "courtName": "Youth Court"
