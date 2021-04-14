@@ -2,8 +2,8 @@ package uk.gov.justice.digital.hmpps.courtregister.resource
 
 import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL
-import com.fasterxml.jackson.annotation.JsonProperty
 import io.swagger.v3.oas.annotations.Operation
+import io.swagger.v3.oas.annotations.Parameter
 import io.swagger.v3.oas.annotations.media.ArraySchema
 import io.swagger.v3.oas.annotations.media.Content
 import io.swagger.v3.oas.annotations.media.Schema
@@ -146,8 +146,8 @@ class CourtResource(
     ]
   )
   fun getPageOfCourts(
-    @Schema(description = "Active?", example = "true", required = false) @RequestParam active: Boolean? = null,
-    @Schema(description = "Court Type", example = "CROWN", required = false) @RequestParam courtTypeIds: List<String>? = null,
+    @Parameter(description = "Active?", example = "true", required = false) @RequestParam active: Boolean? = null,
+    @Parameter(description = "Court Type", example = "CRN", required = false) @RequestParam courtTypeIds: List<String>? = null,
     pageable: Pageable = Pageable.unpaged()
   ): Page<CourtDto> =
     courtService.findPage(active, courtTypeIds, pageable)
@@ -268,10 +268,6 @@ data class CourtDto(
     court.id, court.courtName, court.courtDescription, CourtTypeDto(court.courtType), court.active,
     court.buildings?.map { BuildingDto(it) }
   )
-
-  @JsonProperty
-  @Schema(description = "Type of court", example = "COU")
-  fun courtType(): String = type.courtType
 }
 
 @JsonInclude(NON_NULL)
