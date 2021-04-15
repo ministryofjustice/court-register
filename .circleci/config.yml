@@ -43,7 +43,7 @@ jobs:
       - run:
           environment:
             AWS_PROVIDER: localstack
-          command: ./gradlew check
+          command: ./gradlew -Dorg.gradle.jvmargs=--illegal-access=permit check
       - save_cache:
           paths:
             - ~/.gradle
