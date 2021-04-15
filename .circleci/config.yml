@@ -43,7 +43,7 @@ jobs:
       - run:
           environment:
             AWS_PROVIDER: localstack
-          command: ./gradlew -Dorg.gradle.jvmargs=--illegal-access=permit check
+          command: ./gradlew -Dorg.gradle.jvmargs="--illegal-access=permit" -Dkotlin.daemon.jvm.options="--illegal-access=permit" check
       - save_cache:
           paths:
             - ~/.gradle
@@ -68,10 +68,6 @@ workflows:
               ignore: /.*/
       - hmpps/helm_lint:
           name: helm_lint
-      - hmpps/gradle_owasp_dependency_check:
-          context:
-            - hmpps-common-vars
-          name: gradle_owasp_dependency_check
       - hmpps/build_docker:
           name: build_docker
           filters:
