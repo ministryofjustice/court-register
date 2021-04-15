@@ -3,6 +3,7 @@ plugins {
   kotlin("plugin.spring") version "1.4.32"
   kotlin("plugin.jpa") version "1.4.32"
   idea
+  id("com.gorylenko.gradle-git-properties") version "2.3.1-rc1"
 }
 
 configurations {
@@ -47,4 +48,5 @@ dependencies {
   testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactive:1.4.3")
   testImplementation("io.jsonwebtoken:jjwt:0.9.1")
   testImplementation("org.mockito:mockito-inline:3.8.0")
+  testImplementation("com.pinterest:ktlint:0.41.0")
 }
