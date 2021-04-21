@@ -11,10 +11,10 @@ sns:
   topic:
     arn: arn:aws:sns:eu-west-2:000000000000:hmpps_domain_events
   endpoint:
-    url: http://localhost:4575
+    url: http://localhost:4566
 sqs:
   endpoint:
-    url: http://localhost:4576
+    url: http://localhost:4566
   queue:
     name: hmpps_audit_queue
 
