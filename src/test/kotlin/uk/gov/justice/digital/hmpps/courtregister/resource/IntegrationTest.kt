@@ -6,8 +6,26 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.http.HttpHeaders
 import org.springframework.test.context.ActiveProfiles
+import org.springframework.test.context.DynamicPropertyRegistry
+import org.springframework.test.context.DynamicPropertySource
 import org.springframework.test.web.reactive.server.WebTestClient
+import org.testcontainers.containers.PostgreSQLContainer
+import org.testcontainers.containers.wait.strategy.Wait
 import uk.gov.justice.digital.hmpps.courtregister.helper.JwtAuthHelper
+
+object PostgresqlContainer {
+  val instance by lazy { startPostgresqlContainer() }
+  fun startPostgresqlContainer() = PostgreSQLContainer<Nothing>("postgres:12").apply {
+    withEnv("HOSTNAME_EXTERNAL", "localhost")
+    withExposedPorts(5432)
+    withDatabaseName("court_register_db")
+    withUsername("admin")
+    withPassword("admin_password")
+    setWaitStrategy(Wait.forListeningPort())
+    withReuse(true)
+    start()
+  }
+}
 
 @Suppress("SpringJavaInjectionPointsAutowiringInspection")
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -38,4 +56,23 @@ abstract class IntegrationTest {
     roles: List<String> = listOf(),
     scopes: List<String> = listOf()
   ): (HttpHeaders) -> Unit = jwtAuthHelper.setAuthorisation(user, roles, scopes)
+
+  companion object {
+    private val pgContainer = PostgresqlContainer.instance
+
+    @JvmStatic
+    @DynamicPropertySource
+    fun properties(registry: DynamicPropertyRegistry) {
+      registry.add("spring.datasource.url", pgContainer::getJdbcUrl)
+      registry.add("spring.datasource.username", pgContainer::getUsername)
+      registry.add("spring.datasource.password", pgContainer::getPassword)
+      registry.add("spring.datasource.placeholders.database_update_password", pgContainer::getPassword)
+      registry.add("spring.datasource.placeholders.database_read_only_password", pgContainer::getPassword)
+      registry.add("spring.jpa.properties.hibernate.default_schema", pgContainer::getDatabaseName)
+      registry.add("spring.flyway.url", pgContainer::getJdbcUrl)
+      registry.add("spring.flyway.user", pgContainer::getUsername)
+      registry.add("spring.flyway.password", pgContainer::getPassword)
+      registry.add("spring.flyway.schemas", pgContainer::getDatabaseName)
+    }
+  }
 }

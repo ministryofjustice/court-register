@@ -15,13 +15,13 @@ spring:
   main:
     allow-bean-definition-overriding: true
 
-  datasource:
-    url: 'jdbc:h2:mem:court-register-db;MODE=PostgreSQL'
-  h2:
-    console:
-      enabled: true
-  jpa:
-    show-sql: true
+#  datasource:
+#    url: 'jdbc:h2:mem:court-register-db;MODE=PostgreSQL'
+#  h2:
+#    console:
+#      enabled: true
+#  jpa:
+#    show-sql: true
 
   security:
     oauth2:

@@ -5,6 +5,7 @@ import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.web.reactive.server.WebTestClient
 import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.courtregister.jpa.Court
@@ -13,6 +14,7 @@ import uk.gov.justice.digital.hmpps.courtregister.jpa.CourtType
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @Transactional
+@ActiveProfiles("postgres")
 class CourtResourcePagingTest : IntegrationTest() {
 
   @Autowired

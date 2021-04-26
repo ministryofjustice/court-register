@@ -43,6 +43,7 @@ dependencies {
   testImplementation("com.github.tomakehurst:wiremock-standalone:2.27.2")
   testImplementation("net.javacrumbs.json-unit:json-unit-assertj:2.25.0")
   testImplementation("org.testcontainers:localstack:1.15.3")
+  testImplementation("org.testcontainers:postgresql:1.15.2")
   testImplementation("org.awaitility:awaitility-kotlin:4.0.3")
   testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactive:1.4.3")
   testImplementation("io.jsonwebtoken:jjwt:0.9.1")
