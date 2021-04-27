@@ -12,7 +12,7 @@ import org.springframework.web.reactive.function.BodyInserters
 class CourtBuildingMaintenanceIntTest : IntegrationTest() {
   @Nested
   @DisplayName("Updating court buildings")
-  inner class UpdatingBuildings() {
+  inner class UpdatingBuildings {
     @Test
     fun `can update a building`() {
       webTestClient.put().uri("court-maintenance/id/ABDRCT/buildings/767")
@@ -35,7 +35,7 @@ class CourtBuildingMaintenanceIntTest : IntegrationTest() {
                 "county": "Aberdare",
                 "postcode": "CF44 7DW"
             }
-        """.trimIndent()
+            """.trimIndent()
           )
         )
         .exchange()
@@ -71,7 +71,7 @@ class CourtBuildingMaintenanceIntTest : IntegrationTest() {
                 "county": "Aberdare",
                 "postcode": "CF44 7DW"
             }
-        """.trimIndent()
+            """.trimIndent()
           )
         )
         .exchange()
@@ -107,7 +107,7 @@ class CourtBuildingMaintenanceIntTest : IntegrationTest() {
                 "county": "Aberdare",
                 "postcode": "CF44 7DW"
             }
-        """.trimIndent()
+            """.trimIndent()
           )
         )
         .exchange()
@@ -137,7 +137,7 @@ class CourtBuildingMaintenanceIntTest : IntegrationTest() {
                 "county": "Aberdare",
                 "postcode": "CF44 7DW"
             }
-        """.trimIndent()
+            """.trimIndent()
           )
         )
         .exchange()
@@ -145,5 +145,3 @@ class CourtBuildingMaintenanceIntTest : IntegrationTest() {
     }
   }
 }
-
-
