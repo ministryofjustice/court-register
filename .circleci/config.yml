@@ -9,7 +9,7 @@ jobs:
     - image: cimg/openjdk:16.0
     - image: localstack/localstack:0.12.9.1
       environment:
-        - SERVICES=<<parameters.services>>
+        - SERVICES=sqs,sns
         - ES_PORT_EXTERNAL=4571
         - DEBUG=${DEBUG- }
         - DATA_DIR=/tmp/localstack/data
