@@ -5,16 +5,16 @@ orbs:
 
 jobs:
   validate:
+    executor:
+      name: hmpps/localstack
+      jdk_tag: "16.0"
+      localstack_tag: "0.12.9.1"
     docker:
       - image: circleci/postgres:9.6-alpine
         environment:
           - POSTGRES_PASSWORD=admin_password
           - POSTGRES_USER=admin
           - POSTGRES_DB=court_register_db
-    executor:
-      name: hmpps/localstack
-      jdk_tag: "16.0"
-      localstack_tag: "0.12.9.1"
     steps:
       - checkout
       - hmpps/install_aws_cli
