@@ -34,15 +34,15 @@ object PostgresqlContainer {
     } else {
       null
     }
-}
 
-private fun checkPostgresRunning(): Boolean =
-  try {
-    val serverSocket: ServerSocket = ServerSocket(5432)
-    serverSocket.localPort == 0
-  } catch (e: IOException) {
-    true
-  }
+  private fun checkPostgresRunning(): Boolean =
+    try {
+      val serverSocket = ServerSocket(5432)
+      serverSocket.localPort == 0
+    } catch (e: IOException) {
+      true
+    }
+}
 
 @ExtendWith(FlywayRestoreExtension::class)
 @Suppress("SpringJavaInjectionPointsAutowiringInspection")
