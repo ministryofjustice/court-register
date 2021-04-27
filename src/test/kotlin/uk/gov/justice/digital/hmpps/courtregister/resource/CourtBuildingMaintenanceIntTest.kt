@@ -47,6 +47,7 @@ class CourtBuildingMaintenanceIntTest : IntegrationTest() {
         .expectBody()
         .jsonPath("$.buildingName").isEqualTo("New Crown Building")
     }
+
     @Test
     fun `can update a building subcode`() {
       webTestClient.put().uri("court-maintenance/id/ABDRCT/buildings/767")
@@ -82,6 +83,7 @@ class CourtBuildingMaintenanceIntTest : IntegrationTest() {
         .expectBody()
         .jsonPath("$.subCode").isEqualTo("ZYXAA")
     }
+
     @Test
     fun `can not update a building sub-code to existing court code`() {
       webTestClient.put().uri("court-maintenance/id/ABDRCT/buildings/767")
@@ -111,6 +113,7 @@ class CourtBuildingMaintenanceIntTest : IntegrationTest() {
         .exchange()
         .expectStatus().isEqualTo(HttpStatus.CONFLICT)
     }
+
     @Test
     fun `can not update a building sub-code to existing building sub-code`() {
       webTestClient.put().uri("court-maintenance/id/ABDRCT/buildings/767")
