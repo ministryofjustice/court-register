@@ -1,8 +1,5 @@
 DROP INDEX building_udx;
 CREATE UNIQUE INDEX building_udx ON building (sub_code);
--- TODO replace the ALTER statement with the function and constraint below once we have switched to Postgres
--- ALTER table building ADD CHECK(NOT EXISTS (SELECT 1 FROM court c WHERE c.id = sub_code));
-
 -- create function court_code_exists(court_code varchar) returns boolean as
 -- $$
 -- begin
