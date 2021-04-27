@@ -3,6 +3,7 @@ package uk.gov.justice.digital.hmpps.courtregister
 import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL
 import org.slf4j.LoggerFactory
+import org.springframework.dao.DataIntegrityViolationException
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.ExceptionHandler
@@ -24,6 +25,14 @@ class CourtRegisterExceptionHandler {
   @ExceptionHandler(EntityExistsException::class)
   fun handleExistsException(e: Exception): ResponseEntity<ErrorResponse> {
     log.debug("Court already exists exception: {}", e.message)
+    return ResponseEntity
+      .status(HttpStatus.CONFLICT)
+      .body(ErrorResponse(status = HttpStatus.CONFLICT, developerMessage = e.message))
+  }
+
+  @ExceptionHandler(DataIntegrityViolationException::class)
+  fun handleConstraintViolationException(e: Exception): ResponseEntity<ErrorResponse> {
+    log.debug("Unable to update court due to : {}", e.message)
     return ResponseEntity
       .status(HttpStatus.CONFLICT)
       .body(ErrorResponse(status = HttpStatus.CONFLICT, developerMessage = e.message))
