@@ -13,6 +13,7 @@ spring:
     group:
       test:
         - "stdout"
+        - "postgres"
 
   security:
     oauth2:

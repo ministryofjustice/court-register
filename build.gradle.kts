@@ -21,8 +21,8 @@ dependencies {
   implementation("org.springframework.boot:spring-boot-starter-oauth2-client")
   implementation("org.springframework.cloud:spring-cloud-starter-aws-messaging:2.2.6.RELEASE")
 
-  runtimeOnly("com.h2database:h2:1.4.200")
-  runtimeOnly("org.flywaydb:flyway-core:7.8.1")
+  // runtimeOnly("com.h2database:h2:1.4.200")
+  implementation("org.flywaydb:flyway-core:7.8.1")
   runtimeOnly("org.postgresql:postgresql:42.2.19")
 
   implementation("javax.transaction:javax.transaction-api:1.3")

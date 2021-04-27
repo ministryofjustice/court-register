@@ -45,7 +45,7 @@ services:
     environment:
       - POSTGRES_PASSWORD=admin_password
       - POSTGRES_USER=admin
-      - POSTGRES_DB=court-register-db
+      - POSTGRES_DB=court_register_db
 
   localstack:
     image: localstack/localstack:0.12.9.1
