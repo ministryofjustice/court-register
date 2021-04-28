@@ -10,7 +10,7 @@ import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.DynamicPropertyRegistry
 import org.springframework.test.context.DynamicPropertySource
 import org.springframework.test.web.reactive.server.WebTestClient
-import uk.gov.justice.digital.hmpps.courtregister.config.PostgresqlContainer
+import uk.gov.justice.digital.hmpps.courtregister.config.PostgresContainer
 import uk.gov.justice.digital.hmpps.courtregister.helper.FlywayRestoreExtension
 import uk.gov.justice.digital.hmpps.courtregister.helper.JwtAuthHelper
 
@@ -46,7 +46,7 @@ abstract class IntegrationTest {
   ): (HttpHeaders) -> Unit = jwtAuthHelper.setAuthorisation(user, roles, scopes)
 
   companion object {
-    private val pgContainer = PostgresqlContainer.instance
+    private val pgContainer = PostgresContainer.instance
 
     @JvmStatic
     @DynamicPropertySource
@@ -57,11 +57,9 @@ abstract class IntegrationTest {
         registry.add("spring.datasource.password", pgContainer::getPassword)
         registry.add("spring.datasource.placeholders.database_update_password", pgContainer::getPassword)
         registry.add("spring.datasource.placeholders.database_read_only_password", pgContainer::getPassword)
-        registry.add("spring.jpa.properties.hibernate.default_schema", pgContainer::getDatabaseName)
         registry.add("spring.flyway.url", pgContainer::getJdbcUrl)
         registry.add("spring.flyway.user", pgContainer::getUsername)
         registry.add("spring.flyway.password", pgContainer::getPassword)
-        registry.add("spring.flyway.schemas", pgContainer::getDatabaseName)
       }
     }
   }

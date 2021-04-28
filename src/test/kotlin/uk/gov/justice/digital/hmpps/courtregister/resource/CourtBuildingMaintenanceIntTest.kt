@@ -1,6 +1,5 @@
 package uk.gov.justice.digital.hmpps.courtregister.resource
 
-import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
@@ -86,7 +85,6 @@ class CourtBuildingMaintenanceIntTest : IntegrationTest() {
     }
 
     @Test
-    @Disabled("Until we switch to a Postgres DB and reinsert the constraint")
     fun `can not update a building sub-code to existing court code`() {
       webTestClient.put().uri("court-maintenance/id/ABDRCT/buildings/767")
         .accept(MediaType.APPLICATION_JSON)

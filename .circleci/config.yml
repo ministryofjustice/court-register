@@ -18,7 +18,7 @@ jobs:
         - AWS_EXECUTION_ENV=True
         - DEFAULT_REGION=eu-west-2
         - TMPDIR=/private
-    - image: circleci/postgres:9.6-alpine
+    - image: circleci/postgres:13.2
       environment:
         - POSTGRES_PASSWORD=admin_password
         - POSTGRES_USER=admin

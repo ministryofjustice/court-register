@@ -5,11 +5,11 @@ import org.testcontainers.containers.wait.strategy.Wait
 import java.io.IOException
 import java.net.ServerSocket
 
-object PostgresqlContainer {
+object PostgresContainer {
   val instance: PostgreSQLContainer<Nothing>? by lazy { startPostgresqlContainer() }
   fun startPostgresqlContainer(): PostgreSQLContainer<Nothing>? =
     if (checkPostgresRunning().not()) {
-      PostgreSQLContainer<Nothing>("postgres").apply {
+      PostgreSQLContainer<Nothing>("postgres:13.2").apply {
         withEnv("HOSTNAME_EXTERNAL", "localhost")
         withExposedPorts(5432)
         withDatabaseName("court_register_db")
