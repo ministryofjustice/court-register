@@ -20,8 +20,8 @@ import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.bind.annotation.RestController
 import uk.gov.justice.digital.hmpps.courtregister.ErrorResponse
 import uk.gov.justice.digital.hmpps.courtregister.service.AuditService
+import uk.gov.justice.digital.hmpps.courtregister.service.AuditType
 import uk.gov.justice.digital.hmpps.courtregister.service.CourtService
-import uk.gov.justice.digital.hmpps.courtregister.service.EventType.COURT_REGISTER_INSERT
 import uk.gov.justice.digital.hmpps.courtregister.service.EventType.COURT_REGISTER_UPDATE
 import uk.gov.justice.digital.hmpps.courtregister.service.SnsService
 import javax.validation.Valid
@@ -86,7 +86,7 @@ class CourtMaintenanceResource(
     val updatedCourt = courtService.updateCourt(courtId, courtUpdateRecord)
     snsService.sendEvent(COURT_REGISTER_UPDATE, courtId)
     auditService.sendAuditEvent(
-      COURT_REGISTER_UPDATE.name,
+      AuditType.COURT_REGISTER_UPDATE.name,
       courtId to courtUpdateRecord
     )
     return updatedCourt
@@ -144,9 +144,9 @@ class CourtMaintenanceResource(
     @RequestBody @Valid courtInsertRecord: InsertCourtDto
   ): CourtDto {
     val newCourt = courtService.insertCourt(courtInsertRecord)
-    snsService.sendEvent(COURT_REGISTER_INSERT, newCourt.courtId)
+    snsService.sendEvent(COURT_REGISTER_UPDATE, newCourt.courtId)
     auditService.sendAuditEvent(
-      COURT_REGISTER_INSERT.name,
+      AuditType.COURT_REGISTER_INSERT.name,
       courtInsertRecord
     )
 
