@@ -1,7 +1,9 @@
 package uk.gov.justice.digital.hmpps.courtregister.jpa
 
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.TestInstance
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
@@ -9,6 +11,7 @@ import org.springframework.test.context.transaction.TestTransaction
 import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.courtregister.resource.IntegrationTest
 
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @Transactional
 class CourtRepositoryTest : IntegrationTest() {
   companion object {
@@ -19,6 +22,13 @@ class CourtRepositoryTest : IntegrationTest() {
 
   @Autowired
   lateinit var courtTypeRepository: CourtTypeRepository
+
+  @AfterAll
+  fun `delete added test data`() {
+    courtRepository.findById("SHFCRT").get().run {
+      courtRepository.delete(this)
+    }
+  }
 
   @Test
   fun `should load court data`() {

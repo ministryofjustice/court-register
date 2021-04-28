@@ -1,9 +1,11 @@
 package uk.gov.justice.digital.hmpps.courtregister.resource
 
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
+import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.test.web.reactive.server.WebTestClient
 import org.springframework.transaction.annotation.Transactional
@@ -14,6 +16,10 @@ import uk.gov.justice.digital.hmpps.courtregister.jpa.CourtType
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @Transactional
 class CourtResourcePagingTest : IntegrationTest() {
+
+  companion object {
+    val log = LoggerFactory.getLogger(this::class.java)
+  }
 
   @Autowired
   private lateinit var courtRepository: CourtRepository
@@ -26,8 +32,15 @@ class CourtResourcePagingTest : IntegrationTest() {
 
   @BeforeAll
   fun `insert inactive test court`() {
-    testCourts.map {
+    testCourts.forEach {
       courtRepository.save(it)
+    }
+  }
+
+  @AfterAll
+  fun `remove inactive test court`() {
+    testCourts.forEach {
+      courtRepository.delete(it)
     }
   }
 
