@@ -45,14 +45,35 @@ In all of the above the application should use the host network to communicate w
 
 ### Testing
 
-Note that `check` only runs the unit tests and you have to run the integration tests manually.
-
 Note that the integration tests currently use TestContainers to start localstack and so you do not need to start localstack manually.
 
 If you DO wish to run localstack manually (as is done in the Circle build) then you must:
 * start localstack with command `TMPDIR=/private$TMPDIR docker-compose up localstack`
 * run the tests with command `AWS_PROVIDER=localstack ./gradlew check`
 
+### Test Database
+
+The tests run against a Postgres database, not H2, so that we can test Postgres specific functionality such as the text search.
+
+Note that the database is reinitialized with Flyway after each test class so you do not need to tidy up data between tests.
+
+#### External Postgres Instance - local
+
+You can run the tests against an external Postgres database by starting it with:
+
+`docker-compose up court-register-db`
+
+Once running you will not need to restart the container as it will be refreshed for each test run.
+
+#### External Postgres Instance - CircleCI
+
+An external Postgres instance is started during the Circle build and the tests run against that instance.
+
+#### Testcontainers Postgres Instance
+
+If there is no external Postgres database running then the test suite will attempt to use Testcontainers to start a Postgres instance and the tests run against that.
+
+Note that this is slightly slower than running your own external Postgres instance - but not much.
 
 ### Architecture
 
