@@ -20,9 +20,9 @@ import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.bind.annotation.RestController
 import uk.gov.justice.digital.hmpps.courtregister.ErrorResponse
 import uk.gov.justice.digital.hmpps.courtregister.service.AuditService
+import uk.gov.justice.digital.hmpps.courtregister.service.AuditType
 import uk.gov.justice.digital.hmpps.courtregister.service.BuildingContactService
 import uk.gov.justice.digital.hmpps.courtregister.service.EventType
-import uk.gov.justice.digital.hmpps.courtregister.service.EventType.COURT_REGISTER_CONTACT_UPDATE
 import uk.gov.justice.digital.hmpps.courtregister.service.SnsService
 import javax.validation.Valid
 import javax.validation.constraints.Size
@@ -87,9 +87,9 @@ class BuildingContactMaintenanceResource(
     @RequestBody @Valid updateContactDto: UpdateContactDto
   ): ContactDto {
     val updatedContact = contactService.updateContact(courtId, buildingId, contactId, updateContactDto)
-    snsService.sendEvent(COURT_REGISTER_CONTACT_UPDATE, courtId)
+    snsService.sendEvent(EventType.COURT_REGISTER_UPDATE, courtId)
     auditService.sendAuditEvent(
-      COURT_REGISTER_CONTACT_UPDATE.name,
+      AuditType.COURT_REGISTER_CONTACT_UPDATE.name,
       mapOf("courtId" to courtId, "buildingId" to buildingId, "contact" to updatedContact)
     )
     return updatedContact
@@ -151,9 +151,9 @@ class BuildingContactMaintenanceResource(
     @RequestBody @Valid updateContactDto: UpdateContactDto
   ): ContactDto {
     val newContact = contactService.insertContact(courtId, buildingId, updateContactDto)
-    snsService.sendEvent(EventType.COURT_REGISTER_CONTACT_INSERT, courtId)
+    snsService.sendEvent(EventType.COURT_REGISTER_UPDATE, courtId)
     auditService.sendAuditEvent(
-      EventType.COURT_REGISTER_CONTACT_INSERT.name,
+      AuditType.COURT_REGISTER_CONTACT_INSERT.name,
       mapOf("courtId" to courtId, "buildingId" to buildingId, "contact" to newContact)
     )
 
@@ -198,9 +198,9 @@ class BuildingContactMaintenanceResource(
     @PathVariable contactId: Long
   ) {
     contactService.deleteContact(courtId, buildingId, contactId)
-    snsService.sendEvent(EventType.COURT_REGISTER_CONTACT_DELETE, courtId)
+    snsService.sendEvent(EventType.COURT_REGISTER_UPDATE, courtId)
     auditService.sendAuditEvent(
-      EventType.COURT_REGISTER_CONTACT_DELETE.name,
+      AuditType.COURT_REGISTER_CONTACT_DELETE.name,
       mapOf("courtId" to courtId, "buildingId" to buildingId, "contactId" to contactId)
     )
   }

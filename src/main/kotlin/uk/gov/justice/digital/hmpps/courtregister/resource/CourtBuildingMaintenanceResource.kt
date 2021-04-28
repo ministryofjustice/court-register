@@ -21,9 +21,9 @@ import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.bind.annotation.RestController
 import uk.gov.justice.digital.hmpps.courtregister.ErrorResponse
 import uk.gov.justice.digital.hmpps.courtregister.service.AuditService
+import uk.gov.justice.digital.hmpps.courtregister.service.AuditType
 import uk.gov.justice.digital.hmpps.courtregister.service.CourtBuildingService
 import uk.gov.justice.digital.hmpps.courtregister.service.EventType
-import uk.gov.justice.digital.hmpps.courtregister.service.EventType.COURT_REGISTER_BUILDING_UPDATE
 import uk.gov.justice.digital.hmpps.courtregister.service.SnsService
 import javax.validation.Valid
 import javax.validation.constraints.Size
@@ -86,9 +86,9 @@ class CourtBuildingMaintenanceResource(
     @RequestBody @Valid updateBuildingDto: UpdateBuildingDto
   ): BuildingDto {
     val updatedBuilding = buildingService.updateBuilding(courtId, buildingId, updateBuildingDto)
-    snsService.sendEvent(COURT_REGISTER_BUILDING_UPDATE, courtId)
+    snsService.sendEvent(EventType.COURT_REGISTER_UPDATE, courtId)
     auditService.sendAuditEvent(
-      COURT_REGISTER_BUILDING_UPDATE.name,
+      AuditType.COURT_REGISTER_BUILDING_UPDATE.name,
       mapOf("courtId" to courtId, "buildingId" to buildingId, "building" to updatedBuilding)
     )
     return updatedBuilding
@@ -148,9 +148,9 @@ class CourtBuildingMaintenanceResource(
     @RequestBody @Valid updateBuildingDto: UpdateBuildingDto
   ): BuildingDto {
     val newBuilding = buildingService.insertBuilding(courtId, updateBuildingDto)
-    snsService.sendEvent(EventType.COURT_REGISTER_BUILDING_INSERT, courtId)
+    snsService.sendEvent(EventType.COURT_REGISTER_UPDATE, courtId)
     auditService.sendAuditEvent(
-      EventType.COURT_REGISTER_BUILDING_INSERT.name,
+      AuditType.COURT_REGISTER_BUILDING_INSERT.name,
       mapOf("courtId" to courtId, "building" to newBuilding)
     )
 
@@ -193,9 +193,9 @@ class CourtBuildingMaintenanceResource(
     @PathVariable buildingId: Long
   ) {
     buildingService.deleteBuilding(courtId, buildingId)
-    snsService.sendEvent(EventType.COURT_REGISTER_BUILDING_DELETE, courtId)
+    snsService.sendEvent(EventType.COURT_REGISTER_UPDATE, courtId)
     auditService.sendAuditEvent(
-      EventType.COURT_REGISTER_BUILDING_DELETE.name,
+      AuditType.COURT_REGISTER_BUILDING_DELETE.name,
       mapOf("courtId" to courtId, "buildingId" to buildingId)
     )
   }
