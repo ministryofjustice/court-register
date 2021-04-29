@@ -1,7 +1,3 @@
-graceful:
-  shutdown:
-    enabled: false
-
 server:
   shutdown: immediate
 

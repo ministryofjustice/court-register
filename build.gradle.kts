@@ -7,6 +7,7 @@ plugins {
 
 configurations {
   implementation { exclude(group = "tomcat-jdbc") }
+  implementation { exclude(module = "spring-boot-graceful-shutdown") }
   testImplementation { exclude(group = "org.junit.vintage") }
 }
 

@@ -1,7 +1,6 @@
 package uk.gov.justice.digital.hmpps.courtregister.resource
 
 import com.amazonaws.services.sqs.AmazonSQSAsync
-import org.junit.jupiter.api.extension.ExtendWith
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.test.context.SpringBootTest
@@ -11,10 +10,8 @@ import org.springframework.test.context.DynamicPropertyRegistry
 import org.springframework.test.context.DynamicPropertySource
 import org.springframework.test.web.reactive.server.WebTestClient
 import uk.gov.justice.digital.hmpps.courtregister.config.PostgresContainer
-import uk.gov.justice.digital.hmpps.courtregister.helper.FlywayRestoreExtension
 import uk.gov.justice.digital.hmpps.courtregister.helper.JwtAuthHelper
 
-@ExtendWith(FlywayRestoreExtension::class)
 @Suppress("SpringJavaInjectionPointsAutowiringInspection")
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")

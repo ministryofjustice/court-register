@@ -101,9 +101,6 @@ sqs:
 oauth:
   token.url: ${oauth.endpoint.url}/oauth/token
 
-graceful:
-  shutdown.enabled: true
-
 azure:
   application-insights.web.enable-W3C: true
 
