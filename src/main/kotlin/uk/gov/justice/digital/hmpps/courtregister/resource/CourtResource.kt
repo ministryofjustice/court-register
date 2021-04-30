@@ -148,9 +148,10 @@ class CourtResource(
   fun getPageOfCourts(
     @Parameter(description = "Active?", example = "true", required = false) @RequestParam active: Boolean? = null,
     @Parameter(description = "Court Type", example = "CRN", required = false) @RequestParam courtTypeIds: List<String>? = null,
+    @Parameter(description = "Text search", example = "Sheffield", required = false) @RequestParam textSearch: String? = null,
     pageable: Pageable = Pageable.unpaged()
   ): Page<CourtDto> =
-    courtService.findPage(active, courtTypeIds, pageable)
+    courtService.findPage(active, courtTypeIds, textSearch, pageable)
 
   @GetMapping("/id/{courtId}/buildings/id/{buildingId}")
   @Operation(

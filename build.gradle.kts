@@ -24,6 +24,7 @@ dependencies {
 
   implementation("org.flywaydb:flyway-core:7.8.2")
   runtimeOnly("org.postgresql:postgresql:42.2.20")
+  implementation("com.vladmihalcea:hibernate-types-52:2.10.4")
 
   implementation("javax.transaction:javax.transaction-api:1.3")
   implementation("javax.xml.bind:jaxb-api:2.3.1")

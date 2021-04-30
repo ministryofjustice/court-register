@@ -29,12 +29,29 @@ interface CourtRepository : PagingAndSortingRepository<Court, String> {
     """
     select c from Court c 
     where (:active is null or c.active = :active) 
-    and (coalesce(:courtTypeIds) is null or c.courtType.id in (:courtTypeIds)) 
+    and (coalesce(:courtTypeIds) is null or c.courtType.id in (:courtTypeIds))
   """
   )
   fun findPage(
     @Param("active") active: Boolean?,
     @Param("courtTypeIds") courtTypeId: List<String>?,
+    pageable: Pageable
+  ): Page<Court>
+
+  // TODO DT-1954 the `:textSearch is null or (search_court_text(:textSearch) = true)` trick doesn't work for an SQLTemplateFunction - use separate methods for now and try to fix later
+  @Query(
+    """
+    select c from Court c 
+    join CourtTextSearch ts on c.id = ts.id
+    where (:active is null or c.active = :active) 
+    and (coalesce(:courtTypeIds) is null or c.courtType.id in (:courtTypeIds))
+    and (search_court_text(:textSearch) = true)
+  """
+  )
+  fun findPageWithTextSearch(
+    @Param("active") active: Boolean?,
+    @Param("courtTypeIds") courtTypeId: List<String>?,
+    @Param("textSearch") textSearch: String,
     pageable: Pageable
   ): Page<Court>
 }
