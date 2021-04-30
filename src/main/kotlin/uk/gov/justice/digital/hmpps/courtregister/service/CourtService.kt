@@ -39,7 +39,7 @@ class CourtService(
     textSearch: String? = null,
     pageable: Pageable = Pageable.unpaged()
   ): Page<CourtDto> =
-    textSearch?.run {
+    textSearch?.let {
       courtRepository.findPageWithTextSearch(active, courtTypeIds, textSearch, pageable).map { CourtDto(it) }
     }
       ?: courtRepository.findPage(active, courtTypeIds, pageable).map { CourtDto(it) }

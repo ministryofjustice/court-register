@@ -127,4 +127,101 @@ class CourtResourcePagingTest : IntegrationTest() {
       .jsonPath("$.content[2].type.courtType").value<String> { assertThat(it).isIn("YTH", "CRN") }
       .jsonPath("$.content[2].active").isEqualTo(true)
   }
+
+  @Test
+  fun `find page filtered by text search`() {
+    webTestClient.get().uri("/courts/paged?page=0&size=3&textSearch=description")
+      .exchange()
+      .expectStatus().isOk
+      .expectBody()
+      .assertSingleFullPage()
+      .jsonPath("$.content[0].courtId").isEqualTo("AAAAAA")
+      .jsonPath("$.content[0].courtDescription").value<String> { assertThat(it).contains("description") }
+      .jsonPath("$.content[1].courtId").isEqualTo("AAAAAB")
+      .jsonPath("$.content[1].courtDescription").value<String> { assertThat(it).contains("description") }
+      .jsonPath("$.content[2].courtId").isEqualTo("AAAAAC")
+      .jsonPath("$.content[2].courtDescription").value<String> { assertThat(it).contains("description") }
+  }
+
+  private fun WebTestClient.BodyContentSpec.assertSingleFullPage() =
+    this.jsonPath("$.content.length()").isEqualTo(3)
+      .jsonPath("$.size").isEqualTo(3)
+      .jsonPath("$.totalElements").isEqualTo(3)
+      .jsonPath("$.totalPages").isEqualTo(1)
+      .jsonPath("$.last").isEqualTo(true)
+
+  @Test
+  fun `find page filtered by text search and active`() {
+    webTestClient.get().uri("/courts/paged?page=0&size=3&active=false&textSearch=description")
+      .exchange()
+      .expectStatus().isOk
+      .expectBody()
+      .jsonPath("$.content[0].courtId").isEqualTo("AAAAAA")
+      .jsonPath("$.content[0].courtDescription").value<String> { assertThat(it).contains("description") }
+      .jsonPath("$.content[0].active").isEqualTo(false)
+  }
+
+  @Test
+  fun `find page filtered by text search and active and court type`() {
+    webTestClient.get().uri("/courts/paged?page=0&size=3&active=true&courtTypeId=COU&textSearch=description")
+      .exchange()
+      .expectStatus().isOk
+      .expectBody()
+      .jsonPath("$.content[0].courtId").isEqualTo("AAAAAB")
+      .jsonPath("$.content[0].type.courtType").isEqualTo("COU")
+      .jsonPath("$.content[0].courtDescription").value<String> { assertThat(it).contains("description") }
+      .jsonPath("$.content[0].active").isEqualTo(true)
+  }
+
+  @Test
+  fun `find later page filtered by text search and active and multiple court types`() {
+    webTestClient.get().uri("/courts/paged?page=1&size=3&active=true&courtTypeIds=COU&courtTypeIds=MAG&textSearch=court")
+      .exchange()
+      .expectStatus().isOk
+      .expectBody()
+      .jsonPath("$.content.length()").isEqualTo(3)
+      .jsonPath("$.size").isEqualTo(3)
+      .jsonPath("$.totalElements").value<Int> { assertThat(it).isGreaterThan(6) }
+      .jsonPath("$.totalPages").value<Int> { assertThat(it).isGreaterThan(2) }
+      .jsonPath("$.first").isEqualTo(false)
+      .jsonPath("$.last").isEqualTo(false)
+  }
+
+  @Test
+  fun `find page filtered by text search on post code`() {
+    webTestClient.get().uri("/courts/paged?page=0&size=3&textSearch=BB5 2BH")
+      .exchange()
+      .expectStatus().isOk
+      .expectBody()
+      .jsonPath("$.content[0].buildings[0].postcode").isEqualTo("BB5 2BH")
+  }
+
+  @Test
+  fun `find page filtered by text search on post code without spaces`() {
+    webTestClient.get().uri("/courts/paged?page=0&size=3&textSearch=BB52BH")
+      .exchange()
+      .expectStatus().isOk
+      .expectBody()
+      .jsonPath("$.content[0].buildings[0].postcode").isEqualTo("BB5 2BH")
+  }
+
+  @Test
+  fun `find page filtered by text search on telephone number`() {
+    webTestClient.get().uri("/courts/paged?page=0&size=3&textSearch=01545 570886")
+      .exchange()
+      .expectStatus().isOk
+      .expectBody()
+      .jsonPath("$.content[0].buildings[0].contacts[0].type").isEqualTo("TEL")
+      .jsonPath("$.content[0].buildings[0].contacts[0].detail").isEqualTo("01545 570886")
+  }
+
+  @Test
+  fun `find page filtered by text search on telephone number without spaces`() {
+    webTestClient.get().uri("/courts/paged?page=0&size=3&textSearch=01545570886")
+      .exchange()
+      .expectStatus().isOk
+      .expectBody()
+      .jsonPath("$.content[0].buildings[0].contacts[0].type").isEqualTo("TEL")
+      .jsonPath("$.content[0].buildings[0].contacts[0].detail").isEqualTo("01545 570886")
+  }
 }
