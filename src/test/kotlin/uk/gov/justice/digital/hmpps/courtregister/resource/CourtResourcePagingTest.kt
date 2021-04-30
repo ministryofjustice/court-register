@@ -226,12 +226,13 @@ class CourtResourcePagingTest : IntegrationTest() {
   }
 
   @Test
-  fun `a search finding multiple contacts for the same court building should only return the court once`() {
-    webTestClient.get().uri("/courts/paged?page=0&size=3&textSearch=BB11 2BS&courtTypeIds=MAG")
+  fun `a search finding multiple buildings and contacts should only return the court once`() {
+    // Preston Crown Court has 2 buildings each with 2 contacts
+    webTestClient.get().uri("/courts/paged?page=0&size=3&textSearch=PRESCC")
       .exchange()
       .expectStatus().isOk
       .expectBody()
       .jsonPath("$.totalElements").isEqualTo(1)
-      .jsonPath("$.content[0].courtId").isEqualTo("BURNMC")
+      .jsonPath("$.content[0].courtId").isEqualTo("PRESCC")
   }
 }
