@@ -12,15 +12,15 @@ import javax.persistence.Table
 
 @Entity
 @Immutable
-@Table(name = "text_search")
-data class TextSearch(
+@Table(name = "court_text_search")
+data class CourtTextSearch(
   @Id
   val id: String,
-  val tsv: PostgreSQLTSVectorType,
+  val textSearchVector: PostgreSQLTSVectorType,
 )
 
 class TextSearchSqlFunctionTemplate : MetadataBuilderContributor {
   override fun contribute(metadataBuilder: MetadataBuilder) {
-    metadataBuilder.applySqlFunction("fts", SQLFunctionTemplate(BooleanType.INSTANCE, "tsv @@ plainto_tsquery(?1)"))
+    metadataBuilder.applySqlFunction("search_court_text", SQLFunctionTemplate(BooleanType.INSTANCE, "textSearchVector @@ plainto_tsquery(?1)"))
   }
 }

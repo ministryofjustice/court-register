@@ -1,4 +1,4 @@
-create view text_search as
+create view court_text_search as
 select distinct c.id, to_tsvector(
         concat_ws(' ',
             c.id,
@@ -15,7 +15,7 @@ select distinct c.id, to_tsvector(
             coalesce(cn.type, ''),
             coalesce(cn.detail, ''), regexp_replace(coalesce(cn.detail, ''), ' ', '')
         )
-    ) as tsv
+    ) as textSearchVector
 from court c
 join court_type ct on c.type = ct.id
 left join building b on c.id = b.court_code
