@@ -1,5 +1,11 @@
 package uk.gov.justice.digital.hmpps.courtregister.jpa
 
+import com.vladmihalcea.hibernate.type.search.PostgreSQLTSVectorType
+import org.hibernate.annotations.Immutable
+import org.hibernate.boot.MetadataBuilder
+import org.hibernate.boot.spi.MetadataBuilderContributor
+import org.hibernate.dialect.function.SQLFunctionTemplate
+import org.hibernate.type.BooleanType
 import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.annotation.LastModifiedDate
 import org.springframework.data.domain.Page
@@ -19,6 +25,7 @@ import javax.persistence.Id
 import javax.persistence.JoinColumn
 import javax.persistence.ManyToOne
 import javax.persistence.OneToMany
+import javax.persistence.Table
 
 @Repository
 interface CourtRepository : PagingAndSortingRepository<Court, String> {
@@ -29,12 +36,29 @@ interface CourtRepository : PagingAndSortingRepository<Court, String> {
     """
     select c from Court c 
     where (:active is null or c.active = :active) 
-    and (coalesce(:courtTypeIds) is null or c.courtType.id in (:courtTypeIds)) 
+    and (coalesce(:courtTypeIds) is null or c.courtType.id in (:courtTypeIds))
   """
   )
   fun findPage(
     @Param("active") active: Boolean?,
     @Param("courtTypeIds") courtTypeId: List<String>?,
+    pageable: Pageable
+  ): Page<Court>
+
+  // TODO DT-1954 the `:textSearch is null or (fts(:textSearch) = true)` trick doesn't work for an SQLTemplateFunction - use separate methods for now and try to fix later
+  @Query(
+    """
+    select c from Court c 
+    join TextSearch ts on c.id = ts.id
+    where (:active is null or c.active = :active) 
+    and (coalesce(:courtTypeIds) is null or c.courtType.id in (:courtTypeIds))
+    and (fts(:textSearch) = true)
+  """
+  )
+  fun findPageWithTextSearch(
+    @Param("active") active: Boolean?,
+    @Param("courtTypeIds") courtTypeId: List<String>?,
+    @Param("textSearch") textSearch: String,
     pageable: Pageable
   ): Page<Court>
 }
@@ -64,3 +88,18 @@ data class Court(
   @OneToMany(cascade = [CascadeType.ALL], mappedBy = "court", orphanRemoval = true)
   val buildings: MutableList<Building>? = mutableListOf()
 )
+
+@Entity
+@Immutable
+@Table(name = "`text_search`")
+data class TextSearch(
+  @Id
+  val id: String,
+  val tsv: PostgreSQLTSVectorType,
+)
+
+class TextSearchSqlFunctionTemplate : MetadataBuilderContributor {
+  override fun contribute(metadataBuilder: MetadataBuilder) {
+    metadataBuilder.applySqlFunction("fts", SQLFunctionTemplate(BooleanType.INSTANCE, "tsv @@ plainto_tsquery(?1)"))
+  }
+}
