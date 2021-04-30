@@ -39,10 +39,11 @@ class CourtService(
     textSearch: String? = null,
     pageable: Pageable = Pageable.unpaged()
   ): Page<CourtDto> =
-    textSearch?.let {
-      courtRepository.findPageWithTextSearch(active, courtTypeIds, textSearch, pageable).map { CourtDto(it) }
-    }
-      ?: courtRepository.findPage(active, courtTypeIds, pageable).map { CourtDto(it) }
+    (
+      textSearch
+        ?.let { courtRepository.findPageWithTextSearch(active, courtTypeIds, textSearch, pageable) }
+        ?: courtRepository.findPage(active, courtTypeIds, pageable)
+      ).map { CourtDto(it) }
 
   fun updateCourt(courtId: String, courtUpdateRecord: UpdateCourtDto): CourtDto {
     val court = courtRepository.findById(courtId)

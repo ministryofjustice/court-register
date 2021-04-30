@@ -224,4 +224,14 @@ class CourtResourcePagingTest : IntegrationTest() {
       .jsonPath("$.content[0].buildings[0].contacts[0].type").isEqualTo("TEL")
       .jsonPath("$.content[0].buildings[0].contacts[0].detail").isEqualTo("01545 570886")
   }
+
+  @Test
+  fun `a search finding multiple contacts for the same court building should only return the court once`() {
+    webTestClient.get().uri("/courts/paged?page=0&size=3&textSearch=BB11 2BS&courtTypeIds=MAG")
+      .exchange()
+      .expectStatus().isOk
+      .expectBody()
+      .jsonPath("$.totalElements").isEqualTo(1)
+      .jsonPath("$.content[0].courtId").isEqualTo("BURNMC")
+  }
 }
