@@ -27,7 +27,7 @@ interface CourtRepository : PagingAndSortingRepository<Court, String> {
 
   @Query(
     """
-    select c from Court c 
+    select distinct c from Court c 
     where (:active is null or c.active = :active) 
     and (coalesce(:courtTypeIds) is null or c.courtType.id in (:courtTypeIds))
   """
@@ -38,10 +38,11 @@ interface CourtRepository : PagingAndSortingRepository<Court, String> {
     pageable: Pageable
   ): Page<Court>
 
-  // TODO DT-1954 the `:textSearch is null or (search_court_text(:textSearch) = true)` trick doesn't work for an SQLTemplateFunction - use separate methods for now and try to fix later
+  // Note that the `(:textSearch is null or (search_court_text(:textSearch) = true)` trick doesn't work for an SQLTemplateFunction
+  // So we use a separate query if a text search has been included
   @Query(
     """
-    select c from Court c 
+    select distinct c from Court c 
     join CourtTextSearch ts on c.id = ts.id
     where (:active is null or c.active = :active) 
     and (coalesce(:courtTypeIds) is null or c.courtType.id in (:courtTypeIds))
