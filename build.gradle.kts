@@ -1,7 +1,7 @@
 plugins {
-  id("uk.gov.justice.hmpps.gradle-spring-boot") version "3.1.7"
-  kotlin("plugin.spring") version "1.4.32"
-  kotlin("plugin.jpa") version "1.4.32"
+  id("uk.gov.justice.hmpps.gradle-spring-boot") version "3.2.0-beta"
+  kotlin("plugin.spring") version "1.5.0"
+  kotlin("plugin.jpa") version "1.5.0"
   idea
 }
 
@@ -37,8 +37,8 @@ dependencies {
   implementation("org.springdoc:springdoc-openapi-kotlin:1.5.8")
   implementation("org.springdoc:springdoc-openapi-data-rest:1.5.8")
 
-  implementation(platform("com.amazonaws:aws-java-sdk-bom:1.11.1006"))
-  implementation("com.amazonaws:aws-java-sdk-sns:1.11.1006")
+  implementation(platform("com.amazonaws:aws-java-sdk-bom:1.11.1012"))
+  implementation("com.amazonaws:aws-java-sdk-sns:1.11.1012")
 
   testImplementation("org.springframework.security:spring-security-test")
   testImplementation("com.github.tomakehurst:wiremock-standalone:2.27.2")
@@ -53,8 +53,6 @@ dependencies {
 
 tasks {
   compileKotlin {
-    kotlinOptions {
-      jvmTarget = "15"
-    }
+    kotlinOptions.jvmTarget = "16"
   }
 }
