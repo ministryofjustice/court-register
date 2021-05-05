@@ -134,12 +134,12 @@ class CourtRepositoryTest : IntegrationTest() {
     )
 
     var pageNumber = 0
-    val pageTotalElements = mutableListOf<Long>()
+    val uniqueTotalElementValues = mutableSetOf<Long>()
     do {
       val nextPage = getPage(pageNumber++)
-      pageTotalElements += nextPage.totalElements
+      uniqueTotalElementValues += nextPage.totalElements
     } while (nextPage.isLast.not())
 
-    assertThat(pageTotalElements.distinct().size).isEqualTo(1)
+    assertThat(uniqueTotalElementValues.size).isEqualTo(1)
   }
 }
