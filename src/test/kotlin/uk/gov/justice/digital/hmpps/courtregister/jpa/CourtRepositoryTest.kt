@@ -7,6 +7,8 @@ import org.junit.jupiter.api.TestInstance
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.data.domain.PageRequest
+import org.springframework.data.domain.Sort
 import org.springframework.test.context.transaction.TestTransaction
 import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.hmpps.courtregister.resource.IntegrationTest
@@ -17,6 +19,7 @@ class CourtRepositoryTest : IntegrationTest() {
   companion object {
     val log: Logger = LoggerFactory.getLogger(this::class.java)
   }
+
   @Autowired
   lateinit var courtRepository: CourtRepository
 
@@ -25,8 +28,8 @@ class CourtRepositoryTest : IntegrationTest() {
 
   @AfterAll
   fun `delete added test data`() {
-    courtRepository.findById("SHFCRT").get().run {
-      courtRepository.delete(this)
+    courtRepository.findById("SHFCRT").ifPresent {
+      courtRepository.delete(it)
     }
   }
 
@@ -120,5 +123,23 @@ class CourtRepositoryTest : IntegrationTest() {
       assertThat(updatedBuilding.lastUpdatedDatetime).isNotEqualTo(makeACopyOfBuilding.lastUpdatedDatetime)
       assertThat(updatedContact.lastUpdatedDatetime).isNotEqualTo(makeACopyOfContact.lastUpdatedDatetime)
     }
+  }
+
+  // This finds JPA query bugs where the count query does not correspond with the main query - which often occurs when using `select distinct`
+  @Test
+  fun `all pages should agree on the total number of elements`() {
+    fun getPage(pageNumber: Int) = courtRepository.findPageWithTextSearch(
+      null, null, "crown court",
+      PageRequest.of(pageNumber, 40, Sort.by("courtName"))
+    )
+
+    var pageNumber = 0
+    val uniqueTotalElementValues = mutableSetOf<Long>()
+    do {
+      val nextPage = getPage(pageNumber++)
+      uniqueTotalElementValues += nextPage.totalElements
+    } while (nextPage.isLast.not())
+
+    assertThat(uniqueTotalElementValues.size).isEqualTo(1)
   }
 }

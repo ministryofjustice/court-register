@@ -42,11 +42,13 @@ interface CourtRepository : PagingAndSortingRepository<Court, String> {
   // So we use a separate query if a text search has been included
   @Query(
     """
-    select distinct c from Court c 
-    join CourtTextSearch ts on c.id = ts.id
-    where (:active is null or c.active = :active) 
-    and (coalesce(:courtTypeIds) is null or c.courtType.id in (:courtTypeIds))
-    and (search_court_text(:textSearch) = true)
+    select c from Court c where c in ( 
+      select distinct c from Court c
+      join CourtTextSearch ts on c.id = ts.id
+      where (:active is null or c.active = :active) 
+      and (coalesce(:courtTypeIds) is null or c.courtType.id in (:courtTypeIds))
+      and (search_court_text(:textSearch) = true)
+    )
   """
   )
   fun findPageWithTextSearch(
