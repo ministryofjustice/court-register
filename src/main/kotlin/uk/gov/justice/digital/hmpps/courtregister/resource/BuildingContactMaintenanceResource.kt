@@ -210,5 +210,8 @@ class BuildingContactMaintenanceResource(
 @Schema(description = "Contact")
 data class UpdateContactDto(
   @Schema(description = "Type of contact", example = "TEL", required = true, allowableValues = [ "TEL", "FAX"]) val type: String,
-  @Schema(description = "Details of the contact", example = "555 55555", required = true) val detail: String,
+  @Schema(description = "Details of the contact", example = "555 55555", required = true) @field:Size(
+    max = 80,
+    message = "Details must be no more than 80 characters"
+  ) val detail: String,
 )

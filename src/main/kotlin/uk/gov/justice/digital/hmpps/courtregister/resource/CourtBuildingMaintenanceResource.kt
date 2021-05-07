@@ -204,13 +204,37 @@ class CourtBuildingMaintenanceResource(
 @JsonInclude(NON_NULL)
 @Schema(description = "Building Update Record")
 data class UpdateBuildingDto(
-  @Schema(description = "Building Name", example = "Crown House") val buildingName: String?,
-  @Schema(description = "Street Number and Name", example = "452 West Street") val street: String?,
-  @Schema(description = "Locality", example = "West Cross") val locality: String?,
-  @Schema(description = "Town/City", example = "Swansea") val town: String?,
-  @Schema(description = "County", example = "South Glamorgan") val county: String?,
-  @Schema(description = "Postcode", example = "SA3 4HT") val postcode: String?,
-  @Schema(description = "Country", example = "UK") val country: String?,
-  @Schema(description = "Sub location code for referencing building", example = "AAABBB") val subCode: String?
+  @Schema(description = "Building Name", example = "Crown House") @field:Size(
+    max = 50,
+    message = "Building name must be no more than 50 characters"
+  ) val buildingName: String?,
+  @Schema(description = "Street Number and Name", example = "452 West Street") @field:Size(
+    max = 80,
+    message = "Street Number and Name must be no more than 50 characters"
+  ) val street: String?,
+  @Schema(description = "Locality", example = "West Cross") @field:Size(
+    max = 80,
+    message = "Locality must be no more than 50 characters"
+  ) val locality: String?,
+  @Schema(description = "Town/City", example = "Swansea") @field:Size(
+    max = 80,
+    message = "Town/City must be no more than 50 characters"
+  ) val town: String?,
+  @Schema(description = "County", example = "South Glamorgan") @field:Size(
+    max = 80,
+    message = "County must be no more than 50 characters"
+  ) val county: String?,
+  @Schema(description = "Postcode", example = "SA3 4HT") @field:Size(
+    max = 8,
+    message = "Postcode must be no more than 8 characters"
+  ) val postcode: String?,
+  @Schema(description = "Country", example = "UK") @field:Size(
+    max = 16,
+    message = "Country must be no more than 16 characters"
+  ) val country: String?,
+  @Schema(description = "Sub location code for referencing building", example = "AAABBB") @field:Size(
+    max = 6,
+    message = "Sub location code must be no more than 6 characters"
+  ) val subCode: String?
 
 )
