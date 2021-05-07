@@ -143,5 +143,65 @@ class CourtBuildingMaintenanceIntTest : IntegrationTest() {
         .exchange()
         .expectStatus().isEqualTo(HttpStatus.CONFLICT)
     }
+
+    @Test
+    fun `can not have identical building subcodes for the same court`() {
+      webTestClient.post().uri("court-maintenance/id/BRMNCC/buildings")
+        .accept(MediaType.APPLICATION_JSON)
+        .contentType(MediaType.APPLICATION_JSON)
+        .headers(
+          setAuthorisation(
+            roles = listOf("ROLE_MAINTAIN_REF_DATA"),
+            scopes = listOf("write"),
+            user = "bobby.beans"
+          )
+        )
+        .body(
+          BodyInserters.fromValue(
+            """
+              {
+                "buildingName": "New Building 1",
+                "subCode": "BCCACC",
+                "street": "Green Street",
+                "town": "M GLAM",
+                "county": "Aberdare",
+                "postcode": "CF44 7DW"
+            }
+            """.trimIndent()
+          )
+        )
+        .exchange()
+        .expectStatus().isEqualTo(HttpStatus.CONFLICT)
+    }
+
+    @Test
+    fun `can not have 2 null building subcodes for the same court`() {
+      webTestClient.post().uri("court-maintenance/id/AYLSYC/buildings")
+        .accept(MediaType.APPLICATION_JSON)
+        .contentType(MediaType.APPLICATION_JSON)
+        .headers(
+          setAuthorisation(
+            roles = listOf("ROLE_MAINTAIN_REF_DATA"),
+            scopes = listOf("write"),
+            user = "bobby.beans"
+          )
+        )
+        .body(
+          BodyInserters.fromValue(
+            """
+              {
+                "buildingName": "New Building 1",
+                "subCode": null,
+                "street": "Green Street",
+                "town": "M GLAM",
+                "county": "Aberdare",
+                "postcode": "CF44 7DW"
+            }
+            """.trimIndent()
+          )
+        )
+        .exchange()
+        .expectStatus().isEqualTo(HttpStatus.CONFLICT)
+    }
   }
 }
