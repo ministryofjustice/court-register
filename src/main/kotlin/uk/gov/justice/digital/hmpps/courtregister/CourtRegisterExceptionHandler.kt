@@ -60,9 +60,8 @@ class CourtRegisterExceptionHandler {
   }
 }
 
-private fun MethodArgumentNotValidException.asErrorList(): List<String> {
-  return this.allErrors.map { e -> e.defaultMessage ?: "" }
-}
+private fun MethodArgumentNotValidException.asErrorList(): List<String> =
+  this.allErrors.mapNotNull { it.defaultMessage }
 
 @JsonInclude(NON_NULL)
 data class ErrorResponse(
