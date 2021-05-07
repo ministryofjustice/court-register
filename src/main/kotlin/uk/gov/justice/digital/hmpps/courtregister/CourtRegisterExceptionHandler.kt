@@ -6,6 +6,7 @@ import org.slf4j.LoggerFactory
 import org.springframework.dao.DataIntegrityViolationException
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
+import org.springframework.web.bind.MethodArgumentNotValidException
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.RestControllerAdvice
 import javax.persistence.EntityExistsException
@@ -46,10 +47,21 @@ class CourtRegisterExceptionHandler {
       .body(ErrorResponse(status = HttpStatus.BAD_REQUEST, developerMessage = e.message))
   }
 
+  @ExceptionHandler(MethodArgumentNotValidException::class)
+  fun handleValidationAnyException(e: MethodArgumentNotValidException): ResponseEntity<ErrorResponse?>? {
+    log.info("Validation exception: {}", e.message)
+    return ResponseEntity
+      .status(HttpStatus.BAD_REQUEST)
+      .body(ErrorResponse(status = HttpStatus.BAD_REQUEST, developerMessage = e.message, errors = e.asErrorList()))
+  }
+
   companion object {
     val log = LoggerFactory.getLogger(CourtRegisterExceptionHandler::class.java)
   }
 }
+
+private fun MethodArgumentNotValidException.asErrorList(): List<String> =
+  this.allErrors.mapNotNull { it.defaultMessage }
 
 @JsonInclude(NON_NULL)
 data class ErrorResponse(
@@ -57,14 +69,16 @@ data class ErrorResponse(
   val errorCode: Int? = null,
   val userMessage: String? = null,
   val developerMessage: String? = null,
-  val moreInfo: String? = null
+  val moreInfo: String? = null,
+  val errors: List<String>? = null
 ) {
   constructor(
     status: HttpStatus,
     errorCode: Int? = null,
     userMessage: String? = null,
     developerMessage: String? = null,
-    moreInfo: String? = null
+    moreInfo: String? = null,
+    errors: List<String>? = null,
   ) :
-    this(status.value(), errorCode, userMessage, developerMessage, moreInfo)
+    this(status.value(), errorCode, userMessage, developerMessage, moreInfo, errors)
 }
