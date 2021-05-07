@@ -5,7 +5,7 @@ import com.nhaarman.mockitokotlin2.whenever
 import net.javacrumbs.jsonunit.assertj.JsonAssertions
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.within
-import org.hamcrest.Matchers
+import org.hamcrest.CoreMatchers
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
@@ -461,7 +461,18 @@ class CourtResourceTest : IntegrationTest() {
         )
         .exchange()
         .expectStatus().isBadRequest
-        .expectBody().jsonPath("message").value(Matchers.containsString("Error count: 8"))
+        .expectBody().jsonPath("errors").value(
+          CoreMatchers.hasItems(
+            "Postcode must be no more than 8 characters",
+            "Town/City must be no more than 50 characters",
+            "County must be no more than 50 characters",
+            "Locality must be no more than 50 characters",
+            "Building name must be no more than 50 characters",
+            "Country must be no more than 16 characters",
+            "Sub location code must be no more than 6 characters",
+            "Street Number and Name must be no more than 50 characters"
+          )
+        )
     }
 
     @Test
@@ -528,6 +539,7 @@ class CourtResourceTest : IntegrationTest() {
         assertThat(whenDateTime).isCloseToUtcNow(within(5, ChronoUnit.SECONDS))
       }
     }
+
     @Test
     fun `will not insert a building where the data is too long`() {
       val court = Court("ACCRYC", "Accrington Youth Court", null, CourtType("YOUTH", "Youth Court"), true)
@@ -579,7 +591,19 @@ class CourtResourceTest : IntegrationTest() {
         )
         .exchange()
         .expectStatus().isBadRequest
-        .expectBody().jsonPath("message").value(Matchers.containsString("Error count: 8"))
+        .expectBody()
+        .jsonPath("errors").value(
+          CoreMatchers.hasItems(
+            "Postcode must be no more than 8 characters",
+            "Town/City must be no more than 50 characters",
+            "County must be no more than 50 characters",
+            "Locality must be no more than 50 characters",
+            "Building name must be no more than 50 characters",
+            "Country must be no more than 16 characters",
+            "Sub location code must be no more than 6 characters",
+            "Street Number and Name must be no more than 50 characters"
+          )
+        )
     }
   }
 
@@ -658,6 +682,7 @@ class CourtResourceTest : IntegrationTest() {
         assertThat(whenDateTime).isCloseToUtcNow(within(5, ChronoUnit.SECONDS))
       }
     }
+
     @Test
     fun `will not update a contact when the details are too long`() {
       val court = Court("ACCRYC", "Accrington Youth Court", null, CourtType("YOUTH", "Youth Court"), true)
@@ -746,6 +771,7 @@ class CourtResourceTest : IntegrationTest() {
         assertThat(whenDateTime).isCloseToUtcNow(within(5, ChronoUnit.SECONDS))
       }
     }
+
     @Test
     fun `will not insert a contact when the detail is too long`() {
       val court = Court("ACCRYC", "Accrington Youth Court", null, CourtType("YOUTH", "Youth Court"), true)
