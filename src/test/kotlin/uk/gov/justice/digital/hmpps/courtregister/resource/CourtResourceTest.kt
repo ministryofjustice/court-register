@@ -816,7 +816,8 @@ class CourtResourceTest : IntegrationTest() {
   }
 
   private fun String.loadJson(): String =
-    CourtResourceTest::class.java.getResource("$this.json").readText()
+    CourtResourceTest::class.java.getResource("$this.json")?.readText()
+      ?: throw AssertionError("file $this.json not found")
 
   fun auditEventMessageCount(): Int? {
     val queueAttributes = awsSqsClient.getQueueAttributes(queueName.queueUrl(), listOf("ApproximateNumberOfMessages"))
