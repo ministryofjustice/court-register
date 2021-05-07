@@ -464,13 +464,13 @@ class CourtResourceTest : IntegrationTest() {
         .expectBody().jsonPath("errors").value(
           CoreMatchers.hasItems(
             "Postcode must be no more than 8 characters",
-            "Town/City must be no more than 50 characters",
-            "County must be no more than 50 characters",
-            "Locality must be no more than 50 characters",
+            "Town/City must be no more than 80 characters",
+            "County must be no more than 80 characters",
+            "Locality must be no more than 80 characters",
             "Building name must be no more than 50 characters",
             "Country must be no more than 16 characters",
             "Sub location code must be no more than 6 characters",
-            "Street Number and Name must be no more than 50 characters"
+            "Street Number and Name must be no more than 80 characters"
           )
         )
     }
@@ -595,13 +595,13 @@ class CourtResourceTest : IntegrationTest() {
         .jsonPath("errors").value(
           CoreMatchers.hasItems(
             "Postcode must be no more than 8 characters",
-            "Town/City must be no more than 50 characters",
-            "County must be no more than 50 characters",
-            "Locality must be no more than 50 characters",
+            "Town/City must be no more than 80 characters",
+            "County must be no more than 80 characters",
+            "Locality must be no more than 80 characters",
             "Building name must be no more than 50 characters",
             "Country must be no more than 16 characters",
             "Sub location code must be no more than 6 characters",
-            "Street Number and Name must be no more than 50 characters"
+            "Street Number and Name must be no more than 80 characters"
           )
         )
     }
