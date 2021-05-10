@@ -6,21 +6,11 @@ import org.junit.jupiter.api.Test
 class CourtResourceIntTest : IntegrationTest() {
 
   @Nested
-  inner class getBuildingByCourtIdAndSubCode {
+  inner class FindMainBuilding {
 
     @Test
-    fun `should find a building by court ID and subCode`() {
-      webTestClient.get().uri("/courts/id/BRMNCC/subcodes/BCCACC")
-        .exchange()
-        .expectStatus().isOk
-        .expectBody()
-        .jsonPath("courtId").isEqualTo("BRMNCC")
-        .jsonPath("subCode").isEqualTo("BCCACC")
-    }
-
-    @Test
-    fun `should find a building by court ID and null subCode`() {
-      webTestClient.get().uri("/courts/id/BRMNCC/subcodes")
+    fun `should find main building by court ID`() {
+      webTestClient.get().uri("/courts/id/BRMNCC/buildings/main")
         .exchange()
         .expectStatus().isOk
         .expectBody()
@@ -30,14 +20,7 @@ class CourtResourceIntTest : IntegrationTest() {
 
     @Test
     fun `should not find a building by invalid court ID`() {
-      webTestClient.get().uri("/courts/id/BAD/subcodes")
-        .exchange()
-        .expectStatus().isNotFound
-    }
-
-    @Test
-    fun `should not find a building by court ID and invalid subCode`() {
-      webTestClient.get().uri("/courts/id/BRMNCC/subcodes/BAD")
+      webTestClient.get().uri("/courts/id/BAD/bulidings/main")
         .exchange()
         .expectStatus().isNotFound
     }

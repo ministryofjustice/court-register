@@ -22,15 +22,12 @@ import javax.persistence.OneToMany
 @Repository
 interface BuildingRepository : CrudRepository<Building, Long> {
   fun findBySubCode(subCode: String): Optional<Building>
-
   @Query(
     """
-    select b from Building b
-    where b.court.id = :courtId
-      and ((:subCode is null and b.subCode is null) or (:subCode is not null and b.subCode = :subCode))
+    select b from Building b where b.court.id = :courtId and b.subCode is null
   """
   )
-  fun findByCourtIdAndSubCode(courtId: String, subCode: String?): Optional<Building>
+  fun findMainBuilding(courtId: String): Optional<Building>
 }
 
 @Entity

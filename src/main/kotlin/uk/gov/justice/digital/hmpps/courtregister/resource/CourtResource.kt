@@ -242,10 +242,10 @@ class CourtResource(
   ): ContactDto =
     contactService.findById(courtId, buildingId, contactId)
 
-  @GetMapping("/id/{courtId}/subcodes", "/id/{courtId}/subcodes/{subCode}")
+  @GetMapping("/id/{courtId}/buildings/main")
   @Operation(
-    summary = "Get specified building by court ID and sub-code",
-    description = "Information on a specific building by court ID and sub-code",
+    summary = "Get the main building by court ID",
+    description = "Information on the main building by court ID",
     responses = [
       ApiResponse(
         responseCode = "200",
@@ -264,13 +264,11 @@ class CourtResource(
       )
     ]
   )
-  fun getBuildingByCourtIdAndSubCode(
+  fun findMainBuilding(
     @Schema(description = "Court Id", example = "BRMNCC", required = true)
     @PathVariable @Size(max = 6, min = 2, message = "Court ID must be between 2 and 6") courtId: String,
-    @Schema(description = "Buliding Subcode", example = "BCCACC", required = false)
-    @PathVariable(required = false) @Size(max = 6, min = 2, message = "Building subcode must be between 2 and 6") subCode: String?,
   ): BuildingDto =
-    buildingService.findByCourtIdAndSubcode(courtId, subCode)
+    buildingService.findMainBuilding(courtId)
 }
 
 @JsonInclude(NON_NULL)
