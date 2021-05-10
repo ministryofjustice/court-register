@@ -241,6 +241,36 @@ class CourtResource(
     @Schema(description = "Contact ID", example = "11111", required = true) @PathVariable contactId: Long
   ): ContactDto =
     contactService.findById(courtId, buildingId, contactId)
+
+  @GetMapping("/id/{courtId}/subcodes", "/id/{courtId}/subcodes/{subCode}")
+  @Operation(
+    summary = "Get specified building by court ID and sub-code",
+    description = "Information on a specific building by court ID and sub-code",
+    responses = [
+      ApiResponse(
+        responseCode = "200",
+        description = "Building Information Returned",
+        content = [Content(mediaType = "application/json", schema = Schema(implementation = BuildingDto::class))]
+      ),
+      ApiResponse(
+        responseCode = "400",
+        description = "Incorrect request to get building information",
+        content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))]
+      ),
+      ApiResponse(
+        responseCode = "404",
+        description = "Building SubCode not found",
+        content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))]
+      )
+    ]
+  )
+  fun getBuildingByCourtIdAndSubCode(
+    @Schema(description = "Court Id", example = "BRMNCC", required = true)
+    @PathVariable @Size(max = 6, min = 2, message = "Court ID must be between 2 and 6") courtId: String,
+    @Schema(description = "Buliding Subcode", example = "BCCACC", required = false)
+    @PathVariable(required = false) @Size(max = 6, min = 2, message = "Building subcode must be between 2 and 6") subCode: String?,
+  ): BuildingDto =
+    buildingService.findByCourtIdAndSubcode(courtId, subCode)
 }
 
 @JsonInclude(NON_NULL)

@@ -3,6 +3,7 @@ package uk.gov.justice.digital.hmpps.courtregister.jpa
 import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.annotation.LastModifiedDate
 import org.springframework.data.jpa.domain.support.AuditingEntityListener
+import org.springframework.data.jpa.repository.Query
 import org.springframework.data.repository.CrudRepository
 import org.springframework.stereotype.Repository
 import java.time.LocalDateTime
@@ -21,6 +22,15 @@ import javax.persistence.OneToMany
 @Repository
 interface BuildingRepository : CrudRepository<Building, Long> {
   fun findBySubCode(subCode: String): Optional<Building>
+
+  @Query(
+    """
+    select b from Building b
+    where b.court.id = :courtId
+      and ((:subCode is null and b.subCode is null) or (:subCode is not null and b.subCode = :subCode))
+  """
+  )
+  fun findByCourtIdAndSubCode(courtId: String, subCode: String?): Optional<Building>
 }
 
 @Entity
