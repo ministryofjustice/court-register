@@ -226,7 +226,7 @@ class CourtResourceTest : IntegrationTest() {
         .body(
           BodyInserters.fromValue(
             mapOf(
-              "courtId" to "R",
+              "courtId" to "R".repeat(7),
               "courtName" to "A New Court",
               "courtDescription" to "a description",
               "courtType" to "YOUTH",
@@ -236,6 +236,11 @@ class CourtResourceTest : IntegrationTest() {
         )
         .exchange()
         .expectStatus().isBadRequest
+        .expectBody().jsonPath("errors").value(
+          CoreMatchers.hasItems(
+            "Court ID must be between 2 and 6",
+          )
+        )
     }
   }
 
