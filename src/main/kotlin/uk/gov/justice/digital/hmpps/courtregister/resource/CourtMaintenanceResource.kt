@@ -158,7 +158,7 @@ class CourtMaintenanceResource(
 @Schema(description = "Court Insert Record")
 data class InsertCourtDto(
   @Schema(description = "Court ID", example = "ACCRYC", required = true)
-  @field:Size(max = 12, min = 2, message = "Court ID must be between 2 and 12") @NotBlank val courtId: String,
+  @field:Size(max = 6, min = 2, message = "Court ID must be between 2 and 6") @NotBlank val courtId: String,
   @Schema(description = "Name of the court", example = "Accrington Youth Court", required = true) @field:Size(
     max = 80,
     min = 2,
