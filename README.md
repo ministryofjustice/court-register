@@ -7,7 +7,7 @@ Self-contained fat-jar micro-service to publish court information
 
 ## Pre-requisite
 
-`Docker` Even when running the tests docker is used by to start `localstack` (for AWS services) and a Postgres database. The build will automatically download and run these containers for you on your behalf.
+`Docker` Even when running the tests docker is used to start `localstack` (for AWS services) and a Postgres database. The build will automatically download and run these containers on your behalf.
 
 ## Building
 
@@ -19,7 +19,7 @@ Various methods to run the application locally are detailed below.
 
 Once up the application should be available on port 8080 - see the health page at http://localhost:80800/health.  
 
-Also try http://localhost:8080/swagger-ui/index.html to see the API specification.
+Also try http://localhost:8080/swagger-ui.html to see the API specification.
 
 ### Running all services locally
 
@@ -42,9 +42,9 @@ First start all dependencies with the command:
 TMPDIR=/private$TMPDIR docker-compose up --scale court-register=0 
 ```
 
-This will start the dependencies in docker containers but not the main application.  Run command `docker ps` to see them running.
+The dependencies will run in docker containers - but not the main application.  Use command `docker ps` to see the running containers.
 
-In Intellij run the application from main class `CourtRegisterApplication` including active profiles `postgres` and `localstack` in the run configuration . 
+To start the application in Intellij run main class `CourtRegisterApplication` including active profiles `postgres` and `localstack` in the run configuration . 
 
 ### Running from the command line
 
@@ -54,9 +54,9 @@ First start all dependencies with the command:
 TMPDIR=/private$TMPDIR docker-compose up --scale court-register=0 
 ```
 
-This will start the dependencies in docker containers but not the main application.  Run command `docker ps` to see them running.
+The dependencies will run in docker containers - but not the main application.  Use command `docker ps` to see the running containers.
 
-Then run command
+To start the application run command
 
 ```bash
 ./gradlew bootRun -Plocalstack --args='--spring.profiles.active=localstack,postgres'
@@ -64,9 +64,9 @@ Then run command
 
 ### Authorisation
 
-The query endpoints are not secured and can be called without and auth token.
+The query endpoints are not secured and can be called without an auth token.
 
-The update endpoints are secured against the hmpps-auth service which should be running in docker on port 8090.  You will need a client token containing the roles specified in the endpoint definitions in the `resource` package, e.g. role `ROLE_MAINTAIN_REF_DATA` with scope `write`.  A client has been configured in the auth server for client id `hmpps-registers-ui-client` and client secret `clientsecret`.
+The update endpoints are secured against the hmpps-auth service which should be running in docker on port 8090.  You will need a client token containing the roles specified in the endpoint definitions in the `resource` package, e.g. role `ROLE_MAINTAIN_REF_DATA` with scope `write`.  A working client has been configured in the auth server for client id `hmpps-registers-ui-client` and client secret `clientsecret`.
 
 ## Testing
 
