@@ -1,4 +1,4 @@
-version: '3.1'
+version: '3.7'
 services:
   court-register:
     build:
@@ -16,7 +16,7 @@ services:
       - SERVER_PORT=8080
       - OAUTH_API_BASE_URL=http://localhost:8090/auth
       - SNS_ENDPOINT_URL=http://localhost:4566
-      - SPRING_PROFILES_ACTIVE=stdout,localstack
+      - SPRING_PROFILES_ACTIVE=stdout,localstack,postgres
       - AWS_ACCESS_KEY_ID=foobar
       - AWS_SECRET_ACCESS_KEY=foobar
       - AWS_DEFAULT_REGION=eu-west-2
