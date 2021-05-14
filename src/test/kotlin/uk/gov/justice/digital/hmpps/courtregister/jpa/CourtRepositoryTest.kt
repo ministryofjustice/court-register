@@ -66,7 +66,8 @@ class CourtRepositoryTest : IntegrationTest() {
       town = "Sheffield",
       postcode = "SA4 5TH",
       county = "Glamorgan",
-      country = "UK"
+      country = "UK",
+      active = true
     )
 
     val contact = Contact(building = building, type = "TEL", detail = "55512121")

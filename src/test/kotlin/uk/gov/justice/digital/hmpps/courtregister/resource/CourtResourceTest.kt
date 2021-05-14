@@ -259,7 +259,8 @@ class CourtResourceTest : IntegrationTest() {
         town = "Sheffield",
         postcode = "SA4 5TH",
         county = "Yorkshire",
-        country = "UK"
+        country = "UK",
+        active = true
       )
       val building2 = Building(
         id = 2,
@@ -271,7 +272,8 @@ class CourtResourceTest : IntegrationTest() {
         town = "Sheffield",
         postcode = "SA4 5TT",
         county = "Yorkshire",
-        country = "UK"
+        country = "UK",
+        active = true
       )
 
       court.buildings?.add(building1)
@@ -327,7 +329,8 @@ class CourtResourceTest : IntegrationTest() {
               town = "Sheffield",
               postcode = "SA4 5TH",
               county = "Yorkshire",
-              country = "UK"
+              country = "UK",
+              active = true
             )
           )
         )
@@ -351,7 +354,8 @@ class CourtResourceTest : IntegrationTest() {
               town = "Sheffield",
               postcode = "SA4 5TH",
               county = "Yorkshire",
-              country = "UK"
+              country = "UK",
+              active = true
             )
           )
         )
@@ -372,7 +376,8 @@ class CourtResourceTest : IntegrationTest() {
             town = "Sheffield",
             postcode = "S11 9BQ",
             county = "South Yorkshire",
-            country = "UK"
+            country = "UK",
+            active = true
           )
         )
       )
@@ -399,7 +404,8 @@ class CourtResourceTest : IntegrationTest() {
               town = "Sheffield",
               postcode = "SA4 5TH",
               county = "Yorkshire",
-              country = "UK"
+              country = "UK",
+              active = true
             )
           )
         )
@@ -433,7 +439,8 @@ class CourtResourceTest : IntegrationTest() {
             town = "Sheffield",
             postcode = "S11 9BQ",
             county = "South Yorkshire",
-            country = "UK"
+            country = "UK",
+            active = true
           )
         )
       )
@@ -460,7 +467,8 @@ class CourtResourceTest : IntegrationTest() {
               town = "A".repeat(81),
               postcode = "A".repeat(9),
               county = "A".repeat(81),
-              country = "A".repeat(17)
+              country = "A".repeat(17),
+              active = true
             )
           )
         )
@@ -496,7 +504,8 @@ class CourtResourceTest : IntegrationTest() {
         town = "Sheffield",
         postcode = "SA4 5TH",
         county = "Yorkshire",
-        country = "UK"
+        country = "UK",
+        active = true
       )
 
       val updatedBuilding = createdBuilding.copy(id = 1)
@@ -525,7 +534,8 @@ class CourtResourceTest : IntegrationTest() {
               town = "Sheffield",
               postcode = "SA4 5TH",
               county = "Yorkshire",
-              country = "UK"
+              country = "UK",
+              active = true
             )
           )
         )
@@ -561,7 +571,8 @@ class CourtResourceTest : IntegrationTest() {
         town = "Sheffield",
         postcode = "SA4 5TH",
         county = "Yorkshire",
-        country = "UK"
+        country = "UK",
+        active = true
       )
 
       val updatedBuilding = createdBuilding.copy(id = 1)
@@ -590,7 +601,8 @@ class CourtResourceTest : IntegrationTest() {
               town = "A".repeat(81),
               postcode = "A".repeat(9),
               county = "A".repeat(81),
-              country = "A".repeat(17)
+              country = "A".repeat(17),
+              active = true
             )
           )
         )
@@ -654,7 +666,8 @@ class CourtResourceTest : IntegrationTest() {
         town = "Sheffield",
         postcode = "SA4 5TH",
         county = "Yorkshire",
-        country = "UK"
+        country = "UK",
+        active = true
       )
 
       whenever(contactRepository.findById(1)).thenReturn(
@@ -701,7 +714,8 @@ class CourtResourceTest : IntegrationTest() {
         town = "Sheffield",
         postcode = "SA4 5TH",
         county = "Yorkshire",
-        country = "UK"
+        country = "UK",
+        active = true
       )
 
       whenever(contactRepository.findById(1)).thenReturn(
@@ -736,7 +750,8 @@ class CourtResourceTest : IntegrationTest() {
         town = "Sheffield",
         postcode = "SA4 5TH",
         county = "Yorkshire",
-        country = "UK"
+        country = "UK",
+        active = true
       )
       building.contacts?.add(Contact(id = 1, type = "TEL", detail = "5555 33333", building = building))
 
@@ -790,7 +805,8 @@ class CourtResourceTest : IntegrationTest() {
         town = "Sheffield",
         postcode = "SA4 5TH",
         county = "Yorkshire",
-        country = "UK"
+        country = "UK",
+        active = true
       )
       building.contacts?.add(Contact(id = 1, type = "TEL", detail = "5555 33333", building = building))
 

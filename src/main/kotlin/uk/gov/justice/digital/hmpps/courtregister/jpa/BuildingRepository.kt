@@ -49,6 +49,7 @@ data class Building(
   var county: String?,
   var postcode: String?,
   var country: String?,
+  var active: Boolean,
 
   @CreatedDate
   var createdDatetime: LocalDateTime = LocalDateTime.MIN,
