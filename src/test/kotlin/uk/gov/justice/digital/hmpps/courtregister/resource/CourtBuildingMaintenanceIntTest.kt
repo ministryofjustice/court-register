@@ -33,7 +33,8 @@ class CourtBuildingMaintenanceIntTest : IntegrationTest() {
                 "street": "Green Street",
                 "town": "M GLAM",
                 "county": "Aberdare",
-                "postcode": "CF44 7DW"
+                "postcode": "CF44 7DW",
+                "active": false
             }
             """.trimIndent()
           )
@@ -46,6 +47,7 @@ class CourtBuildingMaintenanceIntTest : IntegrationTest() {
         .expectStatus().isOk
         .expectBody()
         .jsonPath("$.buildingName").isEqualTo("New Crown Building")
+        .jsonPath("$.active").isEqualTo(false)
     }
 
     @Test

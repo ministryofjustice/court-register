@@ -325,11 +325,13 @@ data class BuildingDto(
   @Schema(description = "County", example = "South Glamorgan") val county: String?,
   @Schema(description = "Postcode", example = "SA3 4HT") val postcode: String?,
   @Schema(description = "Country", example = "UK") val country: String?,
-  @Schema(description = "List of contacts for this building by type") val contacts: List<ContactDto>? = listOf()
+  @Schema(description = "List of contacts for this building by type") val contacts: List<ContactDto>? = listOf(),
+  @Schema(description = "Whether the building is active") val active: Boolean
 ) {
   constructor(building: Building) : this(
     building.id!!, building.court.id, building.subCode, building.buildingName, building.street, building.locality,
-    building.town, building.county, building.postcode, building.country, building.contacts?.map { ContactDto(it) }
+    building.town, building.county, building.postcode, building.country, building.contacts?.map { ContactDto(it) },
+    building.active
   )
 }
 

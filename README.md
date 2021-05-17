@@ -5,51 +5,80 @@
 
 Self-contained fat-jar micro-service to publish court information
 
-### Pre-requisite
+## Pre-requisite
 
-`Docker` Even when running the tests docker is used by the integration test to load `localstack` (for AWS services). The build will automatically download and run `localstack` on your behalf.
+`Docker` Even when running the tests docker is used to start `localstack` (for AWS services) and a Postgres database. The build will automatically download and run these containers on your behalf.
 
-### Building
+## Building
 
 ```./gradlew build```
 
-### Running
+## Running
 
-`localstack` is used to emulate the AWS SNS service. When running the integration test this will be started automatically. If you want the tests to use an already running version of `locastack` run the tests with the environment `AWS_PROVIDER=localstack`. This has the benefit of running the test quicker without the overhead of starting the `localstack` container.
+Various methods to run the application locally are detailed below.
 
-Any commands in `localstack/setup-sns.sh` will be run when `localstack` starts, so this should contain commands to create the appropriate queues.
+Once up the application should be available on port 8080 - see the health page at http://localhost:80800/health.  
 
-Running all services locally:
+Also try http://localhost:8080/swagger-ui.html to see the API specification.
+
+### Running all services locally
+
+You can run the following command to bring up the application and its dependencies in docker containers:
+
 ```bash
+./gradlew clean
 TMPDIR=/private$TMPDIR docker-compose up 
 ```
-Queues and topics will automatically be created when the `localstack` container starts.
 
-Running all services except this application (hence allowing you to run this in the IDE)
+Run command `docker ps` to see which containers are running.
+
+Note that this method of starting the application can be very slow as it involves building both the app and a docker image, but it's handy because it works straight out of the box.
+
+### Running in Intellij
+
+First start all dependencies with the command:
 
 ```bash
 TMPDIR=/private$TMPDIR docker-compose up --scale court-register=0 
 ```
 
-Check the docker-compose file for sample environment variables to run the application locally.
+The dependencies will run in docker containers - but not the main application.  Use command `docker ps` to see the running containers.
 
-Or to just run `localstack` which is useful when running against an a non-local test system
+To start the application in Intellij run main class `CourtRegisterApplication` including active profiles `postgres` and `localstack` in the run configuration . 
+
+### Running from the command line
+
+First start all dependencies with the command:
 
 ```bash
-TMPDIR=/private$TMPDIR docker-compose up localstack 
+TMPDIR=/private$TMPDIR docker-compose up --scale court-register=0 
 ```
 
-In all of the above the application should use the host network to communicate with `localstack` since AWS Client will try to read messages from localhost rather than the `localstack` network.
-### Experimenting with messages
+The dependencies will run in docker containers - but not the main application.  Use command `docker ps` to see the running containers.
 
+To start the application run command
 
-### Testing
+```bash
+./gradlew bootRun -Plocalstack --args='--spring.profiles.active=localstack,postgres'
+```
 
-Note that the integration tests currently use TestContainers to start localstack and so you do not need to start localstack manually.
+### Authorisation
 
-If you DO wish to run localstack manually (as is done in the Circle build) then you must:
+The query endpoints are not secured and can be called without an auth token.
+
+The update endpoints are secured against the hmpps-auth service which should be running in docker on port 8090.  You will need a client token containing the roles specified in the endpoint definitions in the `resource` package, e.g. role `ROLE_MAINTAIN_REF_DATA` with scope `write`.  A working client has been configured in the auth server for client id `hmpps-registers-ui-client` and client secret `clientsecret`.
+
+## Testing
+
+### Localstack
+
+`localstack` is used to emulate the AWS SNS and SQS services. When running the integration tests localstack is started automatically by TestContainers. 
+
+If you wish to run localstack manually (as is done in the Circle build) then you must:
 * start localstack with command `TMPDIR=/private$TMPDIR docker-compose up localstack`
 * run the tests with command `AWS_PROVIDER=localstack ./gradlew check`
+
+Any commands in `localstack/setup-sns.sh` will be run when `localstack` starts, so this should contain commands to create the appropriate queues.
 
 ### Test Database
 

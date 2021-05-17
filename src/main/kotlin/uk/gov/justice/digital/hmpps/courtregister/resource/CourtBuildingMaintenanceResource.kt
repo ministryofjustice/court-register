@@ -235,6 +235,7 @@ data class UpdateBuildingDto(
   @Schema(description = "Sub location code for referencing building", example = "AAABBB") @field:Size(
     max = 6,
     message = "Sub location code must be no more than 6 characters"
-  ) val subCode: String?
+  ) val subCode: String?,
+  @Schema(description = "Whether the building is active", example = "true", required = false, defaultValue = "true") val active: Boolean = true
 
 )
