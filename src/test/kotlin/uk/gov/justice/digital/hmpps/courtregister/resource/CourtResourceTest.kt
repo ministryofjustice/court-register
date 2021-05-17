@@ -425,7 +425,6 @@ class CourtResourceTest : IntegrationTest() {
       }
     }
 
-    // TODO DT-1982 temporary test required to prove active building flag is optional until it is implemented in the front end
     @Test
     fun `update a building wtihout sending active flag`() {
       whenever(buildingRepository.findById(2)).thenReturn(
@@ -618,7 +617,6 @@ class CourtResourceTest : IntegrationTest() {
       }
     }
 
-    // TODO DT-1982 temporary test required to prove active building flag is optional until it is implemented in the front end
     @Test
     fun `insert a building without sending active flag`() {
       val court = Court("ACCRYC", "Accrington Youth Court", null, CourtType("YOUTH", "Youth Court"), true)
