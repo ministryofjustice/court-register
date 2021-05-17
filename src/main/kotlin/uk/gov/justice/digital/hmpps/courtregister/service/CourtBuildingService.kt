@@ -49,7 +49,7 @@ class CourtBuildingService(
       building.county = county
       building.country = country
       building.subCode = subCode
-      building.active = active
+      building.active = active ?: true
     }
     return BuildingDto(building)
   }
@@ -81,7 +81,7 @@ class CourtBuildingService(
         postcode = postcode,
         county = county,
         country = country,
-        active = active
+        active = active ?: true
       )
 
       court.buildings?.add(building)

@@ -425,6 +425,69 @@ class CourtResourceTest : IntegrationTest() {
       }
     }
 
+    // TODO DT-1982 temporary test required to prove active building flag is optional until it is implemented in the front end
+    @Test
+    fun `update a building wtihout sending active flag`() {
+      whenever(buildingRepository.findById(2)).thenReturn(
+        Optional.of(
+          Building(
+            id = 2,
+            court = Court("ACCRYC", "Accrington Youth Court", null, CourtType("YOUTH", "Youth Court"), true),
+            subCode = "SUBBUILD2",
+            street = "West Cross",
+            buildingName = "Annex",
+            locality = "Yorkshire",
+            town = "Sheffield",
+            postcode = "S11 9BQ",
+            county = "South Yorkshire",
+            country = "UK",
+            active = true
+          )
+        )
+      )
+
+      whenever(buildingRepository.findBySubCode("SUBT22")).thenReturn(Optional.empty())
+
+      webTestClient.put()
+        .uri("/court-maintenance/id/ACCRYC/buildings/2")
+        .accept(MediaType.APPLICATION_JSON)
+        .headers(
+          setAuthorisation(
+            roles = listOf("ROLE_MAINTAIN_REF_DATA"),
+            scopes = listOf("write"),
+            user = "bobby.beans"
+          )
+        )
+        .body(
+          BodyInserters.fromValue(
+            UpdateBuildingDto(
+              subCode = "SUBT22",
+              street = "West Cross",
+              buildingName = "Annex",
+              locality = "Mumble",
+              town = "Sheffield",
+              postcode = "SA4 5TH",
+              county = "Yorkshire",
+              country = "UK" // missing active flag
+            )
+          )
+        )
+        .exchange()
+        .expectStatus().isOk
+        .expectBody().json("updated_building_2".loadJson())
+
+      assertThat(auditEventMessageCount()).isEqualTo(1)
+      val auditMessage = auditMessage()
+      JsonAssertions.assertThatJson(auditMessage).node("what").isEqualTo("COURT_REGISTER_BUILDING_UPDATE")
+      JsonAssertions.assertThatJson(auditMessage).node("who").isEqualTo("bobby.beans")
+      JsonAssertions.assertThatJson(auditMessage).node("service").isEqualTo("court-register")
+      JsonAssertions.assertThatJson(auditMessage).node("details").isNotNull
+      JsonAssertions.assertThatJson(auditMessage).node("when").asString().satisfies {
+        val whenDateTime = LocalDateTime.ofInstant(Instant.parse(it), ZoneOffset.UTC)
+        assertThat(whenDateTime).isCloseToUtcNow(within(5, ChronoUnit.SECONDS))
+      }
+    }
+
     @Test
     fun `will not update a building when data is too long`() {
       whenever(buildingRepository.findById(1)).thenReturn(
@@ -542,6 +605,73 @@ class CourtResourceTest : IntegrationTest() {
         .exchange()
         .expectStatus().isCreated
         .expectBody().json("inserted_building".loadJson())
+
+      assertThat(auditEventMessageCount()).isEqualTo(1)
+      val auditMessage = auditMessage()
+      JsonAssertions.assertThatJson(auditMessage).node("what").isEqualTo("COURT_REGISTER_BUILDING_INSERT")
+      JsonAssertions.assertThatJson(auditMessage).node("who").isEqualTo("bobby.beans")
+      JsonAssertions.assertThatJson(auditMessage).node("service").isEqualTo("court-register")
+      JsonAssertions.assertThatJson(auditMessage).node("details").isNotNull
+      JsonAssertions.assertThatJson(auditMessage).node("when").asString().satisfies {
+        val whenDateTime = LocalDateTime.ofInstant(Instant.parse(it), ZoneOffset.UTC)
+        assertThat(whenDateTime).isCloseToUtcNow(within(5, ChronoUnit.SECONDS))
+      }
+    }
+
+    // TODO DT-1982 temporary test required to prove active building flag is optional until it is implemented in the front end
+    @Test
+    fun `insert a building without sending active flag`() {
+      val court = Court("ACCRYC", "Accrington Youth Court", null, CourtType("YOUTH", "Youth Court"), true)
+      whenever(courtRepository.findById("ACCRYD")).thenReturn(
+        Optional.of(court)
+      )
+
+      val createdBuilding = Building(
+        court = court,
+        subCode = "SUBT22",
+        street = "West Cross",
+        buildingName = "Annex",
+        locality = "Mumble",
+        town = "Sheffield",
+        postcode = "SA4 5TH",
+        county = "Yorkshire",
+        country = "UK",
+        active = true
+      )
+
+      val updatedBuilding = createdBuilding.copy(id = 2)
+
+      whenever(buildingRepository.save(createdBuilding)).thenReturn(
+        updatedBuilding
+      )
+
+      webTestClient.post()
+        .uri("/court-maintenance/id/ACCRYD/buildings")
+        .accept(MediaType.APPLICATION_JSON)
+        .headers(
+          setAuthorisation(
+            roles = listOf("ROLE_MAINTAIN_REF_DATA"),
+            scopes = listOf("write"),
+            user = "bobby.beans"
+          )
+        )
+        .body(
+          BodyInserters.fromValue(
+            UpdateBuildingDto(
+              subCode = "SUBT22",
+              street = "West Cross",
+              buildingName = "Annex",
+              locality = "Mumble",
+              town = "Sheffield",
+              postcode = "SA4 5TH",
+              county = "Yorkshire",
+              country = "UK" // missing active flag
+            )
+          )
+        )
+        .exchange()
+        .expectStatus().isCreated
+        .expectBody().json("inserted_building_2".loadJson())
 
       assertThat(auditEventMessageCount()).isEqualTo(1)
       val auditMessage = auditMessage()
