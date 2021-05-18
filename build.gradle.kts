@@ -1,5 +1,5 @@
 plugins {
-  id("uk.gov.justice.hmpps.gradle-spring-boot") version "3.2.0-beta"
+  id("uk.gov.justice.hmpps.gradle-spring-boot") version "3.2.1"
   kotlin("plugin.spring") version "1.5.0"
   kotlin("plugin.jpa") version "1.5.0"
   idea
@@ -22,9 +22,9 @@ dependencies {
   implementation("org.springframework.boot:spring-boot-starter-oauth2-client")
   implementation("org.springframework.cloud:spring-cloud-starter-aws-messaging:2.2.6.RELEASE")
 
-  implementation("org.flywaydb:flyway-core:7.8.2")
+  implementation("org.flywaydb:flyway-core:7.9.0")
   runtimeOnly("org.postgresql:postgresql:42.2.20")
-  implementation("com.vladmihalcea:hibernate-types-52:2.10.4")
+  implementation("com.vladmihalcea:hibernate-types-52:2.11.1")
 
   implementation("javax.transaction:javax.transaction-api:1.3")
   implementation("javax.xml.bind:jaxb-api:2.3.1")
@@ -37,18 +37,18 @@ dependencies {
   implementation("org.springdoc:springdoc-openapi-kotlin:1.5.8")
   implementation("org.springdoc:springdoc-openapi-data-rest:1.5.8")
 
-  implementation(platform("com.amazonaws:aws-java-sdk-bom:1.11.1012"))
-  implementation("com.amazonaws:aws-java-sdk-sns:1.11.1012")
+  implementation(platform("com.amazonaws:aws-java-sdk-bom:1.11.1020"))
+  implementation("com.amazonaws:aws-java-sdk-sns:1.11.1020")
 
   testImplementation("org.springframework.security:spring-security-test")
   testImplementation("com.github.tomakehurst:wiremock-standalone:2.27.2")
   testImplementation("net.javacrumbs.json-unit:json-unit-assertj:2.25.0")
   testImplementation("org.testcontainers:localstack:1.15.3")
   testImplementation("org.testcontainers:postgresql:1.15.3")
-  testImplementation("org.awaitility:awaitility-kotlin:4.0.3")
-  testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactive:1.4.3")
+  testImplementation("org.awaitility:awaitility-kotlin:4.1.0")
+  testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactive:1.5.0")
   testImplementation("io.jsonwebtoken:jjwt:0.9.1")
-  testImplementation("org.mockito:mockito-inline:3.9.0")
+  testImplementation("org.mockito:mockito-inline:3.10.0")
 }
 
 tasks {
