@@ -1,7 +1,7 @@
 plugins {
   id("uk.gov.justice.hmpps.gradle-spring-boot") version "3.2.1"
-  kotlin("plugin.spring") version "1.5.0"
-  kotlin("plugin.jpa") version "1.5.0"
+  kotlin("plugin.spring") version "1.5.10"
+  kotlin("plugin.jpa") version "1.5.10"
   idea
 }
 
@@ -46,7 +46,7 @@ dependencies {
   testImplementation("org.testcontainers:localstack:1.15.3")
   testImplementation("org.testcontainers:postgresql:1.15.3")
   testImplementation("org.awaitility:awaitility-kotlin:4.1.0")
-  testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactive:1.5.0")
+  testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactive:1.5.10")
   testImplementation("io.jsonwebtoken:jjwt:0.9.1")
   testImplementation("org.mockito:mockito-inline:3.10.0")
 }
