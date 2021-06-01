@@ -237,5 +237,5 @@ data class UpdateBuildingDto(
     message = "Sub location code must be no more than 6 characters"
   ) val subCode: String?,
   @Schema(description = "Whether the building is active", example = "true", required = false, defaultValue = "true") val active: Boolean = true,
-  @Schema(description = "List of contacts for this building by type, can only be used on a new building") val contacts: List<UpdateContactDto>? = listOf()
+  @Schema(description = "List of contacts for this building by type") val contacts: List<UpdateContactDto>? = listOf()
 )

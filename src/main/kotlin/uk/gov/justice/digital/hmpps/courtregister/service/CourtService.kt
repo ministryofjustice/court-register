@@ -65,17 +65,10 @@ class CourtService(
     }
 
     with(courtInsertRecord) {
-      val court = Court(courtId, courtName, courtDescription, courtTypeRepository.findById(courtType).orElseThrow(), active)
+      val court =
+        Court(courtId, courtName, courtDescription, courtTypeRepository.findById(courtType).orElseThrow(), active)
       courtRepository.save(court)
-
-      buildings?.forEach {
-        courtBuildingService.insertBuilding(courtId, it)
-      }
-
-      return if (buildings != null && buildings.isEmpty())
-        CourtDto(court)
-      else
-        CourtDto(courtRepository.findById(courtId).orElseThrow { throw EntityExistsException("Court $courtId not found") })
+      return CourtDto(court)
     }
   }
 

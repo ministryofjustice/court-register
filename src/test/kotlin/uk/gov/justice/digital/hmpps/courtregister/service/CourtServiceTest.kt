@@ -1,6 +1,7 @@
 package uk.gov.justice.digital.hmpps.courtregister.service
 
 import com.nhaarman.mockitokotlin2.mock
+import com.nhaarman.mockitokotlin2.times
 import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.whenever
 import org.assertj.core.api.Assertions.assertThat
@@ -117,11 +118,10 @@ class CourtServiceTest {
 
     @Test
     fun `create a court`() {
-      whenever(courtRepository.findById("ACCRYZ")).thenReturn(
-        Optional.empty()
-      )
-
       val courtToSave = Court("ACCRYZ", "A Court 4", "new court", CourtType("CROWN", "Crown Court"), true)
+      whenever(courtRepository.findById("ACCRYZ")).thenReturn(
+        Optional.empty(), Optional.of(courtToSave)
+      )
       whenever(courtRepository.save(courtToSave)).thenReturn(
         courtToSave
       )
@@ -131,7 +131,7 @@ class CourtServiceTest {
       assertThat(updatedCourt).isEqualTo(
         CourtDto("ACCRYZ", "A Court 4", "new court", CourtTypeDto("CROWN", "Crown Court"), true)
       )
-      verify(courtRepository).findById("ACCRYZ")
+      verify(courtRepository, times(2)).findById("ACCRYZ")
       verify(courtTypeRepository).findById("CROWN")
     }
 

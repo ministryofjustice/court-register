@@ -86,17 +86,7 @@ class CourtBuildingService(
       )
 
       court.buildings?.add(building)
-
-      val buildingDto = BuildingDto(buildingRepository.save(building))
-
-      contacts?.forEach {
-        buildingContactService.insertContact(courtId, buildingDto.id, it)
-      }
-
-      return if (contacts != null && contacts.isEmpty())
-        buildingDto
-      else
-        BuildingDto(buildingRepository.findById(buildingDto.id).orElseThrow { throw EntityExistsException("Building $buildingDto.id not found") })
+      return BuildingDto(buildingRepository.save(building))
     }
   }
 
