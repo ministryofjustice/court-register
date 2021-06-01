@@ -73,7 +73,10 @@ class CourtService(
         courtBuildingService.insertBuilding(courtId, it)
       }
 
-      return CourtDto(courtRepository.findById(courtId).orElseThrow { throw EntityExistsException("Court $courtId not found") })
+      return if (buildings != null && buildings.isEmpty())
+        CourtDto(court)
+      else
+        CourtDto(courtRepository.findById(courtId).orElseThrow { throw EntityExistsException("Court $courtId not found") })
     }
   }
 

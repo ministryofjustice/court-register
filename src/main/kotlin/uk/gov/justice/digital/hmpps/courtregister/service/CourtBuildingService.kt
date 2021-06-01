@@ -92,7 +92,11 @@ class CourtBuildingService(
       contacts?.forEach {
         buildingContactService.insertContact(courtId, buildingDto.id, it)
       }
-      return BuildingDto(buildingRepository.findById(buildingDto.id).orElseThrow { throw EntityExistsException("Building $buildingDto.id not found") })
+
+      return if (contacts != null && contacts.isEmpty())
+        buildingDto
+      else
+        BuildingDto(buildingRepository.findById(buildingDto.id).orElseThrow { throw EntityExistsException("Building $buildingDto.id not found") })
     }
   }
 
