@@ -1,6 +1,7 @@
 package uk.gov.justice.digital.hmpps.courtregister.resource
 
 import com.amazonaws.services.sqs.model.PurgeQueueRequest
+import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.whenever
 import net.javacrumbs.jsonunit.assertj.JsonAssertions
 import org.assertj.core.api.Assertions.assertThat
@@ -215,6 +216,89 @@ class CourtResourceTest : IntegrationTest() {
         val whenDateTime = LocalDateTime.ofInstant(Instant.parse(it), ZoneOffset.UTC)
         assertThat(whenDateTime).isCloseToUtcNow(within(5, ChronoUnit.SECONDS))
       }
+    }
+
+    @Test
+    fun `insert a court, buildings and contacts`() {
+      val youthCourt = CourtType("YOUTH", "Youth Court")
+      val finalCourt = Court("XXXXAA", "Full Court Insert", "A Full court", youthCourt, true)
+      val finalBuilding = Building(
+        id = 1,
+        court = finalCourt,
+        subCode = null,
+        street = "West Cross",
+        buildingName = "Annex",
+        locality = "Mumble",
+        town = "Sheffield",
+        postcode = "SA4 5TH",
+        county = "Yorkshire",
+        country = "UK",
+        active = true
+      )
+      val courtWithoutBuilding = finalCourt.copy(buildings = mutableListOf())
+      finalCourt.buildings?.add(finalBuilding)
+
+      val contact = Contact(1, finalBuilding, "TEL", "5555 666666")
+      val buildingWithoutContact = finalBuilding.copy(contacts = mutableListOf())
+
+      finalBuilding.contacts?.add(contact)
+      val courtWithoutContact = courtWithoutBuilding.copy()
+      courtWithoutContact.buildings?.add(buildingWithoutContact)
+
+      whenever(courtRepository.findById("XXXXAA")).thenReturn(
+        Optional.empty(), Optional.of(courtWithoutBuilding), Optional.of(finalCourt)
+      )
+
+      whenever(courtTypeRepository.findById("YOUTH")).thenReturn(Optional.of(youthCourt))
+
+      whenever(buildingRepository.save(any())).thenReturn(
+        buildingWithoutContact
+      )
+
+      whenever(contactRepository.save(any())).thenReturn(
+        contact
+      )
+
+      whenever(buildingRepository.findById(finalBuilding.id!!)).thenReturn(Optional.of(finalBuilding))
+
+      webTestClient.post()
+        .uri("/court-maintenance")
+        .accept(MediaType.APPLICATION_JSON)
+        .headers(
+          setAuthorisation(
+            roles = listOf("ROLE_MAINTAIN_REF_DATA"),
+            scopes = listOf("write"),
+            user = "bobby.beans"
+          )
+        )
+        .body(
+          BodyInserters.fromValue(
+            InsertCourtDto(
+              "XXXXAA",
+              "Full Court Insert",
+              "A Full court",
+              "YOUTH",
+              true,
+              listOf(
+                UpdateBuildingDto(
+                  subCode = null,
+                  street = "West Cross",
+                  buildingName = "Annex",
+                  locality = "Mumble",
+                  town = "Sheffield",
+                  postcode = "SA4 5TH",
+                  county = "Yorkshire",
+                  country = "UK",
+                  active = true,
+                  contacts = listOf(UpdateContactDto("TEL", "5555 666666"))
+                )
+              )
+            )
+          )
+        )
+        .exchange()
+        .expectStatus().isCreated
+        .expectBody().json("inserted_full_court".loadJson())
     }
 
     @Test

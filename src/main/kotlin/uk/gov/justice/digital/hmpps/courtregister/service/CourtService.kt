@@ -65,8 +65,7 @@ class CourtService(
     }
 
     with(courtInsertRecord) {
-      val court =
-        Court(courtId, courtName, courtDescription, courtTypeRepository.findById(courtType).orElseThrow(), active)
+      val court = Court(courtId, courtName, courtDescription, courtTypeRepository.findById(courtType).orElseThrow(), active)
       courtRepository.save(court)
 
       buildings?.forEach {
