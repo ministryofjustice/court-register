@@ -170,7 +170,8 @@ data class InsertCourtDto(
     message = "Court name must be between 2 and 200"
   ) val courtDescription: String?,
   @Schema(description = "Type of court", example = "COU", required = true) val courtType: String,
-  @Schema(description = "Whether the court is still active", required = true) val active: Boolean
+  @Schema(description = "Whether the court is still active", required = true) val active: Boolean,
+  @Schema(description = "List of buildings for this court") val buildings: List<UpdateBuildingDto>? = listOf()
 )
 
 @JsonInclude(NON_NULL)

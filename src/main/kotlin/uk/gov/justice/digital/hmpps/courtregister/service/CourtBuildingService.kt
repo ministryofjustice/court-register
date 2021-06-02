@@ -14,7 +14,8 @@ import javax.transaction.Transactional
 @Transactional
 class CourtBuildingService(
   private val courtRepository: CourtRepository,
-  private val buildingRepository: BuildingRepository
+  private val buildingRepository: BuildingRepository,
+  private val buildingContactService: BuildingContactService
 ) {
   fun findById(courtId: String, buildingId: Long): BuildingDto {
     return BuildingDto(getBuilding(buildingId, courtId))
@@ -85,7 +86,17 @@ class CourtBuildingService(
       )
 
       court.buildings?.add(building)
-      return BuildingDto(buildingRepository.save(building))
+
+      val buildingDto = BuildingDto(buildingRepository.save(building))
+
+      contacts?.forEach {
+        buildingContactService.insertContact(courtId, buildingDto.id, it)
+      }
+
+      return if (contacts != null && contacts.isEmpty())
+        buildingDto
+      else
+        BuildingDto(buildingRepository.findById(buildingDto.id).orElseThrow { throw EntityExistsException("Building $buildingDto.id not found") })
     }
   }
 
