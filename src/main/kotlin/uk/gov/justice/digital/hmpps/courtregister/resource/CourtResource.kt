@@ -291,11 +291,11 @@ data class CourtDto(
   ) val courtDescription: String?,
   @Schema(description = "Type of court with description", required = true) val type: CourtTypeDto,
   @Schema(description = "Whether the court is still active", required = true) val active: Boolean,
-  @Schema(description = "List of buildings for this court entity") val buildings: List<BuildingDto>? = listOf()
+  @Schema(description = "List of buildings for this court entity") val buildings: List<BuildingDto> = listOf()
 ) {
   constructor(court: Court) : this(
     court.id, court.courtName, court.courtDescription, CourtTypeDto(court.courtType), court.active,
-    court.buildings?.map { BuildingDto(it) }
+    court.buildings.map { BuildingDto(it) }
   )
 }
 
@@ -330,7 +330,7 @@ data class BuildingDto(
 ) {
   constructor(building: Building) : this(
     building.id!!, building.court.id, building.subCode, building.buildingName, building.street, building.locality,
-    building.town, building.county, building.postcode, building.country, building.contacts?.map { ContactDto(it) },
+    building.town, building.county, building.postcode, building.country, building.contacts.map { ContactDto(it) },
     building.active
   )
 }

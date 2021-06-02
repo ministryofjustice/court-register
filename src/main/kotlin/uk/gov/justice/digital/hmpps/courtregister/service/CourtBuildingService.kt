@@ -14,8 +14,7 @@ import javax.transaction.Transactional
 @Transactional
 class CourtBuildingService(
   private val courtRepository: CourtRepository,
-  private val buildingRepository: BuildingRepository,
-  private val buildingContactService: BuildingContactService
+  private val buildingRepository: BuildingRepository
 ) {
   fun findById(courtId: String, buildingId: Long): BuildingDto {
     return BuildingDto(getBuilding(buildingId, courtId))
@@ -85,7 +84,6 @@ class CourtBuildingService(
         active = active
       )
 
-      court.buildings?.add(building)
       return BuildingDto(buildingRepository.save(building))
     }
   }

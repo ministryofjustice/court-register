@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.Query
 import org.springframework.data.repository.PagingAndSortingRepository
 import org.springframework.data.repository.query.Param
 import org.springframework.stereotype.Repository
+import uk.gov.justice.digital.hmpps.courtregister.resource.UpdateBuildingDto
 import java.time.LocalDateTime
 import javax.persistence.CascadeType
 import javax.persistence.Column
@@ -82,5 +83,25 @@ data class Court(
   var lastUpdatedDatetime: LocalDateTime = LocalDateTime.MIN,
 
   @OneToMany(cascade = [CascadeType.ALL], mappedBy = "court", orphanRemoval = true)
-  val buildings: MutableList<Building>? = mutableListOf()
-)
+  var buildings: List<Building> = listOf()
+
+) {
+  fun addBuilding(dto: UpdateBuildingDto): Building {
+    val building = Building(
+      court = this,
+      subCode = dto.subCode,
+      buildingName = dto.buildingName,
+      street = dto.street,
+      locality = dto.locality,
+      town = dto.town,
+      postcode = dto.postcode,
+      county = dto.county,
+      country = dto.country,
+      active = dto.active
+    )
+    building.contacts = dto.contacts.map { building.addContact(it) }
+    buildings = buildings.plus(building)
+
+    return building
+  }
+}
