@@ -6,6 +6,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener
 import org.springframework.data.jpa.repository.Query
 import org.springframework.data.repository.CrudRepository
 import org.springframework.stereotype.Repository
+import uk.gov.justice.digital.hmpps.courtregister.resource.UpdateContactDto
 import java.time.LocalDateTime
 import java.util.Optional
 import javax.persistence.CascadeType
@@ -57,6 +58,12 @@ data class Building(
   var lastUpdatedDatetime: LocalDateTime = LocalDateTime.MIN,
 
   @OneToMany(cascade = [CascadeType.ALL], mappedBy = "building", orphanRemoval = true)
-  val contacts: MutableList<Contact>? = mutableListOf()
+  var contacts: List<Contact> = listOf()
 
-)
+) {
+  fun addContact(dto: UpdateContactDto): Contact {
+    val contact = Contact(building = this, type = dto.type, detail = dto.detail)
+    contacts = contacts.plus(contact)
+    return contact
+  }
+}
