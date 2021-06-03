@@ -23,8 +23,7 @@ import javax.persistence.EntityNotFoundException
 class CourtServiceTest {
   private val courtRepository: CourtRepository = mock()
   private val courtTypeRepository: CourtTypeRepository = mock()
-  private val courtBuildingService: CourtBuildingService = mock()
-  private val courtService = CourtService(courtRepository, courtTypeRepository, courtBuildingService)
+  private val courtService = CourtService(courtRepository, courtTypeRepository)
 
   @Suppress("ClassName")
   @Nested

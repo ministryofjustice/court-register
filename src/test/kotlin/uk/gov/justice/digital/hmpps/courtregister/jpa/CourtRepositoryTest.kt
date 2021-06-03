@@ -40,8 +40,8 @@ class CourtRepositoryTest : IntegrationTest() {
     with(court) {
       assertThat(id).isEqualTo("ABRYMC")
       assertThat(courtType.description).isEqualTo("Magistrates Court")
-      assertThat(buildings!![0].buildingName).isEqualTo("Swyddfa'r Sir")
-      assertThat(buildings!![0].contacts!![0].detail).isEqualTo("01633 645000")
+      assertThat(buildings[0].buildingName).isEqualTo("Swyddfa'r Sir")
+      assertThat(buildings[0].contacts[0].detail).isEqualTo("01633 645000")
     }
   }
 
@@ -72,8 +72,8 @@ class CourtRepositoryTest : IntegrationTest() {
 
     val contact = Contact(building = building, type = "TEL", detail = "55512121")
 
-    building.contacts?.add(contact)
-    court.buildings?.add(building)
+    building.contacts = building.contacts.plus(contact)
+    court.buildings = court.buildings.plus(building)
 
     val id = courtRepository.save(court).id
 
@@ -82,8 +82,8 @@ class CourtRepositoryTest : IntegrationTest() {
 
     TestTransaction.start()
     val savedCourt = courtRepository.findById(id).get()
-    val savedBuilding = savedCourt.buildings!![0]
-    val savedContact = savedBuilding.contacts!![0]
+    val savedBuilding = savedCourt.buildings[0]
+    val savedContact = savedBuilding.contacts[0]
 
     with(savedCourt) {
       assertThat(id).isEqualTo("SHFCRT")
@@ -109,8 +109,8 @@ class CourtRepositoryTest : IntegrationTest() {
     val updatedCourt = courtRepository.findById(id).get()
 
     with(updatedCourt) {
-      val updatedBuilding = buildings!![0]
-      val updatedContact = updatedBuilding.contacts!![0]
+      val updatedBuilding = buildings[0]
+      val updatedContact = updatedBuilding.contacts[0]
 
       assertThat(courtDescription).isEqualTo("New Description")
       assertThat(updatedBuilding.buildingName).isEqualTo("Changed")
