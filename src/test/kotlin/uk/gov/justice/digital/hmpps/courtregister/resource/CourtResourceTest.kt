@@ -236,14 +236,14 @@ class CourtResourceTest : IntegrationTest() {
         active = true
       )
       val courtWithoutBuilding = finalCourt.copy(buildings = mutableListOf())
-      finalCourt.buildings?.add(finalBuilding)
+      finalCourt.buildings = finalCourt.buildings.plus(finalBuilding)
 
       val contact = Contact(1, finalBuilding, "TEL", "5555 666666")
       val buildingWithoutContact = finalBuilding.copy(contacts = mutableListOf())
 
-      finalBuilding.contacts?.add(contact)
+      finalBuilding.contacts = finalBuilding.contacts.plus(contact)
       val courtWithoutContact = courtWithoutBuilding.copy()
-      courtWithoutContact.buildings?.add(buildingWithoutContact)
+      courtWithoutContact.buildings = courtWithoutContact.buildings.plus(buildingWithoutContact)
 
       whenever(courtRepository.findById("XXXXAA")).thenReturn(
         Optional.empty(), Optional.of(courtWithoutBuilding), Optional.of(finalCourt)
@@ -360,16 +360,16 @@ class CourtResourceTest : IntegrationTest() {
         active = true
       )
 
-      court.buildings?.add(building1)
-      court.buildings?.add(building2)
+      court.buildings = court.buildings.plus(building1)
+      court.buildings = court.buildings.plus(building2)
 
       val contact1 = Contact(-1, building1, "TEL", "555 666666")
       val contact2 = Contact(-2, building1, "EMAIL", "test@test.com")
       val contact3 = Contact(-3, building2, "TEL", "555 6666655")
 
-      building1.contacts?.add(contact1)
-      building1.contacts?.add(contact2)
-      building2.contacts?.add(contact3)
+      building1.contacts = building1.contacts.plus(contact1)
+      building1.contacts = building1.contacts.plus(contact2)
+      building2.contacts = building2.contacts.plus(contact3)
 
       whenever(courtRepository.findById(anyString())).thenReturn(
         Optional.of(court)
@@ -965,7 +965,7 @@ class CourtResourceTest : IntegrationTest() {
         country = "UK",
         active = true
       )
-      building.contacts?.add(Contact(id = 1, type = "TEL", detail = "5555 33333", building = building))
+      building.contacts = building.contacts.plus(Contact(id = 1, type = "TEL", detail = "5555 33333", building = building))
 
       whenever(buildingRepository.findById(1)).thenReturn(
         Optional.of(building)
@@ -1020,7 +1020,7 @@ class CourtResourceTest : IntegrationTest() {
         country = "UK",
         active = true
       )
-      building.contacts?.add(Contact(id = 1, type = "TEL", detail = "5555 33333", building = building))
+      building.contacts = building.contacts.plus(Contact(id = 1, type = "TEL", detail = "5555 33333", building = building))
 
       whenever(buildingRepository.findById(1)).thenReturn(
         Optional.of(building)
