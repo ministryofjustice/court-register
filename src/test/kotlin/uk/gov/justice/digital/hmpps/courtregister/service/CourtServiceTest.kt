@@ -116,20 +116,17 @@ class CourtServiceTest {
 
     @Test
     fun `create a court`() {
-      whenever(courtRepository.findById("ACCRYZ")).thenReturn(
-        Optional.empty()
-      )
-
       val courtToSave = Court("ACCRYZ", "A Court 4", "new court", CourtType("CROWN", "Crown Court"), true)
+      whenever(courtRepository.findById("ACCRYZ")).thenReturn(
+        Optional.empty(), Optional.of(courtToSave)
+      )
       whenever(courtRepository.save(courtToSave)).thenReturn(
         courtToSave
       )
       whenever(courtTypeRepository.findById("CROWN")).thenReturn(Optional.of(CourtType("CROWN", "Crown Court")))
       val courtInsertRecord = InsertCourtDto("ACCRYZ", "A Court 4", "new court", "CROWN", true)
       val updatedCourt = courtService.insertCourt(courtInsertRecord)
-      assertThat(updatedCourt).isEqualTo(
-        CourtDto("ACCRYZ", "A Court 4", "new court", CourtTypeDto("CROWN", "Crown Court"), true)
-      )
+      assertThat(updatedCourt).isEqualTo("ACCRYZ")
       verify(courtRepository).findById("ACCRYZ")
       verify(courtTypeRepository).findById("CROWN")
     }

@@ -177,10 +177,16 @@ class CourtResourceTest : IntegrationTest() {
 
     @Test
     fun `insert a court`() {
+      val courtType = CourtType("YOUTH", "Youth Court")
+      val court = Court("ACCRYD", "A New Court", "a description", courtType, true)
       whenever(courtRepository.findById("ACCRYD")).thenReturn(
-        Optional.empty()
+        Optional.empty(), Optional.of(court)
       )
-      whenever(courtTypeRepository.findById("YOUTH")).thenReturn(Optional.of(CourtType("YOUTH", "Youth Court")))
+      whenever(courtTypeRepository.findById("YOUTH")).thenReturn(Optional.of(courtType))
+
+      whenever(courtRepository.save(any())).thenReturn(
+        court
+      )
       webTestClient.post()
         .uri("/court-maintenance")
         .accept(MediaType.APPLICATION_JSON)
@@ -235,31 +241,17 @@ class CourtResourceTest : IntegrationTest() {
         country = "UK",
         active = true
       )
-      val courtWithoutBuilding = finalCourt.copy(buildings = mutableListOf())
       finalCourt.buildings = finalCourt.buildings.plus(finalBuilding)
-
       val contact = Contact(1, finalBuilding, "TEL", "5555 666666")
-      val buildingWithoutContact = finalBuilding.copy(contacts = mutableListOf())
-
       finalBuilding.contacts = finalBuilding.contacts.plus(contact)
-      val courtWithoutContact = courtWithoutBuilding.copy()
-      courtWithoutContact.buildings = courtWithoutContact.buildings.plus(buildingWithoutContact)
 
       whenever(courtRepository.findById("XXXXAA")).thenReturn(
-        Optional.empty(), Optional.of(courtWithoutBuilding), Optional.of(finalCourt)
+        Optional.empty(), Optional.of(finalCourt)
       )
-
       whenever(courtTypeRepository.findById("YOUTH")).thenReturn(Optional.of(youthCourt))
-
-      whenever(buildingRepository.save(any())).thenReturn(
-        buildingWithoutContact
+      whenever(courtRepository.save(any())).thenReturn(
+        finalCourt
       )
-
-      whenever(contactRepository.save(any())).thenReturn(
-        contact
-      )
-
-      whenever(buildingRepository.findById(finalBuilding.id!!)).thenReturn(Optional.of(finalBuilding))
 
       webTestClient.post()
         .uri("/court-maintenance")
