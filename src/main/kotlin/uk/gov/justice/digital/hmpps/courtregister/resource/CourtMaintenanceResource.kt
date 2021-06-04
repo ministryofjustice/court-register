@@ -143,7 +143,8 @@ class CourtMaintenanceResource(
   fun insertCourt(
     @RequestBody @Valid courtInsertRecord: InsertCourtDto
   ): CourtDto {
-    val newCourt = courtService.insertCourt(courtInsertRecord)
+
+    val newCourt = courtService.findById(courtService.insertCourt(courtInsertRecord))
     snsService.sendEvent(COURT_REGISTER_UPDATE, newCourt.courtId)
     auditService.sendAuditEvent(
       AuditType.COURT_REGISTER_INSERT.name,
@@ -171,7 +172,7 @@ data class InsertCourtDto(
   ) val courtDescription: String?,
   @Schema(description = "Type of court", example = "COU", required = true) val courtType: String,
   @Schema(description = "Whether the court is still active", required = true) val active: Boolean,
-  @Schema(description = "List of buildings for this court") val buildings: List<UpdateBuildingDto>? = listOf()
+  @Schema(description = "List of buildings for this court") val buildings: List<UpdateBuildingDto> = listOf()
 )
 
 @JsonInclude(NON_NULL)

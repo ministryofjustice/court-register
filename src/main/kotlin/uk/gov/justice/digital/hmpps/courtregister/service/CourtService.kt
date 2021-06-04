@@ -18,8 +18,7 @@ import javax.transaction.Transactional
 @Transactional
 class CourtService(
   private val courtRepository: CourtRepository,
-  private val courtTypeRepository: CourtTypeRepository,
-  private val courtBuildingService: CourtBuildingService
+  private val courtTypeRepository: CourtTypeRepository
 ) {
   fun findById(courtId: String): CourtDto {
     val court = courtRepository.findById(courtId)
@@ -59,23 +58,17 @@ class CourtService(
     return CourtDto(court)
   }
 
-  fun insertCourt(courtInsertRecord: InsertCourtDto): CourtDto {
+  fun insertCourt(courtInsertRecord: InsertCourtDto): String {
     if (courtRepository.findById(courtInsertRecord.courtId).isPresent) {
       throw EntityExistsException("Court $courtInsertRecord.courtId already exists")
     }
 
     with(courtInsertRecord) {
-      val court = Court(courtId, courtName, courtDescription, courtTypeRepository.findById(courtType).orElseThrow(), active)
-      courtRepository.save(court)
-
-      buildings?.forEach {
-        courtBuildingService.insertBuilding(courtId, it)
+      val court = Court(courtId, courtName, courtDescription, courtTypeRepository.findById(courtType).orElseThrow { EntityNotFoundException("Court Type $courtType not found") }, active)
+      buildings.forEach {
+        court.addBuilding(it)
       }
-
-      return if (buildings != null && buildings.isEmpty())
-        CourtDto(court)
-      else
-        CourtDto(courtRepository.findById(courtId).orElseThrow { throw EntityExistsException("Court $courtId not found") })
+      return courtRepository.save(court).id
     }
   }
 
