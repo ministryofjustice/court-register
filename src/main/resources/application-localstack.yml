@@ -4,16 +4,14 @@ oauth:
 aws:
   provider: localstack
 
-sns:
-  topic:
-    arn: arn:aws:sns:eu-west-2:000000000000:hmpps_domain_events
-  endpoint:
-    url: http://localhost:4566
-sqs:
-  endpoint:
-    url: http://localhost:4566
-  queue:
-    name: hmpps_audit_queue
+hmpps.sqs:
+  provider: localstack
+  queues:
+    audit:
+      queueName: hmpps_audit_queue
+  topics:
+    domainevents:
+      arn: arn:aws:sns:eu-west-2:000000000000:hmpps_domain_events
 
 spring:
   jpa:

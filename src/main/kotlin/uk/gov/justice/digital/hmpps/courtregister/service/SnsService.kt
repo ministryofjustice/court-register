@@ -1,21 +1,25 @@
 package uk.gov.justice.digital.hmpps.courtregister.service
 
-import com.amazonaws.services.sns.AmazonSNSAsync
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-import org.springframework.beans.factory.annotation.Value
 import org.springframework.cloud.aws.messaging.core.NotificationMessagingTemplate
 import org.springframework.cloud.aws.messaging.core.TopicMessageChannel
 import org.springframework.stereotype.Service
+import uk.gov.justice.hmpps.sqs.HmppsQueueService
 
 @Service
 class SnsService(
-  private val awsSnsClient: AmazonSNSAsync,
-  @Value("\${sns.topic.arn}") private val topicArn: String,
-
+  hmppsQueueService: HmppsQueueService,
 ) {
+  private val hmppsTopic by lazy {
+    hmppsQueueService.findByTopicId("domainevents")
+      ?: throw RuntimeException("Topic with name domainevents doesn't exist")
+  }
+  private val topicArn by lazy { hmppsTopic.arn }
+  private val awsSnsClient by lazy { hmppsTopic.snsClient }
+
   private val topicTemplate: NotificationMessagingTemplate = NotificationMessagingTemplate(awsSnsClient)
 
   companion object {

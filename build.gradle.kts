@@ -20,11 +20,12 @@ dependencies {
   implementation("org.springframework.boot:spring-boot-starter-security")
   implementation("org.springframework.boot:spring-boot-starter-oauth2-resource-server")
   implementation("org.springframework.boot:spring-boot-starter-oauth2-client")
+  implementation("uk.gov.justice.service.hmpps:hmpps-sqs-spring-boot-starter:0.9.0")
   implementation("org.springframework.cloud:spring-cloud-starter-aws-messaging:2.2.6.RELEASE")
 
-  implementation("org.flywaydb:flyway-core:7.9.1")
-  runtimeOnly("org.postgresql:postgresql:42.2.20")
-  implementation("com.vladmihalcea:hibernate-types-52:2.11.1")
+  implementation("org.flywaydb:flyway-core:7.14.0")
+  runtimeOnly("org.postgresql:postgresql:42.2.23")
+  implementation("com.vladmihalcea:hibernate-types-52:2.12.1")
 
   implementation("javax.transaction:javax.transaction-api:1.3")
   implementation("javax.xml.bind:jaxb-api:2.3.1")
@@ -32,23 +33,22 @@ dependencies {
 
   implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.12.4")
 
-  implementation("org.springdoc:springdoc-openapi-webmvc-core:1.5.9")
-  implementation("org.springdoc:springdoc-openapi-ui:1.5.9")
-  implementation("org.springdoc:springdoc-openapi-kotlin:1.5.9")
-  implementation("org.springdoc:springdoc-openapi-data-rest:1.5.9")
+  implementation("org.springdoc:springdoc-openapi-webmvc-core:1.5.10")
+  implementation("org.springdoc:springdoc-openapi-ui:1.5.10")
+  implementation("org.springdoc:springdoc-openapi-kotlin:1.5.10")
+  implementation("org.springdoc:springdoc-openapi-data-rest:1.5.10")
 
-  implementation(platform("com.amazonaws:aws-java-sdk-bom:1.11.1025"))
-  implementation("com.amazonaws:aws-java-sdk-sns:1.11.1025")
+  implementation(platform("com.amazonaws:aws-java-sdk-bom:1.12.48"))
 
   testImplementation("org.springframework.security:spring-security-test")
   testImplementation("com.github.tomakehurst:wiremock-standalone:2.27.2")
-  testImplementation("net.javacrumbs.json-unit:json-unit-assertj:2.26.0")
-  testImplementation("org.testcontainers:localstack:1.15.3")
-  testImplementation("org.testcontainers:postgresql:1.15.3")
+  testImplementation("net.javacrumbs.json-unit:json-unit-assertj:2.27.0")
+  testImplementation("org.testcontainers:localstack:1.16.0")
+  testImplementation("org.testcontainers:postgresql:1.16.0")
   testImplementation("org.awaitility:awaitility-kotlin:4.1.0")
-  testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactive:1.5.0")
+  testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactive:1.5.1")
   testImplementation("io.jsonwebtoken:jjwt:0.9.1")
-  testImplementation("org.mockito:mockito-inline:3.10.0")
+  testImplementation("org.mockito:mockito-inline:3.11.2")
 }
 
 tasks {

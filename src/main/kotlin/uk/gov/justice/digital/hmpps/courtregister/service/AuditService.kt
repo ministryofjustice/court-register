@@ -9,19 +9,24 @@ import org.springframework.cloud.aws.messaging.core.QueueMessagingTemplate
 import org.springframework.messaging.support.MessageBuilder
 import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.courtregister.config.SecurityUserContext
+import uk.gov.justice.hmpps.sqs.HmppsQueueService
 import java.time.Instant
 
 @Service
 class AuditService(
-  awsSqsClient: AmazonSQSAsync,
-  @Value("\${sqs.queue.name}") private val queueName: String,
+  hmppsQueueService: HmppsQueueService,
   @Value("\${spring.application.name}")
   private val serviceName: String,
   private val securityUserContext: SecurityUserContext,
   private val mapper: ObjectMapper
 ) {
-  private val auditMessagingTemplate: QueueMessagingTemplate =
-    QueueMessagingTemplate(awsSqsClient)
+  private val hmppsQueue by lazy {
+    hmppsQueueService.findByQueueId("audit") ?: throw RuntimeException("Queue with name audit doesn't exist")
+  }
+  private val queueName by lazy { hmppsQueue.queueName }
+  private val awsSqsClient by lazy { hmppsQueue.sqsClient as AmazonSQSAsync }
+
+  private val auditMessagingTemplate: QueueMessagingTemplate = QueueMessagingTemplate(awsSqsClient)
 
   companion object {
     val log: Logger = LoggerFactory.getLogger(this::class.java)

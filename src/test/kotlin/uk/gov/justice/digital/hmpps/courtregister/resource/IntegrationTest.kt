@@ -1,8 +1,6 @@
 package uk.gov.justice.digital.hmpps.courtregister.resource
 
-import com.amazonaws.services.sqs.AmazonSQSAsync
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.http.HttpHeaders
 import org.springframework.test.context.ActiveProfiles
@@ -11,6 +9,7 @@ import org.springframework.test.context.DynamicPropertySource
 import org.springframework.test.web.reactive.server.WebTestClient
 import uk.gov.justice.digital.hmpps.courtregister.config.PostgresContainer
 import uk.gov.justice.digital.hmpps.courtregister.helper.JwtAuthHelper
+import uk.gov.justice.hmpps.sqs.HmppsQueueService
 
 @Suppress("SpringJavaInjectionPointsAutowiringInspection")
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -21,20 +20,22 @@ abstract class IntegrationTest {
   lateinit var webTestClient: WebTestClient
 
   @Autowired
-  protected lateinit var awsSqsClient: AmazonSQSAsync
-
-  @Autowired
   protected lateinit var jwtAuthHelper: JwtAuthHelper
 
-  @Value("\${sqs.queue.name}")
-  protected lateinit var queueName: String
+  @Autowired
+  protected lateinit var hmppsQueueService: HmppsQueueService
+  internal val auditQueue by lazy {
+    hmppsQueueService.findByQueueId("audit")
+      ?: throw RuntimeException("Queue with name audit doesn't exist")
+  }
+  internal val awsSqsClient by lazy { auditQueue.sqsClient }
+  internal val queueUrl: String by lazy { auditQueue.queueUrl }
+  internal val queueName: String by lazy { auditQueue.queueName }
 
   init {
     // Resolves an issue where Wiremock keeps previous sockets open from other tests causing connection resets
     System.setProperty("http.keepAlive", "false")
   }
-
-  fun String.queueUrl(): String = awsSqsClient.getQueueUrl(this).queueUrl
 
   internal fun setAuthorisation(
     user: String = "court-reg-client",

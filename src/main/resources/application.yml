@@ -93,18 +93,13 @@ cloud:
       auto: false
       static: ${aws.region}
 
-sns:
-  provider: ${aws.provider}
-  endpoint.region: ${aws.region}
-
-sqs:
-  provider: ${aws.provider}
-  endpoint.region: ${aws.region}
+hmpps.sqs:
+  queues:
+    audit:
+      asyncQueueClient: true
 
 oauth:
   token.url: ${oauth.endpoint.url}/oauth/token
 
-azure:
-  application-insights.web.enable-W3C: true
 
 
