@@ -49,37 +49,37 @@ env:
         name: dps-rds-instance-output
         key: rds_instance_endpoint
 
-  - name: SNS_AWS_ACCESS_KEY_ID
+  - name: HMPPS_SQS_TOPICS_DOMAINEVENTS_ACCESS_KEY_ID
     valueFrom:
       secretKeyRef:
         name: hmpps-domain-events-topic
         key: access_key_id
 
-  - name: SNS_AWS_SECRET_ACCESS_KEY
+  - name: HMPPS_SQS_TOPICS_DOMAINEVENTS_SECRET_ACCESS_KEY
     valueFrom:
       secretKeyRef:
         name: hmpps-domain-events-topic
         key: secret_access_key
 
-  - name: SNS_TOPIC_ARN
+  - name: HMPPS_SQS_TOPICS_DOMAINEVENTS_ARN
     valueFrom:
       secretKeyRef:
         name: hmpps-domain-events-topic
         key: topic_arn
 
-  - name: SQS_AWS_ACCESS_KEY_ID
+  - name: HMPPS_SQS_QUEUES_AUDIT_QUEUE_ACCESS_KEY_ID
     valueFrom:
       secretKeyRef:
         name: sqs-hmpps-audit-secret
         key: access_key_id
 
-  - name: SQS_AWS_SECRET_ACCESS_KEY
+  - name: HMPPS_SQS_QUEUES_AUDIT_QUEUE_SECRET_ACCESS_KEY
     valueFrom:
       secretKeyRef:
         name: sqs-hmpps-audit-secret
         key: secret_access_key
 
-  - name: SQS_QUEUE_NAME
+  - name: HMPPS_SQS_QUEUES_AUDIT_QUEUE_NAME
     valueFrom:
       secretKeyRef:
         name: sqs-hmpps-audit-secret

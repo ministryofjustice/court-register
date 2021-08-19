@@ -98,7 +98,7 @@ class CourtResourceTest : IntegrationTest() {
 
     @BeforeEach
     internal fun drainAuditQueue() {
-      awsSqsClient.purgeQueue(PurgeQueueRequest(queueName.queueUrl()))
+      awsSqsClient.purgeQueue(PurgeQueueRequest(queueUrl))
     }
 
     @Test
@@ -386,7 +386,7 @@ class CourtResourceTest : IntegrationTest() {
 
     @BeforeEach
     internal fun drainAuditQueue() {
-      awsSqsClient.purgeQueue(PurgeQueueRequest(queueName.queueUrl()))
+      awsSqsClient.purgeQueue(PurgeQueueRequest(queueUrl))
     }
 
     @Test
@@ -833,7 +833,7 @@ class CourtResourceTest : IntegrationTest() {
 
     @BeforeEach
     internal fun drainAuditQueue() {
-      awsSqsClient.purgeQueue(PurgeQueueRequest(queueName.queueUrl()))
+      awsSqsClient.purgeQueue(PurgeQueueRequest(queueUrl))
     }
 
     @Test
@@ -1045,11 +1045,11 @@ class CourtResourceTest : IntegrationTest() {
       ?: throw AssertionError("file $this.json not found")
 
   fun auditEventMessageCount(): Int? {
-    val queueAttributes = awsSqsClient.getQueueAttributes(queueName.queueUrl(), listOf("ApproximateNumberOfMessages"))
+    val queueAttributes = awsSqsClient.getQueueAttributes(queueUrl, listOf("ApproximateNumberOfMessages"))
     return queueAttributes.attributes["ApproximateNumberOfMessages"]?.toInt()
   }
 
   fun auditMessage(): String? {
-    return awsSqsClient.receiveMessage(queueName.queueUrl()).messages.firstOrNull()?.body
+    return awsSqsClient.receiveMessage(queueUrl).messages.firstOrNull()?.body
   }
 }
