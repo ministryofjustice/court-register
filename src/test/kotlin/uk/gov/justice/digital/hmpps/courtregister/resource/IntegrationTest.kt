@@ -1,5 +1,7 @@
 package uk.gov.justice.digital.hmpps.courtregister.resource
 
+import com.amazonaws.services.sqs.model.PurgeQueueRequest
+import org.junit.jupiter.api.BeforeEach
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.http.HttpHeaders
@@ -35,6 +37,11 @@ abstract class IntegrationTest {
   init {
     // Resolves an issue where Wiremock keeps previous sockets open from other tests causing connection resets
     System.setProperty("http.keepAlive", "false")
+  }
+
+  @BeforeEach
+  fun cleanQueues() {
+    awsSqsClient.purgeQueue(PurgeQueueRequest(queueUrl))
   }
 
   internal fun setAuthorisation(
