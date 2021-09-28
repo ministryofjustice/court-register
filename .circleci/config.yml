@@ -6,7 +6,7 @@ orbs:
 executors:
   validator:
     docker:
-      - image: cimg/openjdk:16.0
+      - image: cimg/openjdk:17.0
       - image: localstack/localstack:0.12.10
         environment:
           - SERVICES=sqs,sns
@@ -42,7 +42,7 @@ jobs:
             - gradle-{{ checksum "build.gradle.kts" }}
             - gradle-
       - run:
-          command: ./gradlew -Dorg.gradle.jvmargs="--illegal-access=permit" -Dkotlin.daemon.jvm.options="--illegal-access=permit" check
+          command: ./gradlew check
       - save_cache:
           paths:
             - ~/.gradle
