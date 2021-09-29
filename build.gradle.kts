@@ -24,7 +24,7 @@ dependencies {
   implementation("org.springframework.cloud:spring-cloud-starter-aws-messaging:2.2.6.RELEASE")
 
   implementation("org.flywaydb:flyway-core:7.15.0")
-  runtimeOnly("org.postgresql:postgresql:42.2.23")
+  runtimeOnly("org.postgresql:postgresql:42.2.24")
   implementation("com.vladmihalcea:hibernate-types-52:2.12.1")
 
   implementation("javax.transaction:javax.transaction-api:1.3")
@@ -38,7 +38,9 @@ dependencies {
   implementation("org.springdoc:springdoc-openapi-kotlin:1.5.10")
   implementation("org.springdoc:springdoc-openapi-data-rest:1.5.10")
 
-  implementation(platform("com.amazonaws:aws-java-sdk-bom:1.12.62"))
+  implementation(platform("com.amazonaws:aws-java-sdk-bom:1.12.76"))
+
+  agentDeps("com.microsoft.azure:applicationinsights-agent:3.2.0-BETA.3")
 
   testImplementation("org.springframework.security:spring-security-test")
   testImplementation("com.github.tomakehurst:wiremock-standalone:2.27.2")
