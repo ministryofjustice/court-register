@@ -1,26 +1,13 @@
-# This is a YAML-formatted file.
-# Declare variables to be passed into your templates.
+---
+# Environment specific values, override helm_deploy/court-register/values.yaml
+generic-service:
+  replicaCount: 4
+  host: court-register-preprod.hmpps.service.justice.gov.uk
 
-replicaCount: 4
+  env:
+    OAUTH_ENDPOINT_URL: "https://sign-in-preprod.hmpps.service.justice.gov.uk/auth"
+    APPLICATIONINSIGHTS_CONFIGURATION_FILE: applicationinsights.json
 
-image:
-  repository: quay.io/hmpps/court-register
-  tag: latest
-  pullPolicy: Always
-  port: 8080
-
-ingress:
-  enabled: true
-  hosts:
-    - host: court-register-preprod.hmpps.service.justice.gov.uk
-      cert_secret: court-register-cert
-  path: /
-
-env:
-  JAVA_OPTS: "-Xmx512m"
-  OAUTH_ENDPOINT_URL: "https://sign-in-preprod.hmpps.service.justice.gov.uk/auth"
-  APPLICATIONINSIGHTS_CONFIGURATION_FILE: applicationinsights.json
-
-# CloudPlatform AlertManager receiver to route promethues alerts to slack
+# CloudPlatform AlertManager receiver to route prometheus alerts to slack
 generic-prometheus-alerts:
   alertSeverity: hmpps_tech_non_prod
