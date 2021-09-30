@@ -40,7 +40,7 @@ dependencies {
 
   implementation(platform("com.amazonaws:aws-java-sdk-bom:1.12.76"))
 
-  agentDeps("com.microsoft.azure:applicationinsights-agent:3.2.0-BETA.3")
+  agentDeps("com.microsoft.azure:applicationinsights-agent:3.2.0-BETA.4")
 
   testImplementation("org.springframework.security:spring-security-test")
   testImplementation("com.github.tomakehurst:wiremock-standalone:2.27.2")
