@@ -1,5 +1,5 @@
 plugins {
-  id("uk.gov.justice.hmpps.gradle-spring-boot") version "3.3.9"
+  id("uk.gov.justice.hmpps.gradle-spring-boot") version "3.3.10-beta"
   kotlin("plugin.spring") version "1.5.31"
   kotlin("plugin.jpa") version "1.5.31"
   idea
@@ -39,8 +39,6 @@ dependencies {
   implementation("org.springdoc:springdoc-openapi-data-rest:1.5.10")
 
   implementation(platform("com.amazonaws:aws-java-sdk-bom:1.12.76"))
-
-  agentDeps("com.microsoft.azure:applicationinsights-agent:3.2.0-BETA.4")
 
   testImplementation("org.springframework.security:spring-security-test")
   testImplementation("com.github.tomakehurst:wiremock-standalone:2.27.2")
