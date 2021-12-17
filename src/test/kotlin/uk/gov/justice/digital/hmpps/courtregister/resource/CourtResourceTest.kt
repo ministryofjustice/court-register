@@ -1,7 +1,7 @@
 package uk.gov.justice.digital.hmpps.courtregister.resource
 
 import com.amazonaws.services.sqs.model.PurgeQueueRequest
-import net.javacrumbs.jsonunit.assertj.JsonAssertions
+import net.javacrumbs.jsonunit.assertj.JsonAssertions.assertThatJson
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.within
 import org.hamcrest.CoreMatchers
@@ -27,6 +27,7 @@ import java.time.LocalDateTime
 import java.time.ZoneOffset
 import java.time.temporal.ChronoUnit
 import java.util.Optional
+import java.util.function.Consumer
 
 @Suppress("ClassName")
 class CourtResourceTest : IntegrationTest() {
@@ -145,14 +146,16 @@ class CourtResourceTest : IntegrationTest() {
 
       assertThat(auditEventMessageCount()).isEqualTo(1)
       val auditMessage = auditMessage()
-      JsonAssertions.assertThatJson(auditMessage).node("what").isEqualTo("COURT_REGISTER_UPDATE")
-      JsonAssertions.assertThatJson(auditMessage).node("who").isEqualTo("bobby.beans")
-      JsonAssertions.assertThatJson(auditMessage).node("service").isEqualTo("court-register")
-      JsonAssertions.assertThatJson(auditMessage).node("details").isNotNull
-      JsonAssertions.assertThatJson(auditMessage).node("when").asString().satisfies {
-        val whenDateTime = LocalDateTime.ofInstant(Instant.parse(it), ZoneOffset.UTC)
-        assertThat(whenDateTime).isCloseToUtcNow(within(5, ChronoUnit.SECONDS))
-      }
+      assertThatJson(auditMessage).node("what").isEqualTo("COURT_REGISTER_UPDATE")
+      assertThatJson(auditMessage).node("who").isEqualTo("bobby.beans")
+      assertThatJson(auditMessage).node("service").isEqualTo("court-register")
+      assertThatJson(auditMessage).node("details").isNotNull
+      assertThatJson(auditMessage).node("when").asString().satisfies(
+        Consumer {
+          val whenDateTime = LocalDateTime.ofInstant(Instant.parse(it), ZoneOffset.UTC)
+          assertThat(whenDateTime).isCloseToUtcNow(within(5, ChronoUnit.SECONDS))
+        }
+      )
     }
 
     @Test
@@ -214,14 +217,16 @@ class CourtResourceTest : IntegrationTest() {
 
       assertThat(auditEventMessageCount()).isEqualTo(1)
       val auditMessage = auditMessage()
-      JsonAssertions.assertThatJson(auditMessage).node("what").isEqualTo("COURT_REGISTER_INSERT")
-      JsonAssertions.assertThatJson(auditMessage).node("who").isEqualTo("bobby.beans")
-      JsonAssertions.assertThatJson(auditMessage).node("service").isEqualTo("court-register")
-      JsonAssertions.assertThatJson(auditMessage).node("details").isNotNull
-      JsonAssertions.assertThatJson(auditMessage).node("when").asString().satisfies {
-        val whenDateTime = LocalDateTime.ofInstant(Instant.parse(it), ZoneOffset.UTC)
-        assertThat(whenDateTime).isCloseToUtcNow(within(5, ChronoUnit.SECONDS))
-      }
+      assertThatJson(auditMessage).node("what").isEqualTo("COURT_REGISTER_INSERT")
+      assertThatJson(auditMessage).node("who").isEqualTo("bobby.beans")
+      assertThatJson(auditMessage).node("service").isEqualTo("court-register")
+      assertThatJson(auditMessage).node("details").isNotNull
+      assertThatJson(auditMessage).node("when").asString().satisfies(
+        Consumer {
+          val whenDateTime = LocalDateTime.ofInstant(Instant.parse(it), ZoneOffset.UTC)
+          assertThat(whenDateTime).isCloseToUtcNow(within(5, ChronoUnit.SECONDS))
+        }
+      )
     }
 
     @Test
@@ -491,14 +496,16 @@ class CourtResourceTest : IntegrationTest() {
 
       assertThat(auditEventMessageCount()).isEqualTo(1)
       val auditMessage = auditMessage()
-      JsonAssertions.assertThatJson(auditMessage).node("what").isEqualTo("COURT_REGISTER_BUILDING_UPDATE")
-      JsonAssertions.assertThatJson(auditMessage).node("who").isEqualTo("bobby.beans")
-      JsonAssertions.assertThatJson(auditMessage).node("service").isEqualTo("court-register")
-      JsonAssertions.assertThatJson(auditMessage).node("details").isNotNull
-      JsonAssertions.assertThatJson(auditMessage).node("when").asString().satisfies {
-        val whenDateTime = LocalDateTime.ofInstant(Instant.parse(it), ZoneOffset.UTC)
-        assertThat(whenDateTime).isCloseToUtcNow(within(5, ChronoUnit.SECONDS))
-      }
+      assertThatJson(auditMessage).node("what").isEqualTo("COURT_REGISTER_BUILDING_UPDATE")
+      assertThatJson(auditMessage).node("who").isEqualTo("bobby.beans")
+      assertThatJson(auditMessage).node("service").isEqualTo("court-register")
+      assertThatJson(auditMessage).node("details").isNotNull
+      assertThatJson(auditMessage).node("when").asString().satisfies(
+        Consumer {
+          val whenDateTime = LocalDateTime.ofInstant(Instant.parse(it), ZoneOffset.UTC)
+          assertThat(whenDateTime).isCloseToUtcNow(within(5, ChronoUnit.SECONDS))
+        }
+      )
     }
 
     @Test
@@ -553,14 +560,16 @@ class CourtResourceTest : IntegrationTest() {
 
       assertThat(auditEventMessageCount()).isEqualTo(1)
       val auditMessage = auditMessage()
-      JsonAssertions.assertThatJson(auditMessage).node("what").isEqualTo("COURT_REGISTER_BUILDING_UPDATE")
-      JsonAssertions.assertThatJson(auditMessage).node("who").isEqualTo("bobby.beans")
-      JsonAssertions.assertThatJson(auditMessage).node("service").isEqualTo("court-register")
-      JsonAssertions.assertThatJson(auditMessage).node("details").isNotNull
-      JsonAssertions.assertThatJson(auditMessage).node("when").asString().satisfies {
-        val whenDateTime = LocalDateTime.ofInstant(Instant.parse(it), ZoneOffset.UTC)
-        assertThat(whenDateTime).isCloseToUtcNow(within(5, ChronoUnit.SECONDS))
-      }
+      assertThatJson(auditMessage).node("what").isEqualTo("COURT_REGISTER_BUILDING_UPDATE")
+      assertThatJson(auditMessage).node("who").isEqualTo("bobby.beans")
+      assertThatJson(auditMessage).node("service").isEqualTo("court-register")
+      assertThatJson(auditMessage).node("details").isNotNull
+      assertThatJson(auditMessage).node("when").asString().satisfies(
+        Consumer {
+          val whenDateTime = LocalDateTime.ofInstant(Instant.parse(it), ZoneOffset.UTC)
+          assertThat(whenDateTime).isCloseToUtcNow(within(5, ChronoUnit.SECONDS))
+        }
+      )
     }
 
     @Test
@@ -683,14 +692,16 @@ class CourtResourceTest : IntegrationTest() {
 
       assertThat(auditEventMessageCount()).isEqualTo(1)
       val auditMessage = auditMessage()
-      JsonAssertions.assertThatJson(auditMessage).node("what").isEqualTo("COURT_REGISTER_BUILDING_INSERT")
-      JsonAssertions.assertThatJson(auditMessage).node("who").isEqualTo("bobby.beans")
-      JsonAssertions.assertThatJson(auditMessage).node("service").isEqualTo("court-register")
-      JsonAssertions.assertThatJson(auditMessage).node("details").isNotNull
-      JsonAssertions.assertThatJson(auditMessage).node("when").asString().satisfies {
-        val whenDateTime = LocalDateTime.ofInstant(Instant.parse(it), ZoneOffset.UTC)
-        assertThat(whenDateTime).isCloseToUtcNow(within(5, ChronoUnit.SECONDS))
-      }
+      assertThatJson(auditMessage).node("what").isEqualTo("COURT_REGISTER_BUILDING_INSERT")
+      assertThatJson(auditMessage).node("who").isEqualTo("bobby.beans")
+      assertThatJson(auditMessage).node("service").isEqualTo("court-register")
+      assertThatJson(auditMessage).node("details").isNotNull
+      assertThatJson(auditMessage).node("when").asString().satisfies(
+        Consumer {
+          val whenDateTime = LocalDateTime.ofInstant(Instant.parse(it), ZoneOffset.UTC)
+          assertThat(whenDateTime).isCloseToUtcNow(within(5, ChronoUnit.SECONDS))
+        }
+      )
     }
 
     @Test
@@ -749,14 +760,16 @@ class CourtResourceTest : IntegrationTest() {
 
       assertThat(auditEventMessageCount()).isEqualTo(1)
       val auditMessage = auditMessage()
-      JsonAssertions.assertThatJson(auditMessage).node("what").isEqualTo("COURT_REGISTER_BUILDING_INSERT")
-      JsonAssertions.assertThatJson(auditMessage).node("who").isEqualTo("bobby.beans")
-      JsonAssertions.assertThatJson(auditMessage).node("service").isEqualTo("court-register")
-      JsonAssertions.assertThatJson(auditMessage).node("details").isNotNull
-      JsonAssertions.assertThatJson(auditMessage).node("when").asString().satisfies {
-        val whenDateTime = LocalDateTime.ofInstant(Instant.parse(it), ZoneOffset.UTC)
-        assertThat(whenDateTime).isCloseToUtcNow(within(5, ChronoUnit.SECONDS))
-      }
+      assertThatJson(auditMessage).node("what").isEqualTo("COURT_REGISTER_BUILDING_INSERT")
+      assertThatJson(auditMessage).node("who").isEqualTo("bobby.beans")
+      assertThatJson(auditMessage).node("service").isEqualTo("court-register")
+      assertThatJson(auditMessage).node("details").isNotNull
+      assertThatJson(auditMessage).node("when").asString().satisfies(
+        Consumer {
+          val whenDateTime = LocalDateTime.ofInstant(Instant.parse(it), ZoneOffset.UTC)
+          assertThat(whenDateTime).isCloseToUtcNow(within(5, ChronoUnit.SECONDS))
+        }
+      )
     }
 
     @Test
@@ -895,14 +908,16 @@ class CourtResourceTest : IntegrationTest() {
 
       assertThat(auditEventMessageCount()).isEqualTo(1)
       val auditMessage = auditMessage()
-      JsonAssertions.assertThatJson(auditMessage).node("what").isEqualTo("COURT_REGISTER_CONTACT_UPDATE")
-      JsonAssertions.assertThatJson(auditMessage).node("who").isEqualTo("bobby.beans")
-      JsonAssertions.assertThatJson(auditMessage).node("service").isEqualTo("court-register")
-      JsonAssertions.assertThatJson(auditMessage).node("details").isNotNull
-      JsonAssertions.assertThatJson(auditMessage).node("when").asString().satisfies {
-        val whenDateTime = LocalDateTime.ofInstant(Instant.parse(it), ZoneOffset.UTC)
-        assertThat(whenDateTime).isCloseToUtcNow(within(5, ChronoUnit.SECONDS))
-      }
+      assertThatJson(auditMessage).node("what").isEqualTo("COURT_REGISTER_CONTACT_UPDATE")
+      assertThatJson(auditMessage).node("who").isEqualTo("bobby.beans")
+      assertThatJson(auditMessage).node("service").isEqualTo("court-register")
+      assertThatJson(auditMessage).node("details").isNotNull
+      assertThatJson(auditMessage).node("when").asString().satisfies(
+        Consumer {
+          val whenDateTime = LocalDateTime.ofInstant(Instant.parse(it), ZoneOffset.UTC)
+          assertThat(whenDateTime).isCloseToUtcNow(within(5, ChronoUnit.SECONDS))
+        }
+      )
     }
 
     @Test
@@ -986,14 +1001,16 @@ class CourtResourceTest : IntegrationTest() {
 
       assertThat(auditEventMessageCount()).isEqualTo(1)
       val auditMessage = auditMessage()
-      JsonAssertions.assertThatJson(auditMessage).node("what").isEqualTo("COURT_REGISTER_CONTACT_INSERT")
-      JsonAssertions.assertThatJson(auditMessage).node("who").isEqualTo("bobby.beans")
-      JsonAssertions.assertThatJson(auditMessage).node("service").isEqualTo("court-register")
-      JsonAssertions.assertThatJson(auditMessage).node("details").isNotNull
-      JsonAssertions.assertThatJson(auditMessage).node("when").asString().satisfies {
-        val whenDateTime = LocalDateTime.ofInstant(Instant.parse(it), ZoneOffset.UTC)
-        assertThat(whenDateTime).isCloseToUtcNow(within(5, ChronoUnit.SECONDS))
-      }
+      assertThatJson(auditMessage).node("what").isEqualTo("COURT_REGISTER_CONTACT_INSERT")
+      assertThatJson(auditMessage).node("who").isEqualTo("bobby.beans")
+      assertThatJson(auditMessage).node("service").isEqualTo("court-register")
+      assertThatJson(auditMessage).node("details").isNotNull
+      assertThatJson(auditMessage).node("when").asString().satisfies(
+        Consumer {
+          val whenDateTime = LocalDateTime.ofInstant(Instant.parse(it), ZoneOffset.UTC)
+          assertThat(whenDateTime).isCloseToUtcNow(within(5, ChronoUnit.SECONDS))
+        }
+      )
     }
 
     @Test
