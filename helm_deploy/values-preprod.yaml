@@ -1,10 +1,8 @@
 ---
 # Environment specific values, override helm_deploy/court-register/values.yaml
 generic-service:
-  replicaCount: 4
   ingress:
     host: court-register-preprod.hmpps.service.justice.gov.uk
-    contextColour: green
 
   env:
     OAUTH_ENDPOINT_URL: "https://sign-in-preprod.hmpps.service.justice.gov.uk/auth"

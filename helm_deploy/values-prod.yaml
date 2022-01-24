@@ -1,7 +1,6 @@
 ---
 # Environment specific values, override helm_deploy/court-register/values.yaml
 generic-service:
-  replicaCount: 4
   ingress:
     host: court-register.hmpps.service.justice.gov.uk
 
