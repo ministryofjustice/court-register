@@ -1,7 +1,7 @@
 package uk.gov.justice.digital.hmpps.courtregister.service
 
 import org.assertj.core.api.Assertions.assertThat
-import org.junit.jupiter.api.Assertions
+import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.mockito.ArgumentMatchers.anyString
@@ -107,7 +107,7 @@ class CourtServiceTest {
       whenever(courtRepository.findById("ACCRYC")).thenReturn(
         Optional.empty()
       )
-      Assertions.assertThrows(EntityNotFoundException::class.java) {
+      assertThrows(EntityNotFoundException::class.java) {
         courtService.updateCourt("ACCRYC", UpdateCourtDto("A Court 1", "add description", "CROWN", true))
       }
 
@@ -137,7 +137,7 @@ class CourtServiceTest {
         Optional.of(Court("ACCRYZ", "A Court 5", "new court 5", CourtType("CROWN", "Crown Court"), false))
       )
       val courtInsertRecord = InsertCourtDto("ACCRYZ", "A Court 4", "new court", "CROWN", true)
-      Assertions.assertThrows(EntityExistsException::class.java) { courtService.insertCourt(courtInsertRecord) }
+      assertThrows(EntityExistsException::class.java) { courtService.insertCourt(courtInsertRecord) }
 
       verify(courtRepository).findById("ACCRYZ")
     }
