@@ -20,7 +20,7 @@ dependencies {
   implementation("org.springframework.boot:spring-boot-starter-security")
   implementation("org.springframework.boot:spring-boot-starter-oauth2-resource-server")
   implementation("org.springframework.boot:spring-boot-starter-oauth2-client")
-  implementation("uk.gov.justice.service.hmpps:hmpps-sqs-spring-boot-starter:1.1.6-beta")
+  implementation("uk.gov.justice.service.hmpps:hmpps-sqs-spring-boot-starter:1.1.6")
   implementation("org.springframework.cloud:spring-cloud-starter-aws-messaging:2.2.6.RELEASE")
 
   implementation("org.flywaydb:flyway-core:8.5.13")
@@ -38,7 +38,7 @@ dependencies {
   implementation("org.springdoc:springdoc-openapi-kotlin:1.6.9")
   implementation("org.springdoc:springdoc-openapi-data-rest:1.6.9")
 
-  implementation(platform("com.amazonaws:aws-java-sdk-bom:1.12.252"))
+  implementation(platform("com.amazonaws:aws-java-sdk-bom:1.12.264"))
 
   testImplementation("org.springframework.security:spring-security-test")
   testImplementation("com.github.tomakehurst:wiremock-standalone:2.27.2")
@@ -46,7 +46,7 @@ dependencies {
   testImplementation("org.testcontainers:localstack:1.17.3")
   testImplementation("org.testcontainers:postgresql:1.17.3")
   testImplementation("org.awaitility:awaitility-kotlin:4.2.0")
-  testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactive:1.6.3")
+  testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactive:1.6.4")
   testImplementation("io.jsonwebtoken:jjwt:0.9.1")
   testImplementation("org.mockito:mockito-inline:4.6.1")
 }
