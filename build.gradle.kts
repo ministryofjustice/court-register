@@ -20,16 +20,16 @@ dependencies {
   implementation("org.springframework.boot:spring-boot-starter-security")
   implementation("org.springframework.boot:spring-boot-starter-oauth2-resource-server")
   implementation("org.springframework.boot:spring-boot-starter-oauth2-client")
-  implementation("uk.gov.justice.service.hmpps:hmpps-sqs-spring-boot-starter:1.1.6")
+  implementation("uk.gov.justice.service.hmpps:hmpps-sqs-spring-boot-starter:1.1.8")
   implementation("org.springframework.cloud:spring-cloud-starter-aws-messaging:2.2.6.RELEASE")
 
   implementation("org.flywaydb:flyway-core:8.5.13")
-  runtimeOnly("org.postgresql:postgresql:42.4.0")
-  implementation("com.vladmihalcea:hibernate-types-52:2.16.3")
+  runtimeOnly("org.postgresql:postgresql:42.4.1")
+  implementation("com.vladmihalcea:hibernate-types-52:2.17.3")
 
   implementation("javax.transaction:javax.transaction-api:1.3")
   implementation("javax.xml.bind:jaxb-api:2.3.1")
-  implementation("com.google.code.gson:gson:2.9.0")
+  implementation("com.google.code.gson:gson:2.9.1")
 
   implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.13.3")
 
@@ -38,7 +38,7 @@ dependencies {
   implementation("org.springdoc:springdoc-openapi-kotlin:1.6.9")
   implementation("org.springdoc:springdoc-openapi-data-rest:1.6.9")
 
-  implementation(platform("com.amazonaws:aws-java-sdk-bom:1.12.264"))
+  implementation(platform("com.amazonaws:aws-java-sdk-bom:1.12.277"))
 
   testImplementation("org.springframework.security:spring-security-test")
   testImplementation("com.github.tomakehurst:wiremock-standalone:2.27.2")
