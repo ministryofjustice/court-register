@@ -23,7 +23,7 @@ dependencies {
   implementation("uk.gov.justice.service.hmpps:hmpps-sqs-spring-boot-starter:1.1.8")
   implementation("org.springframework.cloud:spring-cloud-starter-aws-messaging:2.2.6.RELEASE")
 
-  implementation("org.flywaydb:flyway-core:9.2.3")
+  implementation("org.flywaydb:flyway-core")
   runtimeOnly("org.postgresql:postgresql:42.5.0")
   implementation("com.vladmihalcea:hibernate-types-52:2.19.0")
 
