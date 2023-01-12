@@ -1,5 +1,5 @@
 plugins {
-  id("uk.gov.justice.hmpps.gradle-spring-boot") version "4.8.0-beta"
+  id("uk.gov.justice.hmpps.gradle-spring-boot") version "4.8.1-beta-1"
   kotlin("plugin.spring") version "1.8.0"
   kotlin("plugin.jpa") version "1.8.0"
   idea
@@ -25,11 +25,11 @@ dependencies {
 
   implementation("org.flywaydb:flyway-core")
   runtimeOnly("org.postgresql:postgresql:42.5.1")
-  implementation("com.vladmihalcea:hibernate-types-52:2.20.0")
+  implementation("com.vladmihalcea:hibernate-types-52:2.21.1")
 
   implementation("javax.transaction:javax.transaction-api:1.3")
   implementation("javax.xml.bind:jaxb-api:2.3.1")
-  implementation("com.google.code.gson:gson:2.10")
+  implementation("com.google.code.gson:gson:2.10.1")
 
   implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.14.1")
 
@@ -38,7 +38,7 @@ dependencies {
   implementation("org.springdoc:springdoc-openapi-kotlin:1.6.14")
   implementation("org.springdoc:springdoc-openapi-data-rest:1.6.14")
 
-  implementation(platform("com.amazonaws:aws-java-sdk-bom:1.12.367"))
+  implementation(platform("com.amazonaws:aws-java-sdk-bom:1.12.383"))
 
   testImplementation("org.springframework.security:spring-security-test")
   testImplementation("com.github.tomakehurst:wiremock-standalone:2.27.2")
@@ -48,7 +48,7 @@ dependencies {
   testImplementation("org.awaitility:awaitility-kotlin:4.2.0")
   testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactive:1.6.4")
   testImplementation("io.jsonwebtoken:jjwt:0.9.1")
-  testImplementation("org.mockito:mockito-inline:4.10.0")
+  testImplementation("org.mockito:mockito-inline:4.11.0")
 }
 
 java {
