@@ -11,6 +11,10 @@ configurations {
   testImplementation { exclude(group = "org.junit.vintage") }
 }
 
+dependencyCheck {
+  suppressionFiles.add("court-register-suppressions.xml")
+}
+
 dependencies {
   annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
 
