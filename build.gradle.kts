@@ -1,7 +1,7 @@
 plugins {
-  id("uk.gov.justice.hmpps.gradle-spring-boot") version "4.8.2-beta"
-  kotlin("plugin.spring") version "1.8.0"
-  kotlin("plugin.jpa") version "1.8.0"
+  id("uk.gov.justice.hmpps.gradle-spring-boot") version "4.8.3"
+  kotlin("plugin.spring") version "1.8.10"
+  kotlin("plugin.jpa") version "1.8.10"
   idea
 }
 
@@ -24,7 +24,7 @@ dependencies {
   implementation("org.springframework.cloud:spring-cloud-starter-aws-messaging:2.2.6.RELEASE")
 
   implementation("org.flywaydb:flyway-core")
-  runtimeOnly("org.postgresql:postgresql:42.5.1")
+  runtimeOnly("org.postgresql:postgresql:42.5.3")
   implementation("com.vladmihalcea:hibernate-types-52:2.21.1")
 
   implementation("javax.transaction:javax.transaction-api:1.3")
@@ -38,7 +38,7 @@ dependencies {
   implementation("org.springdoc:springdoc-openapi-kotlin:1.6.14")
   implementation("org.springdoc:springdoc-openapi-data-rest:1.6.14")
 
-  implementation(platform("com.amazonaws:aws-java-sdk-bom:1.12.397"))
+  implementation(platform("com.amazonaws:aws-java-sdk-bom:1.12.403"))
 
   testImplementation("org.springframework.security:spring-security-test")
   testImplementation("com.github.tomakehurst:wiremock-standalone:2.27.2")
