@@ -31,12 +31,12 @@ interface CourtRepository : PagingAndSortingRepository<Court, String> {
     select distinct c from Court c 
     where (:active is null or c.active = :active) 
     and (coalesce(:courtTypeIds) is null or c.courtType.id in (:courtTypeIds))
-  """
+  """,
   )
   fun findPage(
     @Param("active") active: Boolean?,
     @Param("courtTypeIds") courtTypeId: List<String>?,
-    pageable: Pageable
+    pageable: Pageable,
   ): Page<Court>
 
   // Note that the `(:textSearch is null or (search_court_text(:textSearch) = true)` trick doesn't work for an SQLTemplateFunction
@@ -50,13 +50,13 @@ interface CourtRepository : PagingAndSortingRepository<Court, String> {
       and (coalesce(:courtTypeIds) is null or c.courtType.id in (:courtTypeIds))
       and (search_court_text(:textSearch) = true)
     )
-  """
+  """,
   )
   fun findPageWithTextSearch(
     @Param("active") active: Boolean?,
     @Param("courtTypeIds") courtTypeId: List<String>?,
     @Param("textSearch") textSearch: String,
-    pageable: Pageable
+    pageable: Pageable,
   ): Page<Court>
 }
 
@@ -83,7 +83,7 @@ data class Court(
   var lastUpdatedDatetime: LocalDateTime = LocalDateTime.MIN,
 
   @OneToMany(cascade = [CascadeType.ALL], mappedBy = "court", orphanRemoval = true)
-  var buildings: List<Building> = listOf()
+  var buildings: List<Building> = listOf(),
 
 ) {
   fun addBuilding(dto: UpdateBuildingDto): Building {
@@ -97,7 +97,7 @@ data class Court(
       postcode = dto.postcode,
       county = dto.county,
       country = dto.country,
-      active = dto.active
+      active = dto.active,
     )
     building.contacts = dto.contacts.map { building.addContact(it) }
     buildings = buildings.plus(building)

@@ -18,7 +18,7 @@ import javax.transaction.Transactional
 @Transactional
 class CourtService(
   private val courtRepository: CourtRepository,
-  private val courtTypeRepository: CourtTypeRepository
+  private val courtTypeRepository: CourtTypeRepository,
 ) {
   fun findById(courtId: String): CourtDto {
     val court = courtRepository.findById(courtId)
@@ -37,7 +37,7 @@ class CourtService(
     active: Boolean? = null,
     courtTypeIds: List<String>? = null,
     textSearch: String? = null,
-    pageable: Pageable = Pageable.unpaged()
+    pageable: Pageable = Pageable.unpaged(),
   ): Page<CourtDto> =
     (
       textSearch

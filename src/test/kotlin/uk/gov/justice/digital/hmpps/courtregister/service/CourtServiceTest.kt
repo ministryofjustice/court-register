@@ -31,7 +31,7 @@ class CourtServiceTest {
     @Test
     fun `find court`() {
       whenever(courtRepository.findById(anyString())).thenReturn(
-        Optional.of(Court("ACCRYC", "A Court", null, CourtType("CROWN", "Crown Court"), true))
+        Optional.of(Court("ACCRYC", "A Court", null, CourtType("CROWN", "Crown Court"), true)),
       )
       val courtDto = courtService.findById("ACCRYC")
       assertThat(courtDto).isEqualTo(CourtDto("ACCRYC", "A Court", null, CourtTypeDto("CROWN", "Crown Court"), true))
@@ -47,18 +47,18 @@ class CourtServiceTest {
       val listOfCourts = listOf(
         Court("ACCRYC", "A Court 1", null, CourtType("CROWN", "Crown Court"), true),
         Court("ACCRYV", "A Court 2", null, CourtType("COUNTY", "County Court"), true),
-        Court("ACCRYT", "A Court 3", null, CourtType("OTHER", "Other Type Court"), true)
+        Court("ACCRYT", "A Court 3", null, CourtType("OTHER", "Other Type Court"), true),
       )
       whenever(courtRepository.findByActiveOrderById(true)).thenReturn(
-        listOfCourts
+        listOfCourts,
       )
       val courts = courtService.findAll(true)
       assertThat(courts).isEqualTo(
         listOf(
           CourtDto("ACCRYC", "A Court 1", null, CourtTypeDto("CROWN", "Crown Court"), true),
           CourtDto("ACCRYV", "A Court 2", null, CourtTypeDto("COUNTY", "County Court"), true),
-          CourtDto("ACCRYT", "A Court 3", null, CourtTypeDto("OTHER", "Other Type Court"), true)
-        )
+          CourtDto("ACCRYT", "A Court 3", null, CourtTypeDto("OTHER", "Other Type Court"), true),
+        ),
       )
       verify(courtRepository).findByActiveOrderById(true)
     }
@@ -68,18 +68,18 @@ class CourtServiceTest {
       val listOfCourts = listOf(
         Court("ACCRYC", "A Court 1", null, CourtType("CROWN", "Crown Court"), true),
         Court("ACCRYV", "A Court 2", null, CourtType("COUNTY", "County Court"), true),
-        Court("ACCRYT", "A Court 3", null, CourtType("OTHER", "Other Type Court"), false)
+        Court("ACCRYT", "A Court 3", null, CourtType("OTHER", "Other Type Court"), false),
       )
       whenever(courtRepository.findAll()).thenReturn(
-        listOfCourts
+        listOfCourts,
       )
       val courts = courtService.findAll()
       assertThat(courts).isEqualTo(
         listOf(
           CourtDto("ACCRYC", "A Court 1", null, CourtTypeDto("CROWN", "Crown Court"), true),
           CourtDto("ACCRYV", "A Court 2", null, CourtTypeDto("COUNTY", "County Court"), true),
-          CourtDto("ACCRYT", "A Court 3", null, CourtTypeDto("OTHER", "Other Type Court"), false)
-        )
+          CourtDto("ACCRYT", "A Court 3", null, CourtTypeDto("OTHER", "Other Type Court"), false),
+        ),
       )
       verify(courtRepository).findAll()
     }
@@ -91,13 +91,13 @@ class CourtServiceTest {
     @Test
     fun `update a court`() {
       whenever(courtRepository.findById("ACCRYC")).thenReturn(
-        Optional.of(Court("ACCRYC", "A Court 1", null, CourtType("CROWN", "Crown Court"), true))
+        Optional.of(Court("ACCRYC", "A Court 1", null, CourtType("CROWN", "Crown Court"), true)),
       )
       whenever(courtTypeRepository.findById("CROWN")).thenReturn(Optional.of(CourtType("CROWN", "Crown Court")))
       val updatedCourt =
         courtService.updateCourt("ACCRYC", UpdateCourtDto("A Court 1", "add description", "CROWN", true))
       assertThat(updatedCourt).isEqualTo(
-        CourtDto("ACCRYC", "A Court 1", "add description", CourtTypeDto("CROWN", "Crown Court"), true)
+        CourtDto("ACCRYC", "A Court 1", "add description", CourtTypeDto("CROWN", "Crown Court"), true),
       )
       verify(courtRepository).findById("ACCRYC")
     }
@@ -105,7 +105,7 @@ class CourtServiceTest {
     @Test
     fun `try to update a court that doesn't exist`() {
       whenever(courtRepository.findById("ACCRYC")).thenReturn(
-        Optional.empty()
+        Optional.empty(),
       )
       assertThrows(EntityNotFoundException::class.java) {
         courtService.updateCourt("ACCRYC", UpdateCourtDto("A Court 1", "add description", "CROWN", true))
@@ -118,10 +118,11 @@ class CourtServiceTest {
     fun `create a court`() {
       val courtToSave = Court("ACCRYZ", "A Court 4", "new court", CourtType("CROWN", "Crown Court"), true)
       whenever(courtRepository.findById("ACCRYZ")).thenReturn(
-        Optional.empty(), Optional.of(courtToSave)
+        Optional.empty(),
+        Optional.of(courtToSave),
       )
       whenever(courtRepository.save(courtToSave)).thenReturn(
-        courtToSave
+        courtToSave,
       )
       whenever(courtTypeRepository.findById("CROWN")).thenReturn(Optional.of(CourtType("CROWN", "Crown Court")))
       val courtInsertRecord = InsertCourtDto("ACCRYZ", "A Court 4", "new court", "CROWN", true)
@@ -134,7 +135,7 @@ class CourtServiceTest {
     @Test
     fun `try to create a court that already exists`() {
       whenever(courtRepository.findById("ACCRYZ")).thenReturn(
-        Optional.of(Court("ACCRYZ", "A Court 5", "new court 5", CourtType("CROWN", "Crown Court"), false))
+        Optional.of(Court("ACCRYZ", "A Court 5", "new court 5", CourtType("CROWN", "Crown Court"), false)),
       )
       val courtInsertRecord = InsertCourtDto("ACCRYZ", "A Court 4", "new court", "CROWN", true)
       assertThrows(EntityExistsException::class.java) { courtService.insertCourt(courtInsertRecord) }

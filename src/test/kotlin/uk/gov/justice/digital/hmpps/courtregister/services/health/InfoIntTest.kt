@@ -24,7 +24,7 @@ class InfoIntTest : IntegrationTest() {
       .expectBody().jsonPath("build.version").value(
         Consumer<String> {
           assertThat(it).startsWith(LocalDateTime.now().format(ISO_DATE))
-        }
+        },
       )
   }
 }

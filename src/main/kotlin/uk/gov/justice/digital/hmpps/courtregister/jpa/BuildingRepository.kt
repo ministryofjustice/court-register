@@ -23,10 +23,11 @@ import javax.persistence.OneToMany
 @Repository
 interface BuildingRepository : CrudRepository<Building, Long> {
   fun findBySubCode(subCode: String): Optional<Building>
+
   @Query(
     """
     select b from Building b where b.court.id = :courtId and b.subCode is null
-  """
+  """,
   )
   fun findMainBuilding(courtId: String): Optional<Building>
 }
@@ -58,7 +59,7 @@ data class Building(
   var lastUpdatedDatetime: LocalDateTime = LocalDateTime.MIN,
 
   @OneToMany(cascade = [CascadeType.ALL], mappedBy = "building", orphanRemoval = true)
-  var contacts: List<Contact> = listOf()
+  var contacts: List<Contact> = listOf(),
 
 ) {
   fun addContact(dto: UpdateContactDto): Contact {

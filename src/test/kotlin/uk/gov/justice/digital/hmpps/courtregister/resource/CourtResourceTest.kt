@@ -49,11 +49,11 @@ class CourtResourceTest : IntegrationTest() {
     fun `find active courts`() {
       val courts = listOf(
         Court("ACCRYC", "Accrington Youth Court", null, CourtType("YOUTH", "Youth Court"), true),
-        Court("KIDDYC", "Kidderminster Youth Court", null, CourtType("YOUTH", "Youth Court"), true)
+        Court("KIDDYC", "Kidderminster Youth Court", null, CourtType("YOUTH", "Youth Court"), true),
       )
 
       whenever(courtRepository.findByActiveOrderById(true)).thenReturn(
-        courts
+        courts,
       )
       webTestClient.get().uri("/courts")
         .exchange()
@@ -66,11 +66,11 @@ class CourtResourceTest : IntegrationTest() {
       val courts = listOf(
         Court("ACCRYC", "Accrington Youth Court", null, CourtType("YOUTH", "Youth Court"), true),
         Court("KIDDYC", "Kidderminster Youth Court", null, CourtType("YOUTH", "Youth Court"), true),
-        Court("KIDDYE", "Kidderminster Crown Court", null, CourtType("CROWN", "Crown Court"), false)
+        Court("KIDDYE", "Kidderminster Crown Court", null, CourtType("CROWN", "Crown Court"), false),
       )
 
       whenever(courtRepository.findAll()).thenReturn(
-        courts
+        courts,
       )
       webTestClient.get().uri("/courts/all")
         .exchange()
@@ -84,7 +84,7 @@ class CourtResourceTest : IntegrationTest() {
         listOf(
           CourtType("CROWN", "Crown Court"),
           CourtType("YOUTH", "Youth Court"),
-        )
+        ),
       )
 
       webTestClient.get().uri("/courts/types")
@@ -126,7 +126,7 @@ class CourtResourceTest : IntegrationTest() {
     @Test
     fun `update a court`() {
       whenever(courtRepository.findById("ACCRYC")).thenReturn(
-        Optional.of(Court("ACCRYC", "A Court 1", null, CourtType("YOUTH", "Youth Court"), true))
+        Optional.of(Court("ACCRYC", "A Court 1", null, CourtType("YOUTH", "Youth Court"), true)),
       )
       whenever(courtTypeRepository.findById("YOUTH")).thenReturn(Optional.of(CourtType("YOUTH", "Youth Court")))
       webTestClient.put()
@@ -136,8 +136,8 @@ class CourtResourceTest : IntegrationTest() {
           setAuthorisation(
             roles = listOf("ROLE_MAINTAIN_REF_DATA"),
             scopes = listOf("write"),
-            user = "bobby.beans"
-          )
+            user = "bobby.beans",
+          ),
         )
         .body(BodyInserters.fromValue(UpdateCourtDto("Updated Court", "a description", "YOUTH", false)))
         .exchange()
@@ -154,7 +154,7 @@ class CourtResourceTest : IntegrationTest() {
         Consumer {
           val whenDateTime = LocalDateTime.ofInstant(Instant.parse(it), ZoneOffset.UTC)
           assertThat(whenDateTime).isCloseToUtcNow(within(5, ChronoUnit.SECONDS))
-        }
+        },
       )
     }
 
@@ -170,9 +170,9 @@ class CourtResourceTest : IntegrationTest() {
               "courtName" to "A",
               "courtDescription" to "B",
               "courtType" to "DUMMY",
-              "active" to "true"
-            )
-          )
+              "active" to "true",
+            ),
+          ),
         )
         .exchange()
         .expectStatus().isBadRequest
@@ -183,12 +183,13 @@ class CourtResourceTest : IntegrationTest() {
       val courtType = CourtType("YOUTH", "Youth Court")
       val court = Court("ACCRYD", "A New Court", "a description", courtType, true)
       whenever(courtRepository.findById("ACCRYD")).thenReturn(
-        Optional.empty(), Optional.of(court)
+        Optional.empty(),
+        Optional.of(court),
       )
       whenever(courtTypeRepository.findById("YOUTH")).thenReturn(Optional.of(courtType))
 
       whenever(courtRepository.save(any())).thenReturn(
-        court
+        court,
       )
       webTestClient.post()
         .uri("/court-maintenance")
@@ -197,8 +198,8 @@ class CourtResourceTest : IntegrationTest() {
           setAuthorisation(
             roles = listOf("ROLE_MAINTAIN_REF_DATA"),
             scopes = listOf("write"),
-            user = "bobby.beans"
-          )
+            user = "bobby.beans",
+          ),
         )
         .body(
           BodyInserters.fromValue(
@@ -208,8 +209,8 @@ class CourtResourceTest : IntegrationTest() {
               "courtDescription" to "a description",
               "courtType" to "YOUTH",
               "active" to true,
-            )
-          )
+            ),
+          ),
         )
         .exchange()
         .expectStatus().isCreated
@@ -225,7 +226,7 @@ class CourtResourceTest : IntegrationTest() {
         Consumer {
           val whenDateTime = LocalDateTime.ofInstant(Instant.parse(it), ZoneOffset.UTC)
           assertThat(whenDateTime).isCloseToUtcNow(within(5, ChronoUnit.SECONDS))
-        }
+        },
       )
     }
 
@@ -244,18 +245,19 @@ class CourtResourceTest : IntegrationTest() {
         postcode = "SA4 5TH",
         county = "Yorkshire",
         country = "UK",
-        active = true
+        active = true,
       )
       finalCourt.buildings = finalCourt.buildings.plus(finalBuilding)
       val contact = Contact(1, finalBuilding, "TEL", "5555 666666")
       finalBuilding.contacts = finalBuilding.contacts.plus(contact)
 
       whenever(courtRepository.findById("XXXXAA")).thenReturn(
-        Optional.empty(), Optional.of(finalCourt)
+        Optional.empty(),
+        Optional.of(finalCourt),
       )
       whenever(courtTypeRepository.findById("YOUTH")).thenReturn(Optional.of(youthCourt))
       whenever(courtRepository.save(any())).thenReturn(
-        finalCourt
+        finalCourt,
       )
 
       webTestClient.post()
@@ -265,8 +267,8 @@ class CourtResourceTest : IntegrationTest() {
           setAuthorisation(
             roles = listOf("ROLE_MAINTAIN_REF_DATA"),
             scopes = listOf("write"),
-            user = "bobby.beans"
-          )
+            user = "bobby.beans",
+          ),
         )
         .body(
           BodyInserters.fromValue(
@@ -287,11 +289,11 @@ class CourtResourceTest : IntegrationTest() {
                   county = "Yorkshire",
                   country = "UK",
                   active = true,
-                  contacts = listOf(UpdateContactDto("TEL", "5555 666666"))
-                )
-              )
-            )
-          )
+                  contacts = listOf(UpdateContactDto("TEL", "5555 666666")),
+                ),
+              ),
+            ),
+          ),
         )
         .exchange()
         .expectStatus().isCreated
@@ -312,15 +314,15 @@ class CourtResourceTest : IntegrationTest() {
               "courtDescription" to "a description",
               "courtType" to "YOUTH",
               "active" to true,
-            )
-          )
+            ),
+          ),
         )
         .exchange()
         .expectStatus().isBadRequest
         .expectBody().jsonPath("errors").value(
           CoreMatchers.hasItems(
             "Court ID must be between 2 and 6",
-          )
+          ),
         )
     }
   }
@@ -341,7 +343,7 @@ class CourtResourceTest : IntegrationTest() {
         postcode = "SA4 5TH",
         county = "Yorkshire",
         country = "UK",
-        active = true
+        active = true,
       )
       val building2 = Building(
         id = 2,
@@ -354,7 +356,7 @@ class CourtResourceTest : IntegrationTest() {
         postcode = "SA4 5TT",
         county = "Yorkshire",
         country = "UK",
-        active = true
+        active = true,
       )
 
       court.buildings = court.buildings.plus(building1)
@@ -369,7 +371,7 @@ class CourtResourceTest : IntegrationTest() {
       building2.contacts = building2.contacts.plus(contact3)
 
       whenever(courtRepository.findById(anyString())).thenReturn(
-        Optional.of(court)
+        Optional.of(court),
       )
       webTestClient.get().uri("/courts/id/ACCRYC")
         .exchange()
@@ -411,9 +413,9 @@ class CourtResourceTest : IntegrationTest() {
               postcode = "SA4 5TH",
               county = "Yorkshire",
               country = "UK",
-              active = true
-            )
-          )
+              active = true,
+            ),
+          ),
         )
         .exchange()
         .expectStatus().isForbidden
@@ -436,9 +438,9 @@ class CourtResourceTest : IntegrationTest() {
               postcode = "SA4 5TH",
               county = "Yorkshire",
               country = "UK",
-              active = true
-            )
-          )
+              active = true,
+            ),
+          ),
         )
         .exchange().expectStatus().isForbidden
     }
@@ -458,9 +460,9 @@ class CourtResourceTest : IntegrationTest() {
             postcode = "S11 9BQ",
             county = "South Yorkshire",
             country = "UK",
-            active = true
-          )
-        )
+            active = true,
+          ),
+        ),
       )
 
       whenever(buildingRepository.findBySubCode("SUBT11")).thenReturn(Optional.empty())
@@ -472,8 +474,8 @@ class CourtResourceTest : IntegrationTest() {
           setAuthorisation(
             roles = listOf("ROLE_MAINTAIN_REF_DATA"),
             scopes = listOf("write"),
-            user = "bobby.beans"
-          )
+            user = "bobby.beans",
+          ),
         )
         .body(
           BodyInserters.fromValue(
@@ -486,9 +488,9 @@ class CourtResourceTest : IntegrationTest() {
               postcode = "SA4 5TH",
               county = "Yorkshire",
               country = "UK",
-              active = true
-            )
-          )
+              active = true,
+            ),
+          ),
         )
         .exchange()
         .expectStatus().isOk
@@ -504,7 +506,7 @@ class CourtResourceTest : IntegrationTest() {
         Consumer {
           val whenDateTime = LocalDateTime.ofInstant(Instant.parse(it), ZoneOffset.UTC)
           assertThat(whenDateTime).isCloseToUtcNow(within(5, ChronoUnit.SECONDS))
-        }
+        },
       )
     }
 
@@ -523,9 +525,9 @@ class CourtResourceTest : IntegrationTest() {
             postcode = "S11 9BQ",
             county = "South Yorkshire",
             country = "UK",
-            active = true
-          )
-        )
+            active = true,
+          ),
+        ),
       )
 
       whenever(buildingRepository.findBySubCode("SUBT22")).thenReturn(Optional.empty())
@@ -537,8 +539,8 @@ class CourtResourceTest : IntegrationTest() {
           setAuthorisation(
             roles = listOf("ROLE_MAINTAIN_REF_DATA"),
             scopes = listOf("write"),
-            user = "bobby.beans"
-          )
+            user = "bobby.beans",
+          ),
         )
         .body(
           BodyInserters.fromValue(
@@ -550,9 +552,9 @@ class CourtResourceTest : IntegrationTest() {
               town = "Sheffield",
               postcode = "SA4 5TH",
               county = "Yorkshire",
-              country = "UK" // missing active flag
-            )
-          )
+              country = "UK", // missing active flag
+            ),
+          ),
         )
         .exchange()
         .expectStatus().isOk
@@ -568,7 +570,7 @@ class CourtResourceTest : IntegrationTest() {
         Consumer {
           val whenDateTime = LocalDateTime.ofInstant(Instant.parse(it), ZoneOffset.UTC)
           assertThat(whenDateTime).isCloseToUtcNow(within(5, ChronoUnit.SECONDS))
-        }
+        },
       )
     }
 
@@ -587,9 +589,9 @@ class CourtResourceTest : IntegrationTest() {
             postcode = "S11 9BQ",
             county = "South Yorkshire",
             country = "UK",
-            active = true
-          )
-        )
+            active = true,
+          ),
+        ),
       )
 
       whenever(buildingRepository.findBySubCode("SUBT11")).thenReturn(Optional.empty())
@@ -601,8 +603,8 @@ class CourtResourceTest : IntegrationTest() {
           setAuthorisation(
             roles = listOf("ROLE_MAINTAIN_REF_DATA"),
             scopes = listOf("write"),
-            user = "bobby.beans"
-          )
+            user = "bobby.beans",
+          ),
         )
         .body(
           BodyInserters.fromValue(
@@ -615,9 +617,9 @@ class CourtResourceTest : IntegrationTest() {
               postcode = "A".repeat(9),
               county = "A".repeat(81),
               country = "A".repeat(17),
-              active = true
-            )
-          )
+              active = true,
+            ),
+          ),
         )
         .exchange()
         .expectStatus().isBadRequest
@@ -630,8 +632,8 @@ class CourtResourceTest : IntegrationTest() {
             "Building name must be no more than 50 characters",
             "Country must be no more than 16 characters",
             "Sub location code must be no more than 6 characters",
-            "Street Number and Name must be no more than 80 characters"
-          )
+            "Street Number and Name must be no more than 80 characters",
+          ),
         )
     }
 
@@ -639,7 +641,7 @@ class CourtResourceTest : IntegrationTest() {
     fun `insert a building`() {
       val court = Court("ACCRYC", "Accrington Youth Court", null, CourtType("YOUTH", "Youth Court"), true)
       whenever(courtRepository.findById("ACCRYD")).thenReturn(
-        Optional.of(court)
+        Optional.of(court),
       )
 
       val createdBuilding = Building(
@@ -652,13 +654,13 @@ class CourtResourceTest : IntegrationTest() {
         postcode = "SA4 5TH",
         county = "Yorkshire",
         country = "UK",
-        active = true
+        active = true,
       )
 
       val updatedBuilding = createdBuilding.copy(id = 1)
 
       whenever(buildingRepository.save(createdBuilding)).thenReturn(
-        updatedBuilding
+        updatedBuilding,
       )
 
       webTestClient.post()
@@ -668,8 +670,8 @@ class CourtResourceTest : IntegrationTest() {
           setAuthorisation(
             roles = listOf("ROLE_MAINTAIN_REF_DATA"),
             scopes = listOf("write"),
-            user = "bobby.beans"
-          )
+            user = "bobby.beans",
+          ),
         )
         .body(
           BodyInserters.fromValue(
@@ -682,9 +684,9 @@ class CourtResourceTest : IntegrationTest() {
               postcode = "SA4 5TH",
               county = "Yorkshire",
               country = "UK",
-              active = true
-            )
-          )
+              active = true,
+            ),
+          ),
         )
         .exchange()
         .expectStatus().isCreated
@@ -700,7 +702,7 @@ class CourtResourceTest : IntegrationTest() {
         Consumer {
           val whenDateTime = LocalDateTime.ofInstant(Instant.parse(it), ZoneOffset.UTC)
           assertThat(whenDateTime).isCloseToUtcNow(within(5, ChronoUnit.SECONDS))
-        }
+        },
       )
     }
 
@@ -708,7 +710,7 @@ class CourtResourceTest : IntegrationTest() {
     fun `insert a building without sending active flag`() {
       val court = Court("ACCRYC", "Accrington Youth Court", null, CourtType("YOUTH", "Youth Court"), true)
       whenever(courtRepository.findById("ACCRYD")).thenReturn(
-        Optional.of(court)
+        Optional.of(court),
       )
 
       val createdBuilding = Building(
@@ -721,13 +723,13 @@ class CourtResourceTest : IntegrationTest() {
         postcode = "SA4 5TH",
         county = "Yorkshire",
         country = "UK",
-        active = true
+        active = true,
       )
 
       val updatedBuilding = createdBuilding.copy(id = 2)
 
       whenever(buildingRepository.save(createdBuilding)).thenReturn(
-        updatedBuilding
+        updatedBuilding,
       )
 
       webTestClient.post()
@@ -737,8 +739,8 @@ class CourtResourceTest : IntegrationTest() {
           setAuthorisation(
             roles = listOf("ROLE_MAINTAIN_REF_DATA"),
             scopes = listOf("write"),
-            user = "bobby.beans"
-          )
+            user = "bobby.beans",
+          ),
         )
         .body(
           BodyInserters.fromValue(
@@ -750,9 +752,9 @@ class CourtResourceTest : IntegrationTest() {
               town = "Sheffield",
               postcode = "SA4 5TH",
               county = "Yorkshire",
-              country = "UK" // missing active flag
-            )
-          )
+              country = "UK", // missing active flag
+            ),
+          ),
         )
         .exchange()
         .expectStatus().isCreated
@@ -768,7 +770,7 @@ class CourtResourceTest : IntegrationTest() {
         Consumer {
           val whenDateTime = LocalDateTime.ofInstant(Instant.parse(it), ZoneOffset.UTC)
           assertThat(whenDateTime).isCloseToUtcNow(within(5, ChronoUnit.SECONDS))
-        }
+        },
       )
     }
 
@@ -776,7 +778,7 @@ class CourtResourceTest : IntegrationTest() {
     fun `will not insert a building where the data is too long`() {
       val court = Court("ACCRYC", "Accrington Youth Court", null, CourtType("YOUTH", "Youth Court"), true)
       whenever(courtRepository.findById("ACCRYD")).thenReturn(
-        Optional.of(court)
+        Optional.of(court),
       )
 
       val createdBuilding = Building(
@@ -789,13 +791,13 @@ class CourtResourceTest : IntegrationTest() {
         postcode = "SA4 5TH",
         county = "Yorkshire",
         country = "UK",
-        active = true
+        active = true,
       )
 
       val updatedBuilding = createdBuilding.copy(id = 1)
 
       whenever(buildingRepository.save(createdBuilding)).thenReturn(
-        updatedBuilding
+        updatedBuilding,
       )
 
       webTestClient.post()
@@ -805,8 +807,8 @@ class CourtResourceTest : IntegrationTest() {
           setAuthorisation(
             roles = listOf("ROLE_MAINTAIN_REF_DATA"),
             scopes = listOf("write"),
-            user = "bobby.beans"
-          )
+            user = "bobby.beans",
+          ),
         )
         .body(
           BodyInserters.fromValue(
@@ -819,9 +821,9 @@ class CourtResourceTest : IntegrationTest() {
               postcode = "A".repeat(9),
               county = "A".repeat(81),
               country = "A".repeat(17),
-              active = true
-            )
-          )
+              active = true,
+            ),
+          ),
         )
         .exchange()
         .expectStatus().isBadRequest
@@ -835,8 +837,8 @@ class CourtResourceTest : IntegrationTest() {
             "Building name must be no more than 50 characters",
             "Country must be no more than 16 characters",
             "Sub location code must be no more than 6 characters",
-            "Street Number and Name must be no more than 80 characters"
-          )
+            "Street Number and Name must be no more than 80 characters",
+          ),
         )
     }
   }
@@ -884,11 +886,11 @@ class CourtResourceTest : IntegrationTest() {
         postcode = "SA4 5TH",
         county = "Yorkshire",
         country = "UK",
-        active = true
+        active = true,
       )
 
       whenever(contactRepository.findById(1)).thenReturn(
-        Optional.of(Contact(building = building, type = "TEL", detail = "5555 6666666", id = 1))
+        Optional.of(Contact(building = building, type = "TEL", detail = "5555 6666666", id = 1)),
       )
 
       webTestClient.put()
@@ -898,8 +900,8 @@ class CourtResourceTest : IntegrationTest() {
           setAuthorisation(
             roles = listOf("ROLE_MAINTAIN_REF_DATA"),
             scopes = listOf("write"),
-            user = "bobby.beans"
-          )
+            user = "bobby.beans",
+          ),
         )
         .body(BodyInserters.fromValue(UpdateContactDto("TEL", "7777 22222222")))
         .exchange()
@@ -916,7 +918,7 @@ class CourtResourceTest : IntegrationTest() {
         Consumer {
           val whenDateTime = LocalDateTime.ofInstant(Instant.parse(it), ZoneOffset.UTC)
           assertThat(whenDateTime).isCloseToUtcNow(within(5, ChronoUnit.SECONDS))
-        }
+        },
       )
     }
 
@@ -934,11 +936,11 @@ class CourtResourceTest : IntegrationTest() {
         postcode = "SA4 5TH",
         county = "Yorkshire",
         country = "UK",
-        active = true
+        active = true,
       )
 
       whenever(contactRepository.findById(1)).thenReturn(
-        Optional.of(Contact(building = building, type = "TEL", detail = "5555 6666666", id = 1))
+        Optional.of(Contact(building = building, type = "TEL", detail = "5555 6666666", id = 1)),
       )
 
       webTestClient.put()
@@ -948,8 +950,8 @@ class CourtResourceTest : IntegrationTest() {
           setAuthorisation(
             roles = listOf("ROLE_MAINTAIN_REF_DATA"),
             scopes = listOf("write"),
-            user = "bobby.beans"
-          )
+            user = "bobby.beans",
+          ),
         )
         .body(BodyInserters.fromValue(UpdateContactDto("TEL", "1".repeat(81))))
         .exchange()
@@ -970,18 +972,18 @@ class CourtResourceTest : IntegrationTest() {
         postcode = "SA4 5TH",
         county = "Yorkshire",
         country = "UK",
-        active = true
+        active = true,
       )
       building.contacts = building.contacts.plus(Contact(id = 1, type = "TEL", detail = "5555 33333", building = building))
 
       whenever(buildingRepository.findById(1)).thenReturn(
-        Optional.of(building)
+        Optional.of(building),
       )
 
       val contactToSave = Contact(type = "EMAIL", detail = "test@test.com", building = building)
 
       whenever(contactRepository.save(contactToSave)).thenReturn(
-        contactToSave.copy(id = 2)
+        contactToSave.copy(id = 2),
       )
 
       webTestClient.post()
@@ -991,8 +993,8 @@ class CourtResourceTest : IntegrationTest() {
           setAuthorisation(
             roles = listOf("ROLE_MAINTAIN_REF_DATA"),
             scopes = listOf("write"),
-            user = "bobby.beans"
-          )
+            user = "bobby.beans",
+          ),
         )
         .body(BodyInserters.fromValue(UpdateContactDto("EMAIL", "test@test.com")))
         .exchange()
@@ -1009,7 +1011,7 @@ class CourtResourceTest : IntegrationTest() {
         Consumer {
           val whenDateTime = LocalDateTime.ofInstant(Instant.parse(it), ZoneOffset.UTC)
           assertThat(whenDateTime).isCloseToUtcNow(within(5, ChronoUnit.SECONDS))
-        }
+        },
       )
     }
 
@@ -1027,18 +1029,18 @@ class CourtResourceTest : IntegrationTest() {
         postcode = "SA4 5TH",
         county = "Yorkshire",
         country = "UK",
-        active = true
+        active = true,
       )
       building.contacts = building.contacts.plus(Contact(id = 1, type = "TEL", detail = "5555 33333", building = building))
 
       whenever(buildingRepository.findById(1)).thenReturn(
-        Optional.of(building)
+        Optional.of(building),
       )
 
       val contactToSave = Contact(type = "EMAIL", detail = "test@test.com", building = building)
 
       whenever(contactRepository.save(contactToSave)).thenReturn(
-        contactToSave.copy(id = 2)
+        contactToSave.copy(id = 2),
       )
 
       webTestClient.post()
@@ -1048,8 +1050,8 @@ class CourtResourceTest : IntegrationTest() {
           setAuthorisation(
             roles = listOf("ROLE_MAINTAIN_REF_DATA"),
             scopes = listOf("write"),
-            user = "bobby.beans"
-          )
+            user = "bobby.beans",
+          ),
         )
         .body(BodyInserters.fromValue(UpdateContactDto("TEL", "1".repeat(81))))
         .exchange()

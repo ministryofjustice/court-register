@@ -21,7 +21,7 @@ class ResourceServerConfiguration : WebSecurityConfigurerAdapter() {
           "/webjars/**", "/favicon.ico", "/csrf",
           "/health/**", "/info", "/ping", "/h2-console/**",
           "/courts/**",
-          "/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html"
+          "/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html",
         )
           .permitAll().anyRequest().authenticated()
       }.oauth2ResourceServer().jwt().jwtAuthenticationConverter(AuthAwareTokenConverter())

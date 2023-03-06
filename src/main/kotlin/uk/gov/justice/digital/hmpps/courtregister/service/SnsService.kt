@@ -32,14 +32,14 @@ class SnsService(
     topicTemplate.convertAndSend(
       TopicMessageChannel(awsSnsClient, topicArn),
       gson.toJson(RegisterChangeEvent(eventType, id)),
-      mapOf("eventType" to eventType.name)
+      mapOf("eventType" to eventType.name),
     )
   }
 }
 
 data class RegisterChangeEvent(
   val eventType: EventType,
-  val id: String
+  val id: String,
 )
 
 enum class AuditType {
@@ -49,5 +49,5 @@ enum class AuditType {
 }
 
 enum class EventType {
-  COURT_REGISTER_UPDATE
+  COURT_REGISTER_UPDATE,
 }

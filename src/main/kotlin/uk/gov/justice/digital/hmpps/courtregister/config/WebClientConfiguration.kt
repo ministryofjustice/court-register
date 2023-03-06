@@ -7,7 +7,7 @@ import org.springframework.web.reactive.function.client.WebClient
 
 @Configuration
 class WebClientConfiguration(
-  @Value("\${oauth.endpoint.url}") private val oauthRootUri: String
+  @Value("\${oauth.endpoint.url}") private val oauthRootUri: String,
 ) {
 
   @Bean
