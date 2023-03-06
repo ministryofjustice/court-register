@@ -36,5 +36,5 @@ data class Contact(
   var createdDatetime: LocalDateTime = LocalDateTime.MIN,
   @LastModifiedDate
   @Column(nullable = false)
-  var lastUpdatedDatetime: LocalDateTime = LocalDateTime.MIN
+  var lastUpdatedDatetime: LocalDateTime = LocalDateTime.MIN,
 )

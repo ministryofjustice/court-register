@@ -14,7 +14,7 @@ import javax.transaction.Transactional
 @Transactional
 class CourtBuildingService(
   private val courtRepository: CourtRepository,
-  private val buildingRepository: BuildingRepository
+  private val buildingRepository: BuildingRepository,
 ) {
   fun findById(courtId: String, buildingId: Long): BuildingDto {
     return BuildingDto(getBuilding(buildingId, courtId))
@@ -56,7 +56,7 @@ class CourtBuildingService(
 
   private fun getBuilding(
     buildingId: Long,
-    courtId: String
+    courtId: String,
   ): Building {
     val building = buildingRepository.findById(buildingId)
       .orElseThrow { EntityNotFoundException("Building $buildingId not found") }
@@ -81,7 +81,7 @@ class CourtBuildingService(
         postcode = postcode,
         county = county,
         country = country,
-        active = active
+        active = active,
       )
 
       return BuildingDto(buildingRepository.save(building))

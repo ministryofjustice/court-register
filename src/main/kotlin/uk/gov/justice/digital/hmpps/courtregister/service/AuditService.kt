@@ -18,7 +18,7 @@ class AuditService(
   @Value("\${spring.application.name}")
   private val serviceName: String,
   private val securityUserContext: SecurityUserContext,
-  private val mapper: ObjectMapper
+  private val mapper: ObjectMapper,
 ) {
   private val hmppsQueue by lazy {
     hmppsQueueService.findByQueueId("audit") ?: throw RuntimeException("Queue with name audit doesn't exist")
@@ -37,12 +37,12 @@ class AuditService(
       what = what,
       who = securityUserContext.principal,
       service = serviceName,
-      details = mapper.writeValueAsString(details)
+      details = mapper.writeValueAsString(details),
     )
     log.debug("Audit {} ", auditEvent)
     auditMessagingTemplate.send(
       queueName,
-      MessageBuilder.withPayload(mapper.writeValueAsString(auditEvent)).build()
+      MessageBuilder.withPayload(mapper.writeValueAsString(auditEvent)).build(),
     )
   }
 }

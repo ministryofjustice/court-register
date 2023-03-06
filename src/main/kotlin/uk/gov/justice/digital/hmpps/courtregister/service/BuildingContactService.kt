@@ -13,7 +13,7 @@ import javax.transaction.Transactional
 @Transactional
 class BuildingContactService(
   private val contactRepository: ContactRepository,
-  private val buildingRepository: BuildingRepository
+  private val buildingRepository: BuildingRepository,
 ) {
   fun findById(courtId: String, buildingId: Long, contactId: Long): ContactDto {
     return ContactDto(getContact(courtId, buildingId, contactId))
@@ -30,7 +30,6 @@ class BuildingContactService(
   }
 
   fun insertContact(courtId: String, buildingId: Long, updateContactRecord: UpdateContactDto): ContactDto {
-
     val building = buildingRepository.findById(buildingId)
       .orElseThrow { EntityNotFoundException("Building Id $buildingId not found") }
 
@@ -41,7 +40,7 @@ class BuildingContactService(
     val newContact = Contact(
       type = updateContactRecord.type,
       detail = updateContactRecord.detail,
-      building = building
+      building = building,
     )
 
     return ContactDto(contactRepository.save(newContact))
@@ -56,7 +55,7 @@ class BuildingContactService(
   private fun getContact(
     courtId: String,
     buildingId: Long,
-    contactId: Long
+    contactId: Long,
   ): Contact {
     val contact = contactRepository.findById(contactId)
       .orElseThrow { EntityNotFoundException("Contact $contactId not found") }

@@ -12,5 +12,5 @@ interface CourtTypeRepository : CrudRepository<CourtType, String>
 data class CourtType(
   @Id
   val id: String,
-  var description: String
+  var description: String,
 )

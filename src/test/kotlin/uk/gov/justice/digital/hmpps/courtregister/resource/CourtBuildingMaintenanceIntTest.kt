@@ -22,8 +22,8 @@ class CourtBuildingMaintenanceIntTest : IntegrationTest() {
           setAuthorisation(
             roles = listOf("ROLE_MAINTAIN_REF_DATA"),
             scopes = listOf("write"),
-            user = "bobby.beans"
-          )
+            user = "bobby.beans",
+          ),
         )
         .body(
           BodyInserters.fromValue(
@@ -36,8 +36,8 @@ class CourtBuildingMaintenanceIntTest : IntegrationTest() {
                 "postcode": "CF44 7DW",
                 "active": false
             }
-            """.trimIndent()
-          )
+            """.trimIndent(),
+          ),
         )
         .exchange()
         .expectStatus().isOk
@@ -59,8 +59,8 @@ class CourtBuildingMaintenanceIntTest : IntegrationTest() {
           setAuthorisation(
             roles = listOf("ROLE_MAINTAIN_REF_DATA"),
             scopes = listOf("write"),
-            user = "bobby.beans"
-          )
+            user = "bobby.beans",
+          ),
         )
         .body(
           BodyInserters.fromValue(
@@ -73,8 +73,8 @@ class CourtBuildingMaintenanceIntTest : IntegrationTest() {
                 "county": "Aberdare",
                 "postcode": "CF44 7DW"
             }
-            """.trimIndent()
-          )
+            """.trimIndent(),
+          ),
         )
         .exchange()
         .expectStatus().isOk
@@ -95,8 +95,8 @@ class CourtBuildingMaintenanceIntTest : IntegrationTest() {
           setAuthorisation(
             roles = listOf("ROLE_MAINTAIN_REF_DATA"),
             scopes = listOf("write"),
-            user = "bobby.beans"
-          )
+            user = "bobby.beans",
+          ),
         )
         .body(
           BodyInserters.fromValue(
@@ -109,8 +109,8 @@ class CourtBuildingMaintenanceIntTest : IntegrationTest() {
                 "county": "Aberdare",
                 "postcode": "CF44 7DW"
             }
-            """.trimIndent()
-          )
+            """.trimIndent(),
+          ),
         )
         .exchange()
         .expectStatus().isEqualTo(HttpStatus.CONFLICT)
@@ -125,8 +125,8 @@ class CourtBuildingMaintenanceIntTest : IntegrationTest() {
           setAuthorisation(
             roles = listOf("ROLE_MAINTAIN_REF_DATA"),
             scopes = listOf("write"),
-            user = "bobby.beans"
-          )
+            user = "bobby.beans",
+          ),
         )
         .body(
           BodyInserters.fromValue(
@@ -139,8 +139,8 @@ class CourtBuildingMaintenanceIntTest : IntegrationTest() {
                 "county": "Aberdare",
                 "postcode": "CF44 7DW"
             }
-            """.trimIndent()
-          )
+            """.trimIndent(),
+          ),
         )
         .exchange()
         .expectStatus().isEqualTo(HttpStatus.CONFLICT)
@@ -155,8 +155,8 @@ class CourtBuildingMaintenanceIntTest : IntegrationTest() {
           setAuthorisation(
             roles = listOf("ROLE_MAINTAIN_REF_DATA"),
             scopes = listOf("write"),
-            user = "bobby.beans"
-          )
+            user = "bobby.beans",
+          ),
         )
         .body(
           BodyInserters.fromValue(
@@ -169,8 +169,8 @@ class CourtBuildingMaintenanceIntTest : IntegrationTest() {
                 "county": "Aberdare",
                 "postcode": "CF44 7DW"
             }
-            """.trimIndent()
-          )
+            """.trimIndent(),
+          ),
         )
         .exchange()
         .expectStatus().isEqualTo(HttpStatus.CONFLICT)
@@ -185,8 +185,8 @@ class CourtBuildingMaintenanceIntTest : IntegrationTest() {
           setAuthorisation(
             roles = listOf("ROLE_MAINTAIN_REF_DATA"),
             scopes = listOf("write"),
-            user = "bobby.beans"
-          )
+            user = "bobby.beans",
+          ),
         )
         .body(
           BodyInserters.fromValue(
@@ -199,8 +199,8 @@ class CourtBuildingMaintenanceIntTest : IntegrationTest() {
                 "county": "Aberdare",
                 "postcode": "CF44 7DW"
             }
-            """.trimIndent()
-          )
+            """.trimIndent(),
+          ),
         )
         .exchange()
         .expectStatus().isEqualTo(HttpStatus.CONFLICT)

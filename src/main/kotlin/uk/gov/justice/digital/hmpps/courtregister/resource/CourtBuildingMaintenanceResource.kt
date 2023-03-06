@@ -45,51 +45,55 @@ class CourtBuildingMaintenanceResource(
       content = [
         Content(
           mediaType = "application/json",
-          schema = Schema(implementation = UpdateBuildingDto::class)
-        )
-      ]
+          schema = Schema(implementation = UpdateBuildingDto::class),
+        ),
+      ],
     ),
     responses = [
       ApiResponse(
         responseCode = "200",
         description = "Building Information Updated",
-        content = [Content(mediaType = "application/json", schema = Schema(implementation = BuildingDto::class))]
+        content = [Content(mediaType = "application/json", schema = Schema(implementation = BuildingDto::class))],
       ),
       ApiResponse(
         responseCode = "400",
         description = "Information request to update building",
-        content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))]
+        content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))],
       ),
       ApiResponse(
         responseCode = "401",
         description = "Unauthorized to access this endpoint",
-        content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))]
+        content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))],
       ),
       ApiResponse(
         responseCode = "403",
         description = "Incorrect permissions to make building update",
-        content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))]
+        content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))],
       ),
       ApiResponse(
         responseCode = "404",
         description = "Building ID not found",
-        content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))]
-      )
-    ]
+        content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))],
+      ),
+    ],
   )
   @PutMapping("/id/{courtId}/buildings/{buildingId}")
   fun updateBuilding(
     @Schema(description = "Court ID", example = "ACCRYC", required = true)
-    @PathVariable @Size(max = 12, min = 2, message = "Court ID must be between 2 and 12") courtId: String,
+    @PathVariable
+    @Size(max = 12, min = 2, message = "Court ID must be between 2 and 12")
+    courtId: String,
     @Schema(description = "Building ID", example = "234231", required = true)
-    @PathVariable buildingId: Long,
-    @RequestBody @Valid updateBuildingDto: UpdateBuildingDto
+    @PathVariable
+    buildingId: Long,
+    @RequestBody @Valid
+    updateBuildingDto: UpdateBuildingDto,
   ): BuildingDto {
     val updatedBuilding = buildingService.updateBuilding(courtId, buildingId, updateBuildingDto)
     snsService.sendEvent(EventType.COURT_REGISTER_UPDATE, courtId)
     auditService.sendAuditEvent(
       AuditType.COURT_REGISTER_BUILDING_UPDATE.name,
-      mapOf("courtId" to courtId, "buildingId" to buildingId, "building" to updatedBuilding)
+      mapOf("courtId" to courtId, "buildingId" to buildingId, "building" to updatedBuilding),
     )
     return updatedBuilding
   }
@@ -105,9 +109,9 @@ class CourtBuildingMaintenanceResource(
       content = [
         Content(
           mediaType = "application/json",
-          schema = Schema(implementation = UpdateBuildingDto::class)
-        )
-      ]
+          schema = Schema(implementation = UpdateBuildingDto::class),
+        ),
+      ],
     ),
     responses = [
       ApiResponse(
@@ -116,9 +120,9 @@ class CourtBuildingMaintenanceResource(
         content = [
           Content(
             mediaType = "application/json",
-            schema = Schema(implementation = BuildingDto::class)
-          )
-        ]
+            schema = Schema(implementation = BuildingDto::class),
+          ),
+        ],
       ),
       ApiResponse(
         responseCode = "400",
@@ -126,32 +130,35 @@ class CourtBuildingMaintenanceResource(
         content = [
           Content(
             mediaType = "application/json",
-            schema = Schema(implementation = ErrorResponse::class)
-          )
-        ]
+            schema = Schema(implementation = ErrorResponse::class),
+          ),
+        ],
       ),
       ApiResponse(
         responseCode = "401",
         description = "Unauthorized to access this endpoint",
-        content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))]
+        content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))],
       ),
       ApiResponse(
         responseCode = "403",
         description = "Incorrect permissions to make building insert",
-        content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))]
-      )
-    ]
+        content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))],
+      ),
+    ],
   )
   fun insertBuilding(
     @Schema(description = "Court ID", example = "ACCRYC", required = true)
-    @PathVariable @Size(max = 12, min = 2, message = "Court ID must be between 2 and 12") courtId: String,
-    @RequestBody @Valid updateBuildingDto: UpdateBuildingDto
+    @PathVariable
+    @Size(max = 12, min = 2, message = "Court ID must be between 2 and 12")
+    courtId: String,
+    @RequestBody @Valid
+    updateBuildingDto: UpdateBuildingDto,
   ): BuildingDto {
     val newBuilding = buildingService.insertBuilding(courtId, updateBuildingDto)
     snsService.sendEvent(EventType.COURT_REGISTER_UPDATE, courtId)
     auditService.sendAuditEvent(
       AuditType.COURT_REGISTER_BUILDING_INSERT.name,
-      mapOf("courtId" to courtId, "building" to newBuilding)
+      mapOf("courtId" to courtId, "building" to newBuilding),
     )
 
     return newBuilding
@@ -166,37 +173,40 @@ class CourtBuildingMaintenanceResource(
       ApiResponse(
         responseCode = "200",
         description = "Building Information Deleted",
-        content = [Content(mediaType = "application/json", schema = Schema(implementation = BuildingDto::class))]
+        content = [Content(mediaType = "application/json", schema = Schema(implementation = BuildingDto::class))],
       ),
       ApiResponse(
         responseCode = "401",
         description = "Unauthorized to access this endpoint",
-        content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))]
+        content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))],
       ),
       ApiResponse(
         responseCode = "403",
         description = "Incorrect permissions to delete building",
-        content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))]
+        content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))],
       ),
       ApiResponse(
         responseCode = "404",
         description = "Building ID not found",
-        content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))]
-      )
-    ]
+        content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))],
+      ),
+    ],
   )
   @DeleteMapping("/id/{courtId}/buildings/{buildingId}")
   fun deleteBuilding(
     @Schema(description = "Court ID", example = "ACCRYC", required = true)
-    @PathVariable @Size(max = 12, min = 2, message = "Court ID must be between 2 and 12") courtId: String,
+    @PathVariable
+    @Size(max = 12, min = 2, message = "Court ID must be between 2 and 12")
+    courtId: String,
     @Schema(description = "Building ID", example = "234231", required = true)
-    @PathVariable buildingId: Long
+    @PathVariable
+    buildingId: Long,
   ) {
     buildingService.deleteBuilding(courtId, buildingId)
     snsService.sendEvent(EventType.COURT_REGISTER_UPDATE, courtId)
     auditService.sendAuditEvent(
       AuditType.COURT_REGISTER_BUILDING_DELETE.name,
-      mapOf("courtId" to courtId, "buildingId" to buildingId)
+      mapOf("courtId" to courtId, "buildingId" to buildingId),
     )
   }
 }
@@ -204,38 +214,54 @@ class CourtBuildingMaintenanceResource(
 @JsonInclude(NON_NULL)
 @Schema(description = "Building Update Record")
 data class UpdateBuildingDto(
-  @Schema(description = "Building Name", example = "Crown House") @field:Size(
+  @Schema(description = "Building Name", example = "Crown House")
+  @field:Size(
     max = 50,
-    message = "Building name must be no more than 50 characters"
-  ) val buildingName: String?,
-  @Schema(description = "Street Number and Name", example = "452 West Street") @field:Size(
+    message = "Building name must be no more than 50 characters",
+  )
+  val buildingName: String?,
+  @Schema(description = "Street Number and Name", example = "452 West Street")
+  @field:Size(
     max = 80,
-    message = "Street Number and Name must be no more than 80 characters"
-  ) val street: String?,
-  @Schema(description = "Locality", example = "West Cross") @field:Size(
+    message = "Street Number and Name must be no more than 80 characters",
+  )
+  val street: String?,
+  @Schema(description = "Locality", example = "West Cross")
+  @field:Size(
     max = 80,
-    message = "Locality must be no more than 80 characters"
-  ) val locality: String?,
-  @Schema(description = "Town/City", example = "Swansea") @field:Size(
+    message = "Locality must be no more than 80 characters",
+  )
+  val locality: String?,
+  @Schema(description = "Town/City", example = "Swansea")
+  @field:Size(
     max = 80,
-    message = "Town/City must be no more than 80 characters"
-  ) val town: String?,
-  @Schema(description = "County", example = "South Glamorgan") @field:Size(
+    message = "Town/City must be no more than 80 characters",
+  )
+  val town: String?,
+  @Schema(description = "County", example = "South Glamorgan")
+  @field:Size(
     max = 80,
-    message = "County must be no more than 80 characters"
-  ) val county: String?,
-  @Schema(description = "Postcode", example = "SA3 4HT") @field:Size(
+    message = "County must be no more than 80 characters",
+  )
+  val county: String?,
+  @Schema(description = "Postcode", example = "SA3 4HT")
+  @field:Size(
     max = 8,
-    message = "Postcode must be no more than 8 characters"
-  ) val postcode: String?,
-  @Schema(description = "Country", example = "UK") @field:Size(
+    message = "Postcode must be no more than 8 characters",
+  )
+  val postcode: String?,
+  @Schema(description = "Country", example = "UK")
+  @field:Size(
     max = 16,
-    message = "Country must be no more than 16 characters"
-  ) val country: String?,
-  @Schema(description = "Sub location code for referencing building", example = "AAABBB") @field:Size(
+    message = "Country must be no more than 16 characters",
+  )
+  val country: String?,
+  @Schema(description = "Sub location code for referencing building", example = "AAABBB")
+  @field:Size(
     max = 6,
-    message = "Sub location code must be no more than 6 characters"
-  ) val subCode: String?,
+    message = "Sub location code must be no more than 6 characters",
+  )
+  val subCode: String?,
   @Schema(description = "Whether the building is active", example = "true", required = false, defaultValue = "true") val active: Boolean = true,
-  @Schema(description = "List of contacts for this building by type, can only be used on a new court") val contacts: List<UpdateContactDto> = listOf()
+  @Schema(description = "List of contacts for this building by type, can only be used on a new court") val contacts: List<UpdateContactDto> = listOf(),
 )

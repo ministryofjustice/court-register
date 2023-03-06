@@ -54,7 +54,7 @@ class CourtRepositoryTest : IntegrationTest() {
       courtName = "Sheffield Court",
       courtDescription = "A Court in Sheffield",
       courtType = crownCourtType,
-      active = true
+      active = true,
     )
 
     val building = Building(
@@ -67,7 +67,7 @@ class CourtRepositoryTest : IntegrationTest() {
       postcode = "SA4 5TH",
       county = "Glamorgan",
       country = "UK",
-      active = true
+      active = true,
     )
 
     val contact = Contact(building = building, type = "TEL", detail = "55512121")
@@ -130,8 +130,10 @@ class CourtRepositoryTest : IntegrationTest() {
   @Test
   fun `all pages should agree on the total number of elements`() {
     fun getPage(pageNumber: Int) = courtRepository.findPageWithTextSearch(
-      null, null, "crown court",
-      PageRequest.of(pageNumber, 40, Sort.by("courtName"))
+      null,
+      null,
+      "crown court",
+      PageRequest.of(pageNumber, 40, Sort.by("courtName")),
     )
 
     var pageNumber = 0

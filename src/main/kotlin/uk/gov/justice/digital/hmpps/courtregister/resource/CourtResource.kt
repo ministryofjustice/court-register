@@ -38,7 +38,7 @@ class CourtDtoPage : PageImpl<CourtDto>(mutableListOf<CourtDto>())
 class CourtResource(
   private val courtService: CourtService,
   private val buildingService: CourtBuildingService,
-  private val contactService: BuildingContactService
+  private val contactService: BuildingContactService,
 ) {
   @GetMapping("/id/{courtId}")
   @Operation(
@@ -48,23 +48,25 @@ class CourtResource(
       ApiResponse(
         responseCode = "200",
         description = "Court Information Returned",
-        content = [Content(mediaType = "application/json", schema = Schema(implementation = CourtDto::class))]
+        content = [Content(mediaType = "application/json", schema = Schema(implementation = CourtDto::class))],
       ),
       ApiResponse(
         responseCode = "400",
         description = "Incorrect request to get court information",
-        content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))]
+        content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))],
       ),
       ApiResponse(
         responseCode = "404",
         description = "Court ID not found",
-        content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))]
-      )
-    ]
+        content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))],
+      ),
+    ],
   )
   fun getCourtFromId(
     @Schema(description = "Court ID", example = "ACCRYC", required = true)
-    @PathVariable @Size(max = 12, min = 2, message = "Court ID must be between 2 and 12") courtId: String
+    @PathVariable
+    @Size(max = 12, min = 2, message = "Court ID must be between 2 and 12")
+    courtId: String,
   ): CourtDto =
     courtService.findById(courtId)
 
@@ -79,11 +81,11 @@ class CourtResource(
         content = arrayOf(
           Content(
             mediaType = "application/json",
-            array = ArraySchema(schema = Schema(implementation = CourtDto::class))
-          )
-        )
-      )
-    ]
+            array = ArraySchema(schema = Schema(implementation = CourtDto::class)),
+          ),
+        ),
+      ),
+    ],
   )
   fun getActiveCourts(): List<CourtDto> =
     courtService.findAll(true)
@@ -99,11 +101,11 @@ class CourtResource(
         content = arrayOf(
           Content(
             mediaType = "application/json",
-            array = ArraySchema(schema = Schema(implementation = CourtTypeDto::class))
-          )
-        )
-      )
-    ]
+            array = ArraySchema(schema = Schema(implementation = CourtTypeDto::class)),
+          ),
+        ),
+      ),
+    ],
   )
   fun getCourtTypes(): List<CourtTypeDto> =
     courtService.getCourtTypes()
@@ -119,11 +121,11 @@ class CourtResource(
         content = arrayOf(
           Content(
             mediaType = "application/json",
-            array = ArraySchema(schema = Schema(implementation = CourtDto::class))
-          )
-        )
-      )
-    ]
+            array = ArraySchema(schema = Schema(implementation = CourtDto::class)),
+          ),
+        ),
+      ),
+    ],
   )
   fun getAllCourts(): List<CourtDto> =
     courtService.findAll(false)
@@ -139,17 +141,17 @@ class CourtResource(
         content = arrayOf(
           Content(
             mediaType = "application/json",
-            array = ArraySchema(schema = Schema(implementation = CourtDtoPage::class))
-          )
-        )
-      )
-    ]
+            array = ArraySchema(schema = Schema(implementation = CourtDtoPage::class)),
+          ),
+        ),
+      ),
+    ],
   )
   fun getPageOfCourts(
     @Parameter(description = "Active?", example = "true", required = false) @RequestParam active: Boolean? = null,
     @Parameter(description = "Court Type", example = "CRN", required = false) @RequestParam courtTypeIds: List<String>? = null,
     @Parameter(description = "Text search", example = "Sheffield", required = false) @RequestParam textSearch: String? = null,
-    pageable: Pageable = Pageable.unpaged()
+    pageable: Pageable = Pageable.unpaged(),
   ): Page<CourtDto> =
     courtService.findPage(active, courtTypeIds, textSearch, pageable)
 
@@ -161,25 +163,28 @@ class CourtResource(
       ApiResponse(
         responseCode = "200",
         description = "Building Information Returned",
-        content = [Content(mediaType = "application/json", schema = Schema(implementation = BuildingDto::class))]
+        content = [Content(mediaType = "application/json", schema = Schema(implementation = BuildingDto::class))],
       ),
       ApiResponse(
         responseCode = "400",
         description = "Incorrect request to get building information",
-        content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))]
+        content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))],
       ),
       ApiResponse(
         responseCode = "404",
         description = "Building ID not found",
-        content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))]
-      )
-    ]
+        content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))],
+      ),
+    ],
   )
   fun getBuildingFromId(
     @Schema(description = "Court ID", example = "BRMNCC", required = true)
-    @PathVariable @Size(max = 12, min = 2, message = "Court ID must be between 2 and 12") courtId: String,
+    @PathVariable
+    @Size(max = 12, min = 2, message = "Court ID must be between 2 and 12")
+    courtId: String,
     @Schema(description = "Building ID", example = "234231", required = true)
-    @PathVariable buildingId: Long
+    @PathVariable
+    buildingId: Long,
   ): BuildingDto =
     buildingService.findById(courtId, buildingId)
 
@@ -191,23 +196,25 @@ class CourtResource(
       ApiResponse(
         responseCode = "200",
         description = "Building Information Returned",
-        content = [Content(mediaType = "application/json", schema = Schema(implementation = BuildingDto::class))]
+        content = [Content(mediaType = "application/json", schema = Schema(implementation = BuildingDto::class))],
       ),
       ApiResponse(
         responseCode = "400",
         description = "Incorrect request to get building information",
-        content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))]
+        content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))],
       ),
       ApiResponse(
         responseCode = "404",
         description = "Building SubCode not found",
-        content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))]
-      )
-    ]
+        content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))],
+      ),
+    ],
   )
   fun getBuildingFromSubCode(
     @Schema(description = "Building Sub Code", example = "BCCACC", required = true)
-    @PathVariable @Size(max = 12, min = 2, message = "Building Sub code must be between 2 and 12") subCode: String
+    @PathVariable
+    @Size(max = 12, min = 2, message = "Building Sub code must be between 2 and 12")
+    subCode: String,
   ): BuildingDto =
     buildingService.findBySubCode(subCode)
 
@@ -219,26 +226,29 @@ class CourtResource(
       ApiResponse(
         responseCode = "200",
         description = "Contact Information Returned",
-        content = [Content(mediaType = "application/json", schema = Schema(implementation = ContactDto::class))]
+        content = [Content(mediaType = "application/json", schema = Schema(implementation = ContactDto::class))],
       ),
       ApiResponse(
         responseCode = "400",
         description = "Incorrect request to get contact information",
-        content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))]
+        content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))],
       ),
       ApiResponse(
         responseCode = "404",
         description = "Contact ID not found",
-        content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))]
-      )
-    ]
+        content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))],
+      ),
+    ],
   )
   fun getContactFromId(
     @Schema(description = "Court ID", example = "ACCRYC", required = true)
-    @PathVariable @Size(max = 12, min = 2, message = "Court ID must be between 2 and 12") courtId: String,
+    @PathVariable
+    @Size(max = 12, min = 2, message = "Court ID must be between 2 and 12")
+    courtId: String,
     @Schema(description = "Building ID", example = "234231", required = true)
-    @PathVariable buildingId: Long,
-    @Schema(description = "Contact ID", example = "11111", required = true) @PathVariable contactId: Long
+    @PathVariable
+    buildingId: Long,
+    @Schema(description = "Contact ID", example = "11111", required = true) @PathVariable contactId: Long,
   ): ContactDto =
     contactService.findById(courtId, buildingId, contactId)
 
@@ -250,23 +260,25 @@ class CourtResource(
       ApiResponse(
         responseCode = "200",
         description = "Building Information Returned",
-        content = [Content(mediaType = "application/json", schema = Schema(implementation = BuildingDto::class))]
+        content = [Content(mediaType = "application/json", schema = Schema(implementation = BuildingDto::class))],
       ),
       ApiResponse(
         responseCode = "400",
         description = "Incorrect request to get building information",
-        content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))]
+        content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))],
       ),
       ApiResponse(
         responseCode = "404",
         description = "Building SubCode not found",
-        content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))]
-      )
-    ]
+        content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))],
+      ),
+    ],
   )
   fun findMainBuilding(
     @Schema(description = "Court Id", example = "BRMNCC", required = true)
-    @PathVariable @Size(max = 6, min = 2, message = "Court ID must be between 2 and 6") courtId: String,
+    @PathVariable
+    @Size(max = 6, min = 2, message = "Court ID must be between 2 and 6")
+    courtId: String,
   ): BuildingDto =
     buildingService.findMainBuilding(courtId)
 }
@@ -274,28 +286,40 @@ class CourtResource(
 @JsonInclude(NON_NULL)
 @Schema(description = "Court Information")
 data class CourtDto(
-  @Schema(description = "Court ID", example = "ACCRYC", required = true) @field:Size(
+  @Schema(description = "Court ID", example = "ACCRYC", required = true)
+  @field:Size(
     max = 12,
     min = 2,
-    message = "Court ID must be between 2 and 12"
-  ) @NotBlank val courtId: String,
-  @Schema(description = "Name of the court", example = "Accrington Youth Court", required = true) @field:Size(
+    message = "Court ID must be between 2 and 12",
+  )
+  @NotBlank
+  val courtId: String,
+  @Schema(description = "Name of the court", example = "Accrington Youth Court", required = true)
+  @field:Size(
     max = 80,
     min = 2,
-    message = "Court name must be between 2 and 80"
-  ) @NotBlank val courtName: String,
-  @Schema(description = "Description of the court", example = "Accrington Youth Court", required = false) @field:Size(
+    message = "Court name must be between 2 and 80",
+  )
+  @NotBlank
+  val courtName: String,
+  @Schema(description = "Description of the court", example = "Accrington Youth Court", required = false)
+  @field:Size(
     max = 200,
     min = 2,
-    message = "Court name must be between 2 and 200"
-  ) val courtDescription: String?,
+    message = "Court name must be between 2 and 200",
+  )
+  val courtDescription: String?,
   @Schema(description = "Type of court with description", required = true) val type: CourtTypeDto,
   @Schema(description = "Whether the court is still active", required = true) val active: Boolean,
-  @Schema(description = "List of buildings for this court entity") val buildings: List<BuildingDto> = listOf()
+  @Schema(description = "List of buildings for this court entity") val buildings: List<BuildingDto> = listOf(),
 ) {
   constructor(court: Court) : this(
-    court.id, court.courtName, court.courtDescription, CourtTypeDto(court.courtType), court.active,
-    court.buildings.map { BuildingDto(it) }
+    court.id,
+    court.courtName,
+    court.courtDescription,
+    CourtTypeDto(court.courtType),
+    court.active,
+    court.buildings.map { BuildingDto(it) },
   )
 }
 
@@ -306,8 +330,8 @@ data class CourtTypeDto(
   @Schema(
     description = "Description of the type of court",
     example = "County Court/County Divorce Ct",
-    required = true
-  ) @NotBlank val courtName: String
+    required = true,
+  ) @NotBlank val courtName: String,
 ) {
   constructor(courtType: CourtType) : this(courtType.id, courtType.description)
 }
@@ -326,12 +350,12 @@ data class BuildingDto(
   @Schema(description = "Postcode", example = "SA3 4HT") val postcode: String?,
   @Schema(description = "Country", example = "UK") val country: String?,
   @Schema(description = "List of contacts for this building by type") val contacts: List<ContactDto>? = listOf(),
-  @Schema(description = "Whether the building is active") val active: Boolean
+  @Schema(description = "Whether the building is active") val active: Boolean,
 ) {
   constructor(building: Building) : this(
     building.id!!, building.court.id, building.subCode, building.buildingName, building.street, building.locality,
     building.town, building.county, building.postcode, building.country, building.contacts.map { ContactDto(it) },
-    building.active
+    building.active,
   )
 }
 
@@ -345,7 +369,7 @@ data class ContactDto(
     description = "Type of contact",
     example = "TEL",
     required = true,
-    allowableValues = ["TEL", "FAX"]
+    allowableValues = ["TEL", "FAX"],
   ) val type: String,
   @Schema(description = "Details of the contact", example = "555 55555", required = true) val detail: String?,
 ) {
@@ -354,6 +378,6 @@ data class ContactDto(
     contact.building.court.id,
     contact.building.id!!,
     contact.type,
-    contact.detail
+    contact.detail,
   )
 }

@@ -45,49 +45,52 @@ class CourtMaintenanceResource(
       content = [
         Content(
           mediaType = "application/json",
-          schema = Schema(implementation = UpdateCourtDto::class)
-        )
-      ]
+          schema = Schema(implementation = UpdateCourtDto::class),
+        ),
+      ],
     ),
     responses = [
       ApiResponse(
         responseCode = "200",
         description = "Court Information Updated",
-        content = [Content(mediaType = "application/json", schema = Schema(implementation = CourtDto::class))]
+        content = [Content(mediaType = "application/json", schema = Schema(implementation = CourtDto::class))],
       ),
       ApiResponse(
         responseCode = "400",
         description = "Information request to update court",
-        content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))]
+        content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))],
       ),
       ApiResponse(
         responseCode = "401",
         description = "Unauthorized to access this endpoint",
-        content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))]
+        content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))],
       ),
       ApiResponse(
         responseCode = "403",
         description = "Incorrect permissions to make court update",
-        content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))]
+        content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))],
       ),
       ApiResponse(
         responseCode = "404",
         description = "Court ID not found",
-        content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))]
-      )
-    ]
+        content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))],
+      ),
+    ],
   )
   @PutMapping("/id/{courtId}")
   fun updateCourt(
     @Schema(description = "Court ID", example = "ACCRYC", required = true)
-    @PathVariable @Size(max = 12, min = 2, message = "Court ID must be between 2 and 12") courtId: String,
-    @RequestBody @Valid courtUpdateRecord: UpdateCourtDto
+    @PathVariable
+    @Size(max = 12, min = 2, message = "Court ID must be between 2 and 12")
+    courtId: String,
+    @RequestBody @Valid
+    courtUpdateRecord: UpdateCourtDto,
   ): CourtDto {
     val updatedCourt = courtService.updateCourt(courtId, courtUpdateRecord)
     snsService.sendEvent(COURT_REGISTER_UPDATE, courtId)
     auditService.sendAuditEvent(
       AuditType.COURT_REGISTER_UPDATE.name,
-      courtId to courtUpdateRecord
+      courtId to courtUpdateRecord,
     )
     return updatedCourt
   }
@@ -103,9 +106,9 @@ class CourtMaintenanceResource(
       content = [
         Content(
           mediaType = "application/json",
-          schema = Schema(implementation = InsertCourtDto::class)
-        )
-      ]
+          schema = Schema(implementation = InsertCourtDto::class),
+        ),
+      ],
     ),
     responses = [
       ApiResponse(
@@ -114,9 +117,9 @@ class CourtMaintenanceResource(
         content = [
           Content(
             mediaType = "application/json",
-            schema = Schema(implementation = CourtDto::class)
-          )
-        ]
+            schema = Schema(implementation = CourtDto::class),
+          ),
+        ],
       ),
       ApiResponse(
         responseCode = "400",
@@ -124,31 +127,31 @@ class CourtMaintenanceResource(
         content = [
           Content(
             mediaType = "application/json",
-            schema = Schema(implementation = ErrorResponse::class)
-          )
-        ]
+            schema = Schema(implementation = ErrorResponse::class),
+          ),
+        ],
       ),
       ApiResponse(
         responseCode = "401",
         description = "Unauthorized to access this endpoint",
-        content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))]
+        content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))],
       ),
       ApiResponse(
         responseCode = "403",
         description = "Incorrect permissions to make court insert",
-        content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))]
-      )
-    ]
+        content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))],
+      ),
+    ],
   )
   fun insertCourt(
-    @RequestBody @Valid courtInsertRecord: InsertCourtDto
+    @RequestBody @Valid
+    courtInsertRecord: InsertCourtDto,
   ): CourtDto {
-
     val newCourt = courtService.findById(courtService.insertCourt(courtInsertRecord))
     snsService.sendEvent(COURT_REGISTER_UPDATE, newCourt.courtId)
     auditService.sendAuditEvent(
       AuditType.COURT_REGISTER_INSERT.name,
-      courtInsertRecord
+      courtInsertRecord,
     )
 
     return newCourt
@@ -159,35 +162,47 @@ class CourtMaintenanceResource(
 @Schema(description = "Court Insert Record")
 data class InsertCourtDto(
   @Schema(description = "Court ID", example = "ACCRYC", required = true)
-  @field:Size(max = 6, min = 2, message = "Court ID must be between 2 and 6") @NotBlank val courtId: String,
-  @Schema(description = "Name of the court", example = "Accrington Youth Court", required = true) @field:Size(
+  @field:Size(max = 6, min = 2, message = "Court ID must be between 2 and 6")
+  @NotBlank
+  val courtId: String,
+  @Schema(description = "Name of the court", example = "Accrington Youth Court", required = true)
+  @field:Size(
     max = 80,
     min = 2,
-    message = "Court name must be between 2 and 80"
-  ) @field:NotBlank(message = "Court ID is required") val courtName: String,
-  @Schema(description = "Description of the court", example = "Accrington Youth Court", required = false) @field:Size(
+    message = "Court name must be between 2 and 80",
+  )
+  @field:NotBlank(message = "Court ID is required")
+  val courtName: String,
+  @Schema(description = "Description of the court", example = "Accrington Youth Court", required = false)
+  @field:Size(
     max = 200,
     min = 2,
-    message = "Court name must be between 2 and 200"
-  ) val courtDescription: String?,
+    message = "Court name must be between 2 and 200",
+  )
+  val courtDescription: String?,
   @Schema(description = "Type of court", example = "COU", required = true) val courtType: String,
   @Schema(description = "Whether the court is still active", required = true) val active: Boolean,
-  @Schema(description = "List of buildings for this court") val buildings: List<UpdateBuildingDto> = listOf()
+  @Schema(description = "List of buildings for this court") val buildings: List<UpdateBuildingDto> = listOf(),
 )
 
 @JsonInclude(NON_NULL)
 @Schema(description = "Court Update Record")
 data class UpdateCourtDto(
-  @Schema(description = "Name of the court", example = "Accrington Youth Court", required = true) @field:Size(
+  @Schema(description = "Name of the court", example = "Accrington Youth Court", required = true)
+  @field:Size(
     max = 80,
     min = 2,
-    message = "Court name must be between 2 and 80"
-  ) @field:NotBlank(message = "Court ID is required") val courtName: String,
-  @Schema(description = "Description of the court", example = "Accrington Youth Court", required = false) @field:Size(
+    message = "Court name must be between 2 and 80",
+  )
+  @field:NotBlank(message = "Court ID is required")
+  val courtName: String,
+  @Schema(description = "Description of the court", example = "Accrington Youth Court", required = false)
+  @field:Size(
     max = 200,
     min = 2,
-    message = "Court name must be between 2 and 200"
-  ) val courtDescription: String?,
+    message = "Court name must be between 2 and 200",
+  )
+  val courtDescription: String?,
   @Schema(description = "Type of court", example = "COU", required = true) val courtType: String,
-  @Schema(description = "Whether the court is still active", required = true) val active: Boolean
+  @Schema(description = "Whether the court is still active", required = true) val active: Boolean,
 )

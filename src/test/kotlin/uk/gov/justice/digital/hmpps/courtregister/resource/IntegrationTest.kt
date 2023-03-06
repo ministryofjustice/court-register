@@ -47,7 +47,7 @@ abstract class IntegrationTest {
   internal fun setAuthorisation(
     user: String = "court-reg-client",
     roles: List<String> = listOf(),
-    scopes: List<String> = listOf()
+    scopes: List<String> = listOf(),
   ): (HttpHeaders) -> Unit = jwtAuthHelper.setAuthorisation(user, roles, scopes)
 
   companion object {

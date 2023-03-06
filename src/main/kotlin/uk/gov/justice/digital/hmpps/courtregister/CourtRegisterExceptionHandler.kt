@@ -70,7 +70,7 @@ data class ErrorResponse(
   val userMessage: String? = null,
   val developerMessage: String? = null,
   val moreInfo: String? = null,
-  val errors: List<String>? = null
+  val errors: List<String>? = null,
 ) {
   constructor(
     status: HttpStatus,

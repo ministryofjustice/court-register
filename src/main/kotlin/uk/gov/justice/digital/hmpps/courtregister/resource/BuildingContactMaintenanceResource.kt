@@ -44,53 +44,58 @@ class BuildingContactMaintenanceResource(
       content = [
         Content(
           mediaType = "application/json",
-          schema = Schema(implementation = UpdateContactDto::class)
-        )
-      ]
+          schema = Schema(implementation = UpdateContactDto::class),
+        ),
+      ],
     ),
     responses = [
       ApiResponse(
         responseCode = "200",
         description = "Building Contact Information Updated",
-        content = [Content(mediaType = "application/json", schema = Schema(implementation = ContactDto::class))]
+        content = [Content(mediaType = "application/json", schema = Schema(implementation = ContactDto::class))],
       ),
       ApiResponse(
         responseCode = "400",
         description = "Information request to update contact",
-        content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))]
+        content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))],
       ),
       ApiResponse(
         responseCode = "401",
         description = "Unauthorized to access this endpoint",
-        content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))]
+        content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))],
       ),
       ApiResponse(
         responseCode = "403",
         description = "Incorrect permissions to make contact update",
-        content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))]
+        content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))],
       ),
       ApiResponse(
         responseCode = "404",
         description = "Contact ID not found",
-        content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))]
-      )
-    ]
+        content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))],
+      ),
+    ],
   )
   @PutMapping("/id/{courtId}/buildings/{buildingId}/contacts/{contactId}")
   fun updateContact(
     @Schema(description = "Court ID", example = "ACCRYC", required = true)
-    @PathVariable @Size(max = 12, min = 2, message = "Court ID must be between 2 and 12") courtId: String,
+    @PathVariable
+    @Size(max = 12, min = 2, message = "Court ID must be between 2 and 12")
+    courtId: String,
     @Schema(description = "Building ID", example = "234231", required = true)
-    @PathVariable buildingId: Long,
+    @PathVariable
+    buildingId: Long,
     @Schema(description = "Contact ID", example = "11111", required = true)
-    @PathVariable contactId: Long,
-    @RequestBody @Valid updateContactDto: UpdateContactDto
+    @PathVariable
+    contactId: Long,
+    @RequestBody @Valid
+    updateContactDto: UpdateContactDto,
   ): ContactDto {
     val updatedContact = contactService.updateContact(courtId, buildingId, contactId, updateContactDto)
     snsService.sendEvent(EventType.COURT_REGISTER_UPDATE, courtId)
     auditService.sendAuditEvent(
       AuditType.COURT_REGISTER_CONTACT_UPDATE.name,
-      mapOf("courtId" to courtId, "buildingId" to buildingId, "contact" to updatedContact)
+      mapOf("courtId" to courtId, "buildingId" to buildingId, "contact" to updatedContact),
     )
     return updatedContact
   }
@@ -106,9 +111,9 @@ class BuildingContactMaintenanceResource(
       content = [
         Content(
           mediaType = "application/json",
-          schema = Schema(implementation = UpdateContactDto::class)
-        )
-      ]
+          schema = Schema(implementation = UpdateContactDto::class),
+        ),
+      ],
     ),
     responses = [
       ApiResponse(
@@ -117,9 +122,9 @@ class BuildingContactMaintenanceResource(
         content = [
           Content(
             mediaType = "application/json",
-            schema = Schema(implementation = ContactDto::class)
-          )
-        ]
+            schema = Schema(implementation = ContactDto::class),
+          ),
+        ],
       ),
       ApiResponse(
         responseCode = "400",
@@ -127,34 +132,38 @@ class BuildingContactMaintenanceResource(
         content = [
           Content(
             mediaType = "application/json",
-            schema = Schema(implementation = ErrorResponse::class)
-          )
-        ]
+            schema = Schema(implementation = ErrorResponse::class),
+          ),
+        ],
       ),
       ApiResponse(
         responseCode = "401",
         description = "Unauthorized to access this endpoint",
-        content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))]
+        content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))],
       ),
       ApiResponse(
         responseCode = "403",
         description = "Incorrect permissions to add contact insert",
-        content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))]
-      )
-    ]
+        content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))],
+      ),
+    ],
   )
   fun insertContact(
     @Schema(description = "Court ID", example = "ACCRYC", required = true)
-    @PathVariable @Size(max = 12, min = 2, message = "Court ID must be between 2 and 12") courtId: String,
+    @PathVariable
+    @Size(max = 12, min = 2, message = "Court ID must be between 2 and 12")
+    courtId: String,
     @Schema(description = "Contact ID", example = "11111", required = true)
-    @PathVariable buildingId: Long,
-    @RequestBody @Valid updateContactDto: UpdateContactDto
+    @PathVariable
+    buildingId: Long,
+    @RequestBody @Valid
+    updateContactDto: UpdateContactDto,
   ): ContactDto {
     val newContact = contactService.insertContact(courtId, buildingId, updateContactDto)
     snsService.sendEvent(EventType.COURT_REGISTER_UPDATE, courtId)
     auditService.sendAuditEvent(
       AuditType.COURT_REGISTER_CONTACT_INSERT.name,
-      mapOf("courtId" to courtId, "buildingId" to buildingId, "contact" to newContact)
+      mapOf("courtId" to courtId, "buildingId" to buildingId, "contact" to newContact),
     )
 
     return newContact
@@ -169,39 +178,43 @@ class BuildingContactMaintenanceResource(
       ApiResponse(
         responseCode = "200",
         description = "Building Contact Information Deleted",
-        content = [Content(mediaType = "application/json", schema = Schema(implementation = ContactDto::class))]
+        content = [Content(mediaType = "application/json", schema = Schema(implementation = ContactDto::class))],
       ),
       ApiResponse(
         responseCode = "401",
         description = "Unauthorized to access this endpoint",
-        content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))]
+        content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))],
       ),
       ApiResponse(
         responseCode = "403",
         description = "Incorrect permissions to delete contact",
-        content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))]
+        content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))],
       ),
       ApiResponse(
         responseCode = "404",
         description = "Contact ID not found",
-        content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))]
-      )
-    ]
+        content = [Content(mediaType = "application/json", schema = Schema(implementation = ErrorResponse::class))],
+      ),
+    ],
   )
   @DeleteMapping("/id/{courtId}/buildings/{buildingId}/contacts/{contactId}")
   fun deleteContact(
     @Schema(description = "Court ID", example = "ACCRYC", required = true)
-    @PathVariable @Size(max = 12, min = 2, message = "Court ID must be between 2 and 12") courtId: String,
+    @PathVariable
+    @Size(max = 12, min = 2, message = "Court ID must be between 2 and 12")
+    courtId: String,
     @Schema(description = "Building ID", example = "234231", required = true)
-    @PathVariable buildingId: Long,
+    @PathVariable
+    buildingId: Long,
     @Schema(description = "Contact ID", example = "11111", required = true)
-    @PathVariable contactId: Long
+    @PathVariable
+    contactId: Long,
   ) {
     contactService.deleteContact(courtId, buildingId, contactId)
     snsService.sendEvent(EventType.COURT_REGISTER_UPDATE, courtId)
     auditService.sendAuditEvent(
       AuditType.COURT_REGISTER_CONTACT_DELETE.name,
-      mapOf("courtId" to courtId, "buildingId" to buildingId, "contactId" to contactId)
+      mapOf("courtId" to courtId, "buildingId" to buildingId, "contactId" to contactId),
     )
   }
 }
@@ -210,8 +223,10 @@ class BuildingContactMaintenanceResource(
 @Schema(description = "Contact")
 data class UpdateContactDto(
   @Schema(description = "Type of contact", example = "TEL", required = true, allowableValues = [ "TEL", "FAX"]) val type: String,
-  @Schema(description = "Details of the contact", example = "555 55555", required = true) @field:Size(
+  @Schema(description = "Details of the contact", example = "555 55555", required = true)
+  @field:Size(
     max = 80,
-    message = "Details must be no more than 80 characters"
-  ) val detail: String,
+    message = "Details must be no more than 80 characters",
+  )
+  val detail: String,
 )
