@@ -40,6 +40,8 @@ dependencies {
 
   implementation(platform("com.amazonaws:aws-java-sdk-bom:1.12.434"))
 
+  implementation("com.nimbusds:oauth2-oidc-sdk:9.41.1")
+
   testImplementation("org.springframework.security:spring-security-test")
   testImplementation("com.github.tomakehurst:wiremock-standalone:2.27.2")
   testImplementation("net.javacrumbs.json-unit:json-unit-assertj:2.37.0")
@@ -52,11 +54,11 @@ dependencies {
 }
 
 java {
-  toolchain.languageVersion.set(JavaLanguageVersion.of(18))
+  toolchain.languageVersion.set(JavaLanguageVersion.of(19))
 }
 
 tasks {
   withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
-    kotlinOptions.jvmTarget = "18"
+    kotlinOptions.jvmTarget = "19"
   }
 }
