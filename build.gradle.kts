@@ -39,6 +39,8 @@ dependencies {
   implementation("org.springdoc:springdoc-openapi-data-rest:1.6.15")
 
   implementation(platform("com.amazonaws:aws-java-sdk-bom:1.12.434"))
+  // override version to prevent json-smart vulnerability (CVE-2023-1370)
+  implementation("com.nimbusds:oauth2-oidc-sdk:9.41.1")
 
   testImplementation("org.springframework.security:spring-security-test")
   testImplementation("com.github.tomakehurst:wiremock-standalone:2.27.2")
@@ -52,11 +54,11 @@ dependencies {
 }
 
 java {
-  toolchain.languageVersion.set(JavaLanguageVersion.of(18))
+  toolchain.languageVersion.set(JavaLanguageVersion.of(19))
 }
 
 tasks {
   withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
-    kotlinOptions.jvmTarget = "18"
+    kotlinOptions.jvmTarget = "19"
   }
 }
