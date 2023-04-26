@@ -2,6 +2,9 @@ package uk.gov.justice.digital.hmpps.courtregister
 
 import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL
+import jakarta.persistence.EntityExistsException
+import jakarta.persistence.EntityNotFoundException
+import jakarta.validation.ValidationException
 import org.slf4j.LoggerFactory
 import org.springframework.dao.DataIntegrityViolationException
 import org.springframework.http.HttpStatus
@@ -9,9 +12,6 @@ import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.MethodArgumentNotValidException
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.RestControllerAdvice
-import javax.persistence.EntityExistsException
-import javax.persistence.EntityNotFoundException
-import javax.validation.ValidationException
 
 @RestControllerAdvice
 class CourtRegisterExceptionHandler {

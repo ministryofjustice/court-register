@@ -7,6 +7,8 @@ import io.swagger.v3.oas.annotations.media.Content
 import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.security.SecurityRequirement
+import jakarta.validation.Valid
+import jakarta.validation.constraints.Size
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.security.access.prepost.PreAuthorize
@@ -25,8 +27,6 @@ import uk.gov.justice.digital.hmpps.courtregister.service.AuditType
 import uk.gov.justice.digital.hmpps.courtregister.service.CourtBuildingService
 import uk.gov.justice.digital.hmpps.courtregister.service.EventType
 import uk.gov.justice.digital.hmpps.courtregister.service.SnsService
-import javax.validation.Valid
-import javax.validation.constraints.Size
 
 @RestController
 @Validated

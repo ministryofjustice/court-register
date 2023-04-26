@@ -1,7 +1,6 @@
 package uk.gov.justice.digital.hmpps.courtregister.config
 
 import com.microsoft.applicationinsights.web.internal.RequestTelemetryContext
-import com.microsoft.applicationinsights.web.internal.ThreadContext
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
@@ -48,7 +47,6 @@ class ClientTrackingConfigurationTest {
     req.addHeader(HttpHeaders.AUTHORIZATION, "Bearer $token")
     val res = MockHttpServletResponse()
     clientTrackingInterceptor.preHandle(req, res, "null")
-    val insightTelemetry = ThreadContext.getRequestTelemetryContext().httpRequestTelemetry.properties
     assertThat(insightTelemetry).hasSize(2)
     assertThat(insightTelemetry["username"]).isEqualTo("bob")
     assertThat(insightTelemetry["clientId"]).isEqualTo("court-reg-client")
@@ -61,7 +59,6 @@ class ClientTrackingConfigurationTest {
     req.addHeader(HttpHeaders.AUTHORIZATION, "Bearer $token")
     val res = MockHttpServletResponse()
     clientTrackingInterceptor.preHandle(req, res, "null")
-    val insightTelemetry = ThreadContext.getRequestTelemetryContext().httpRequestTelemetry.properties
     assertThat(insightTelemetry).hasSize(1)
     assertThat(insightTelemetry["clientId"]).isEqualTo("court-reg-client")
   }
