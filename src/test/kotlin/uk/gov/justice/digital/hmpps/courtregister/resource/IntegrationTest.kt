@@ -1,5 +1,6 @@
 package uk.gov.justice.digital.hmpps.courtregister.resource
 
+import com.amazonaws.services.sqs.AmazonSQSAsyncClient
 import com.amazonaws.services.sqs.model.PurgeQueueRequest
 import org.junit.jupiter.api.BeforeEach
 import org.springframework.beans.factory.annotation.Autowired
@@ -30,7 +31,7 @@ abstract class IntegrationTest {
     hmppsQueueService.findByQueueId("audit")
       ?: throw RuntimeException("Queue with name audit doesn't exist")
   }
-  internal val awsSqsClient by lazy { auditQueue.sqsClient }
+  internal val awsSqsClient by lazy { auditQueue.sqsClient as AmazonSQSAsyncClient }
   internal val queueUrl: String by lazy { auditQueue.queueUrl }
   internal val queueName: String by lazy { auditQueue.queueName }
 

@@ -1,5 +1,6 @@
 package uk.gov.justice.digital.hmpps.courtregister.service
 
+import com.amazonaws.services.sns.AmazonSNSAsync
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import org.slf4j.Logger
@@ -18,7 +19,7 @@ class SnsService(
       ?: throw RuntimeException("Topic with name domainevents doesn't exist")
   }
   private val topicArn by lazy { hmppsTopic.arn }
-  private val awsSnsClient by lazy { hmppsTopic.snsClient }
+  private val awsSnsClient by lazy { hmppsTopic.snsClient as AmazonSNSAsync }
 
   private val topicTemplate: NotificationMessagingTemplate = NotificationMessagingTemplate(awsSnsClient)
 
