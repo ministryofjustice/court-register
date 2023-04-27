@@ -43,7 +43,7 @@ class HealthIntTest : IntegrationTest() {
       .expectStatus().isOk
       .expectBody()
       .jsonPath("components.audit-health.status").isEqualTo("UP")
-      .jsonPath("components.audit-health.details.queueName").isEqualTo(queueName)
+      .jsonPath("components.audit-health.details.queueName").isEqualTo(auditQueueName)
       .jsonPath("components.audit-health.details.messagesOnQueue").isEqualTo(0)
       .jsonPath("components.audit-health.details.messagesInFlight").isEqualTo(0)
   }

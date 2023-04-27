@@ -1,9 +1,11 @@
 package uk.gov.justice.digital.hmpps.courtregister.resource
 
-import com.amazonaws.services.sqs.model.PurgeQueueRequest
 import net.javacrumbs.jsonunit.assertj.JsonAssertions.assertThatJson
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.within
+import org.awaitility.kotlin.await
+import org.awaitility.kotlin.matches
+import org.awaitility.kotlin.untilCallTo
 import org.hamcrest.CoreMatchers
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Nested
@@ -14,6 +16,8 @@ import org.mockito.kotlin.whenever
 import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.http.MediaType
 import org.springframework.web.reactive.function.BodyInserters
+import software.amazon.awssdk.services.sqs.model.PurgeQueueRequest
+import software.amazon.awssdk.services.sqs.model.ReceiveMessageRequest
 import uk.gov.justice.digital.hmpps.courtregister.jpa.Building
 import uk.gov.justice.digital.hmpps.courtregister.jpa.BuildingRepository
 import uk.gov.justice.digital.hmpps.courtregister.jpa.Contact
@@ -22,6 +26,7 @@ import uk.gov.justice.digital.hmpps.courtregister.jpa.Court
 import uk.gov.justice.digital.hmpps.courtregister.jpa.CourtRepository
 import uk.gov.justice.digital.hmpps.courtregister.jpa.CourtType
 import uk.gov.justice.digital.hmpps.courtregister.jpa.CourtTypeRepository
+import uk.gov.justice.hmpps.sqs.countMessagesOnQueue
 import java.time.Instant
 import java.time.LocalDateTime
 import java.time.ZoneOffset
@@ -99,7 +104,8 @@ class CourtResourceTest : IntegrationTest() {
 
     @BeforeEach
     internal fun drainAuditQueue() {
-      awsSqsClient.purgeQueue(PurgeQueueRequest(queueUrl))
+      auditQueue.sqsClient.purgeQueue(PurgeQueueRequest.builder().queueUrl(auditQueue.queueUrl).build())
+      await untilCallTo { auditQueue.sqsClient.countMessagesOnQueue(auditQueue.queueUrl).get() } matches { it == 0 }
     }
 
     @Test
@@ -393,7 +399,8 @@ class CourtResourceTest : IntegrationTest() {
 
     @BeforeEach
     internal fun drainAuditQueue() {
-      awsSqsClient.purgeQueue(PurgeQueueRequest(queueUrl))
+      auditQueue.sqsClient.purgeQueue(PurgeQueueRequest.builder().queueUrl(auditQueue.queueUrl).build())
+      await untilCallTo { auditQueue.sqsClient.countMessagesOnQueue(auditQueue.queueUrl).get() } matches { it == 0 }
     }
 
     @Test
@@ -848,7 +855,8 @@ class CourtResourceTest : IntegrationTest() {
 
     @BeforeEach
     internal fun drainAuditQueue() {
-      awsSqsClient.purgeQueue(PurgeQueueRequest(queueUrl))
+      auditQueue.sqsClient.purgeQueue(PurgeQueueRequest.builder().queueUrl(auditQueue.queueUrl).build())
+      await untilCallTo { auditQueue.sqsClient.countMessagesOnQueue(auditQueue.queueUrl).get() } matches { it == 0 }
     }
 
     @Test
@@ -1064,11 +1072,10 @@ class CourtResourceTest : IntegrationTest() {
       ?: throw AssertionError("file $this.json not found")
 
   fun auditEventMessageCount(): Int? {
-    val queueAttributes = awsSqsClient.getQueueAttributes(queueUrl, listOf("ApproximateNumberOfMessages"))
-    return queueAttributes.attributes["ApproximateNumberOfMessages"]?.toInt()
+    return auditSqsClient.countMessagesOnQueue(auditQueue.queueUrl).get()
   }
 
   fun auditMessage(): String? {
-    return awsSqsClient.receiveMessage(queueUrl).messages.firstOrNull()?.body
+    return auditSqsClient.receiveMessage(ReceiveMessageRequest.builder().queueUrl(auditQueueUrl).build()).get().messages()[0].body()
   }
 }

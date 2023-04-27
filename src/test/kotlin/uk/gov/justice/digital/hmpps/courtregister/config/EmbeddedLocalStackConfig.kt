@@ -29,7 +29,6 @@ class EmbeddedLocalStackConfig {
       .withServices(LocalStackContainer.Service.SNS)
       .withClasspathResourceMapping("/localstack/setup-sns.sh", "/docker-entrypoint-initaws.d/setup-sns.sh", BindMode.READ_WRITE)
       .withEnv("HOSTNAME_EXTERNAL", "localhost")
-      .withEnv("DEFAULT_REGION", "eu-west-2")
       .waitingFor(
         Wait.forLogMessage(".*All Ready.*", 1),
       )
