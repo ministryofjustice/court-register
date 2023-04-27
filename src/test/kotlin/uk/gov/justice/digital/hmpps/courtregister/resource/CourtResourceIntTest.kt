@@ -20,7 +20,7 @@ class CourtResourceIntTest : IntegrationTest() {
 
     @Test
     fun `should not find a building by invalid court ID`() {
-      webTestClient.get().uri("/courts/id/BAD/bulidings/main")
+      webTestClient.get().uri("/courts/id/BAD/buildings/main")
         .exchange()
         .expectStatus().isNotFound
     }
