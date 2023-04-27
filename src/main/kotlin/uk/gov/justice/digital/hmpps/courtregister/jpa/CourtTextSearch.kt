@@ -22,7 +22,7 @@ class TextSearchSqlFunctionTemplate : MetadataBuilderContributor {
   override fun contribute(metadataBuilder: MetadataBuilder) {
     metadataBuilder.applySqlFunction(
       "search_court_text",
-      StandardSQLFunction("textSearchVector @@ plainto_tsquery(?1)", StandardBasicTypes.BOOLEAN),
+      StandardSQLFunction("textSearchVector @@ plainto_tsquery", StandardBasicTypes.BOOLEAN),
     )
   }
 }
