@@ -7,7 +7,7 @@ executors:
   validator:
     docker:
       - image: cimg/openjdk:19.0
-      - image: localstack/localstack:0.12.10
+      - image: localstack/localstack:1.4
         environment:
           - SERVICES=sqs,sns
           - ES_PORT_EXTERNAL=4571
@@ -126,6 +126,7 @@ workflows:
                 - main
     jobs:
       - hmpps/gradle_owasp_dependency_check:
+          jdk_tag: "19.0"
           slack_channel: hmpps_tech_alerts_security
           context:
             - hmpps-common-vars

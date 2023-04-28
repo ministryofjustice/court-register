@@ -8,6 +8,8 @@ import io.swagger.v3.oas.annotations.media.ArraySchema
 import io.swagger.v3.oas.annotations.media.Content
 import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.responses.ApiResponse
+import jakarta.validation.constraints.NotBlank
+import jakarta.validation.constraints.Size
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.Pageable
@@ -26,8 +28,6 @@ import uk.gov.justice.digital.hmpps.courtregister.jpa.CourtType
 import uk.gov.justice.digital.hmpps.courtregister.service.BuildingContactService
 import uk.gov.justice.digital.hmpps.courtregister.service.CourtBuildingService
 import uk.gov.justice.digital.hmpps.courtregister.service.CourtService
-import javax.validation.constraints.NotBlank
-import javax.validation.constraints.Size
 
 // This is a hack to get around the fact that springdocs responses cannot contain generics
 class CourtDtoPage : PageImpl<CourtDto>(mutableListOf<CourtDto>())

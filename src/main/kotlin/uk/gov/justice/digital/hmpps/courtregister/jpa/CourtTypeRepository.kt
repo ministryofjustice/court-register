@@ -1,9 +1,9 @@
 package uk.gov.justice.digital.hmpps.courtregister.jpa
 
+import jakarta.persistence.Entity
+import jakarta.persistence.Id
 import org.springframework.data.repository.CrudRepository
 import org.springframework.stereotype.Repository
-import javax.persistence.Entity
-import javax.persistence.Id
 
 @Repository
 interface CourtTypeRepository : CrudRepository<CourtType, String>

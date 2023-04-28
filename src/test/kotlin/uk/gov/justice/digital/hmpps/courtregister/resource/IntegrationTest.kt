@@ -1,6 +1,8 @@
 package uk.gov.justice.digital.hmpps.courtregister.resource
 
-import com.amazonaws.services.sqs.model.PurgeQueueRequest
+import org.awaitility.kotlin.await
+import org.awaitility.kotlin.matches
+import org.awaitility.kotlin.untilCallTo
 import org.junit.jupiter.api.BeforeEach
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
@@ -9,9 +11,11 @@ import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.DynamicPropertyRegistry
 import org.springframework.test.context.DynamicPropertySource
 import org.springframework.test.web.reactive.server.WebTestClient
+import software.amazon.awssdk.services.sqs.model.PurgeQueueRequest
 import uk.gov.justice.digital.hmpps.courtregister.config.PostgresContainer
 import uk.gov.justice.digital.hmpps.courtregister.helper.JwtAuthHelper
 import uk.gov.justice.hmpps.sqs.HmppsQueueService
+import uk.gov.justice.hmpps.sqs.countMessagesOnQueue
 
 @Suppress("SpringJavaInjectionPointsAutowiringInspection")
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -26,13 +30,15 @@ abstract class IntegrationTest {
 
   @Autowired
   protected lateinit var hmppsQueueService: HmppsQueueService
+
   internal val auditQueue by lazy {
     hmppsQueueService.findByQueueId("audit")
       ?: throw RuntimeException("Queue with name audit doesn't exist")
   }
-  internal val awsSqsClient by lazy { auditQueue.sqsClient }
-  internal val queueUrl: String by lazy { auditQueue.queueUrl }
-  internal val queueName: String by lazy { auditQueue.queueName }
+
+  internal val auditSqsClient by lazy { auditQueue.sqsClient }
+  internal val auditQueueUrl: String by lazy { auditQueue.queueUrl }
+  internal val auditQueueName: String by lazy { auditQueue.queueName }
 
   init {
     // Resolves an issue where Wiremock keeps previous sockets open from other tests causing connection resets
@@ -41,7 +47,8 @@ abstract class IntegrationTest {
 
   @BeforeEach
   fun cleanQueues() {
-    awsSqsClient.purgeQueue(PurgeQueueRequest(queueUrl))
+    auditQueue.sqsClient.purgeQueue(PurgeQueueRequest.builder().queueUrl(auditQueue.queueUrl).build())
+    await untilCallTo { auditQueue.sqsClient.countMessagesOnQueue(auditQueue.queueUrl).get() } matches { it == 0 }
   }
 
   internal fun setAuthorisation(

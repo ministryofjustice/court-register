@@ -1,38 +1,41 @@
 package uk.gov.justice.digital.hmpps.courtregister.service
 
-import com.google.gson.Gson
-import com.google.gson.GsonBuilder
+import com.fasterxml.jackson.databind.ObjectMapper
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-import org.springframework.cloud.aws.messaging.core.NotificationMessagingTemplate
-import org.springframework.cloud.aws.messaging.core.TopicMessageChannel
 import org.springframework.stereotype.Service
+import software.amazon.awssdk.services.sns.model.MessageAttributeValue
+import software.amazon.awssdk.services.sns.model.PublishRequest
 import uk.gov.justice.hmpps.sqs.HmppsQueueService
 
 @Service
 class SnsService(
   hmppsQueueService: HmppsQueueService,
+  private val objectMapper: ObjectMapper,
 ) {
-  private val hmppsTopic by lazy {
+  private val domaineventsTopic by lazy {
     hmppsQueueService.findByTopicId("domainevents")
       ?: throw RuntimeException("Topic with name domainevents doesn't exist")
   }
-  private val topicArn by lazy { hmppsTopic.arn }
-  private val awsSnsClient by lazy { hmppsTopic.snsClient }
-
-  private val topicTemplate: NotificationMessagingTemplate = NotificationMessagingTemplate(awsSnsClient)
+  private val domaineventsTopicClient by lazy { domaineventsTopic.snsClient }
 
   companion object {
     val log: Logger = LoggerFactory.getLogger(this::class.java)
-    val gson: Gson = GsonBuilder().create()
   }
 
   fun sendEvent(eventType: EventType, id: String) {
-    log.debug("Event {} for id {}", eventType, id)
-    topicTemplate.convertAndSend(
-      TopicMessageChannel(awsSnsClient, topicArn),
-      gson.toJson(RegisterChangeEvent(eventType, id)),
-      mapOf("eventType" to eventType.name),
+    log.debug("Event {} for id {}", eventType)
+    domaineventsTopicClient.publish(
+      PublishRequest.builder()
+        .topicArn(domaineventsTopic.arn)
+        .message(objectMapper.writeValueAsString(RegisterChangeEvent(eventType, id)))
+        .messageAttributes(
+          mapOf(
+            "eventType" to MessageAttributeValue.builder().dataType("String").stringValue(eventType.name).build(),
+          ),
+        )
+        .build()
+        .also { log.info("Published event ${eventType.name} to domainevents topic") },
     )
   }
 }

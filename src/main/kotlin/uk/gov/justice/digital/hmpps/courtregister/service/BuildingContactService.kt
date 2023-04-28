@@ -1,13 +1,13 @@
 package uk.gov.justice.digital.hmpps.courtregister.service
 
+import jakarta.persistence.EntityNotFoundException
+import jakarta.transaction.Transactional
 import org.springframework.stereotype.Service
 import uk.gov.justice.digital.hmpps.courtregister.jpa.BuildingRepository
 import uk.gov.justice.digital.hmpps.courtregister.jpa.Contact
 import uk.gov.justice.digital.hmpps.courtregister.jpa.ContactRepository
 import uk.gov.justice.digital.hmpps.courtregister.resource.ContactDto
 import uk.gov.justice.digital.hmpps.courtregister.resource.UpdateContactDto
-import javax.persistence.EntityNotFoundException
-import javax.transaction.Transactional
 
 @Service
 @Transactional

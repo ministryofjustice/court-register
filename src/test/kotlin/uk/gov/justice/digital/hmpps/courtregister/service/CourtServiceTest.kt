@@ -1,5 +1,7 @@
 package uk.gov.justice.digital.hmpps.courtregister.service
 
+import jakarta.persistence.EntityExistsException
+import jakarta.persistence.EntityNotFoundException
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.Nested
@@ -17,8 +19,6 @@ import uk.gov.justice.digital.hmpps.courtregister.resource.CourtTypeDto
 import uk.gov.justice.digital.hmpps.courtregister.resource.InsertCourtDto
 import uk.gov.justice.digital.hmpps.courtregister.resource.UpdateCourtDto
 import java.util.Optional
-import javax.persistence.EntityExistsException
-import javax.persistence.EntityNotFoundException
 
 class CourtServiceTest {
   private val courtRepository: CourtRepository = mock()

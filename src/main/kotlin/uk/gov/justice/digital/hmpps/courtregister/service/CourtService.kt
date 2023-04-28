@@ -1,5 +1,8 @@
 package uk.gov.justice.digital.hmpps.courtregister.service
 
+import jakarta.persistence.EntityExistsException
+import jakarta.persistence.EntityNotFoundException
+import jakarta.transaction.Transactional
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
@@ -10,9 +13,6 @@ import uk.gov.justice.digital.hmpps.courtregister.resource.CourtDto
 import uk.gov.justice.digital.hmpps.courtregister.resource.CourtTypeDto
 import uk.gov.justice.digital.hmpps.courtregister.resource.InsertCourtDto
 import uk.gov.justice.digital.hmpps.courtregister.resource.UpdateCourtDto
-import javax.persistence.EntityExistsException
-import javax.persistence.EntityNotFoundException
-import javax.transaction.Transactional
 
 @Service
 @Transactional
