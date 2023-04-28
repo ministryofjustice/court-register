@@ -11,10 +11,6 @@ configurations {
   testImplementation { exclude(group = "org.junit.vintage") }
 }
 
-repositories {
-  maven { url = uri("https://repo.spring.io/milestone") }
-  mavenCentral()
-}
 dependencies {
   annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
 
@@ -29,7 +25,7 @@ dependencies {
 
   implementation("org.flywaydb:flyway-core")
   runtimeOnly("org.postgresql:postgresql:42.6.0")
-  implementation("com.vladmihalcea:hibernate-types-60:2.21.1")
+  implementation("io.hypersistence:hypersistence-utils-hibernate-60:3.3.2")
 
   implementation("javax.transaction:javax.transaction-api:1.3")
   implementation("javax.xml.bind:jaxb-api:2.3.1")

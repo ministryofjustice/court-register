@@ -15,7 +15,6 @@ import org.hibernate.type.StandardBasicTypes
 data class CourtTextSearch(
   @Id
   val id: String,
-  // val textSearchVector: PostgreSQLTSVectorType,
 )
 
 class TextSearchSqlFunctionTemplate : MetadataBuilderContributor {
